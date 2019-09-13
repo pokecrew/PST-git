@@ -134,20 +134,16 @@ void chargerSpritesMap(){
 
 //fonction qui affiche les cases (le sol)
 void displayMap(Case ** Map, SDL_Surface *ecran){
-        SDL_Surface *floor= NULL;
 
-        floor =  IMG_Load("map/Sprites/Sol/0000.png");
 
         for(int i=0;i<NBLIN;i++){
 			     for(int j=0;j<NBCOL;j++){
 
-                SDL_BlitSurface(floor, NULL, ecran, &Map[i][j].position);
+                SDL_BlitSurface(Map_Sprites[0], NULL, ecran, &Map[i][j].position);
                 SDL_BlitSurface(Map_Sprites[(Map[i][j].numIMG)], NULL, ecran, &Map[i][j].position);
               }
 			     }
 
-    SDL_Flip(ecran); // Mise  à jour de l'écran
-    SDL_FreeSurface(floor); // Libération de la surface
 
 }
 
@@ -358,5 +354,4 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran){
     }
     actuel = actuel->suivant;
   }
-SDL_Flip(ecran);
 }
