@@ -136,7 +136,7 @@ void chargerSpritesMap(){
 void displayMap(Case ** Map, SDL_Surface *ecran){
         SDL_Surface *floor= NULL;
 
-        floor =  IMG_Load("map/Sprites/0000.png");
+        floor =  IMG_Load("map/Sprites/Sol/0000.png");
 
         for(int i=0;i<NBLIN;i++){
 			     for(int j=0;j<NBCOL;j++){
