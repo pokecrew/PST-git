@@ -54,4 +54,5 @@ Decors chargerCaracteristiquesDecors(char *chaine);
 void ajouterElementFileDecors(FileDecors *file, char *chaine);//Fonction qui rajoute un élément à la file de décors (à la fin)
 int viderFileDecors(FileDecors *file);//Fonction qui vide la file
 void afficherFileTerm(FileDecors *file); //Fonction qui affiche dans le terminal les éléments de la file des décors
+void afficherDecors(FileDecors *file, SDL_Surface *ecran); //fonction d'affichage des decors
 #endif // MAP_H_INCLUDED

@@ -20,8 +20,9 @@ int main ( int argc, char** argv ){
     SDL_Init(SDL_INIT_VIDEO); //initialisation de la sdl
     SDL_WM_SetIcon(IMG_Load("images/icon.png"), NULL); // Chargement de l'icône AVANT SDL_SetVideoMode
     SDL_Surface *ecran = NULL; //Surface sur laquelle on affichera les différents éléments
-    ecran = SDL_SetVideoMode((1280), (720), 32, SDL_HWSURFACE | SDL_DOUBLEBUF); //on affiche un écran de la taille du labyrinthe
+    ecran = SDL_SetVideoMode((1280), (720), 32, SDL_HWSURFACE | SDL_DOUBLEBUF); //on affiche un écran de la taille souhaitée
     SDL_WM_SetCaption("PST v0.0", NULL);   //titre de la fenêtre
+     SDL_EnableKeyRepeat(10, 15); //répétition des touches
     //initialisation des maps
     Case **Map=createMap(mapPath); //On crée un tableau  de cases aux dimensions correspondantes au nombre de cases de la map
     FileDecors *fileDecors = initialiserFileDecors();
@@ -30,7 +31,7 @@ int main ( int argc, char** argv ){
     //initialisation du personnage
     int numSpritePerso = 0;//numéro du sprite du personnage du joueur
     SDL_Surface *Perso_Sprites[12];//Tableau des srpties du personnage
-    //la boucle suivante constitue le menu
+      //la boucle suivante constitue le menu
     int continuer = 1;
     int Menu=0;
     SDL_Event event; //on crée un evenement
@@ -45,17 +46,21 @@ int main ( int argc, char** argv ){
                 //chargement
                     chargerDecors(mapPath, fileDecors);//on charge les décors
                     chargementMap=loadMap(mapPath, Map);
+                    chargerSpritesPerso(0,Perso_Sprites);
+
 
 
                 //Affichage
-                    displayMap(Map, ecran);
-                   afficherDecors(fileDecors, ecran);
-                  //  afficherFileTerm(fileDecors);
 
-                //Libération de la méoire
+                  //  displayMap(Map, ecran);
+                  // afficherDecors(fileDecors, ecran);
+                  //  afficherFileTerm(fileDecors);
+                  deplacerPerso(Perso_Sprites,ecran , Map, fileDecors);
+
+                //Libération de la mémoire
                     viderFileDecors(fileDecors);
-                    chargerSpritesPerso(243,Perso_Sprites);
-                SDL_Delay(3500);
+
+                //SDL_Delay(3500);
             break;
             case 1: //Alexis
 
