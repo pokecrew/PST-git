@@ -10,5 +10,6 @@
   #include "constantes.h"
   #include "menu.h"
   #include "map.h"
+  #include "perso.h"
   #include "game.h"
 #endif // DEF_INCL
