@@ -3,4 +3,4 @@
 
 //Entrer ici les prototypes
 
-#endif // DEF_GAME
+#endif // DEF_PERSO
