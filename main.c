@@ -29,7 +29,7 @@ int main ( int argc, char** argv ){
     chargerSpritesMap(); //chargement en mémoire des sprites de la Map
     //initialisation du personnage
     int numSpritePerso = 0;//numéro du sprite du personnage du joueur
-    SDL_Surface *Perso_Sprites[9];//Tableau des srpties du personnage
+    SDL_Surface *Perso_Sprites[12];//Tableau des srpties du personnage
     //la boucle suivante constitue le menu
     int continuer = 1;
     int Menu=0;
@@ -54,7 +54,7 @@ int main ( int argc, char** argv ){
 
                 //Libération de la méoire
                     viderFileDecors(fileDecors);
-                    chargerSpritesPerso(numSpritePerso,Perso_Sprites);
+                    chargerSpritesPerso(243,Perso_Sprites);
                 SDL_Delay(3500);
             break;
             case 1: //Alexis
