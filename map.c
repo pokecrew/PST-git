@@ -56,19 +56,19 @@ int loadMap(char mapPath[], Case **Map){
                                     Map[i][j].numIMG = (1000*millier)+(100*centaine)+(10*dizaine)+(unite);
 
                                   //chargement du type de case (sol, mur, etc)
-                                    if(Map[i][j].numIMG < 199){ //si le numéro du sprite est compris entre 000 et 199 (sol)
-                                      Map[i][j].type = 0;
+                                    if(Map[i][j].numIMG < 2500){ //si le numéro du sprite est compris entre 000 et 257 (franchissable)
+                                      Map[i][j].type = 0; //type franchissable
                                     }
-                                    else if ((Map[i][j].numIMG > 199) && (Map[i][j].numIMG < 399)){ //si le numéro du sprite est compris entre 200 et 399 (mur)
-                                      Map[i][j].type = 1;
+                                    else {
+                                      Map[i][j].type = 1; //type infranchissable
                                     }
 
 
                             }
         }
-      /*  for(int k=0;k<NBLIN;k++){
-                            for(int l=0;l<NBCOL;l++){
-                              printf("%d ", Map[k][l].numIMG);
+        /*for(int k=0;k<45;k++){
+                            for(int l=0;l<80;l++){
+                              printf("%d ", Map[k][l].type);
                             }
                     printf("\n");
         }*/
@@ -134,8 +134,6 @@ void chargerSpritesMap(){
 
 //fonction qui affiche les cases (le sol)
 void displayMap(Case ** Map, SDL_Surface *ecran){
-
-
         for(int i=0;i<NBLIN;i++){
 			     for(int j=0;j<NBCOL;j++){
 
@@ -143,8 +141,6 @@ void displayMap(Case ** Map, SDL_Surface *ecran){
                 SDL_BlitSurface(Map_Sprites[(Map[i][j].numIMG)], NULL, ecran, &Map[i][j].position);
               }
 			     }
-
-
 }
 
 //fonction qui initialise la file de Décors

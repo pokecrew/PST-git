@@ -29,9 +29,9 @@ int main ( int argc, char** argv ){
     int chargementMap = 0;
     chargerSpritesMap(); //chargement en mémoire des sprites de la Map
     //initialisation du personnage
-    int numSpritePerso = 0;//numéro du sprite du personnage du joueur
-    SDL_Surface *Perso_Sprites[12];//Tableau des srpties du personnage
-      //la boucle suivante constitue le menu
+    Perso perso;
+    perso.numSprite = 0;
+    //la boucle suivante constitue le menu
     int continuer = 1;
     int Menu=0;
     SDL_Event event; //on crée un evenement
@@ -46,7 +46,7 @@ int main ( int argc, char** argv ){
                 //chargement
                     chargerDecors(mapPath, fileDecors);//on charge les décors
                     chargementMap=loadMap(mapPath, Map);
-                    chargerSpritesPerso(0,Perso_Sprites);
+                    chargerSpritesPerso(perso.numSprite,perso.Perso_Sprites);
 
 
 
@@ -55,7 +55,7 @@ int main ( int argc, char** argv ){
                   //  displayMap(Map, ecran);
                   // afficherDecors(fileDecors, ecran);
                   //  afficherFileTerm(fileDecors);
-                  deplacerPerso(Perso_Sprites,ecran , Map, fileDecors);
+                  deplacerPerso(perso,ecran , Map, fileDecors);
 
                 //Libération de la mémoire
                     viderFileDecors(fileDecors);
