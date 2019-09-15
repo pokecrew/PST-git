@@ -1,5 +1,10 @@
-#define TAILLE_SPRITE 16
+#define TAILLE_SPRITE 16 //variable préprocesseur
 
+typedef enum Direction Direction;
+enum Direction
+{
+    HAUT, GAUCHE, DROITE, BAS
+};
 //Sont déclarées dans ce fichier les constantes et les variables globales au programme
 
 int NBLIN=0; //Nombre de lignes de la carte (0 au démarrage)
