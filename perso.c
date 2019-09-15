@@ -125,21 +125,21 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
 
 int autoriserDeplacement(Case ** Map, Direction direction, Perso perso){
 
-  perso.x=(perso.position.x-(perso.position.x%16))/TAILLE_SPRITE;
-  perso.y=(perso.position.y+(perso.position.y%16))/TAILLE_SPRITE;
-  printf("%d\t%d\n", (perso.position.x%16), (perso.position.y%16));
+  perso.x=(perso.position.x-(perso.position.x%TAILLE_SPRITE))/TAILLE_SPRITE;
+  perso.y=(perso.position.y-(perso.position.y%TAILLE_SPRITE))/TAILLE_SPRITE;
+  //printf("%d\t%d\n", (perso.position.x%16), (perso.position.y%16));
   switch(direction){
     case GAUCHE:
-        if(Map[perso.y+1][perso.x].type == 0){
-          return 1;
+        if(Map[perso.y+1][perso.x-1].type != 0 && (perso.position.x%TAILLE_SPRITE) != 0){
+          return 0;
         }
-        return 0;
+        return 1;
     break;
     case DROITE:
-        if(Map[perso.y+1][perso.x+1].type == 0){
-            return 1;
+        if(Map[perso.y+1][perso.x+2].type != 0 && ((perso.position.x%TAILLE_SPRITE) != 0)){
+            return 0;
         }
-        return 0;
+        return 1;
     break;
     case HAUT:
         if(Map[perso.y][perso.x].type == 0 && Map[perso.y][perso.x+1].type == 0){
@@ -148,6 +148,7 @@ int autoriserDeplacement(Case ** Map, Direction direction, Perso perso){
         return 0;
     break;
     case BAS:
+
         if(Map[perso.y+2][perso.x].type == 0 && Map[perso.y+2][perso.x+1].type == 0){
           return 1;
         }
