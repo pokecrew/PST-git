@@ -47,7 +47,7 @@ int main ( int argc, char** argv ){
                     chargerDecors(mapPath, fileDecors);//on charge les décors
                     chargementMap=loadMap(mapPath, Map);
                     chargerSpritesPerso(perso.numSprite,perso.Perso_Sprites);
-
+                    chargerCollisionsDecors(fileDecors, Map);
 
 
                 //Affichage
@@ -55,6 +55,12 @@ int main ( int argc, char** argv ){
                   //  displayMap(Map, ecran);
                   // afficherDecors(fileDecors, ecran);
                   //  afficherFileTerm(fileDecors);
+                  for(int k=0;k<NBLIN;k++){
+                           for(int l=0;l<NBCOL;l++){
+                                   printf("%d ", Map[k][l].type);
+                           }
+                           printf("\n");
+                  }
                   deplacerPerso(perso,ecran , Map, fileDecors);
 
                 //Libération de la mémoire

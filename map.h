@@ -55,4 +55,5 @@ void ajouterElementFileDecors(FileDecors *file, char *chaine);//Fonction qui raj
 int viderFileDecors(FileDecors *file);//Fonction qui vide la file
 void afficherFileTerm(FileDecors *file); //Fonction qui affiche dans le terminal les éléments de la file des décors
 void afficherDecors(FileDecors *file, SDL_Surface *ecran); //fonction d'affichage des decors
+void chargerCollisionsDecors(FileDecors *file, Case ** Map);//fonction qui charge les collisions des décors
 #endif // MAP_H_INCLUDED

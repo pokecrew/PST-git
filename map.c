@@ -66,12 +66,12 @@ int loadMap(char mapPath[], Case **Map){
 
                             }
         }
-        /*for(int k=0;k<45;k++){
-                            for(int l=0;l<80;l++){
+        /*        for(int k=0;k<NBLIN;k++){
+                      for(int l=0;l<NBCOL;l++){
                               printf("%d ", Map[k][l].type);
-                            }
-                    printf("\n");
-        }*/
+                      }
+                      printf("\n");
+                  }*/
     }
     else{
       return -1;
@@ -318,35 +318,111 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran){
   }
   Decors *actuel = file->premier;
   SDL_Rect position;
-  int case_x = 0;
-  int case_y = 0;
+  int repeat_x = 0;
+  int repeat_y = 0;
 
   while (actuel != NULL){
     if((actuel->repeat_x > 0) || (actuel->repeat_y > 0)){
         position = actuel->position; //positions de la surface
-        case_x = actuel->dim_x;
-        case_y = actuel->dim_y;
+        repeat_x = actuel->dim_x;
+        repeat_y = actuel->dim_y;
         switch (actuel->type) {
           case ARBRE:
-            case_x--;
-            case_y-=2;
+            repeat_x--;
+            repeat_y-=2;
           break;
           case BATIMENT:
-            case_x++;
+            repeat_x++;
           break;
           default:
           break;
         }
         for(int i=0; i<(actuel->repeat_x); i++){
-          position.x = actuel->position.x+i*(case_x*TAILLE_SPRITE);
+          position.x = actuel->position.x+i*(repeat_x*TAILLE_SPRITE);
           for(int j=0; j<(actuel->repeat_y); j++){
-              position.y = actuel->position.y+j*(case_y*TAILLE_SPRITE);
+              position.y = actuel->position.y+j*(repeat_y*TAILLE_SPRITE);
               SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &position);
         }
       }
     }
     else{
       SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &actuel->position);
+    }
+    actuel = actuel->suivant;
+  }
+}
+
+//fonction qui charge les collisions des décors
+void chargerCollisionsDecors(FileDecors *file, Case ** Map){
+
+  if (file == NULL)
+  {
+      exit(EXIT_FAILURE);
+  }
+  Decors *actuel = file->premier;
+  int pos_x = 0;
+  int pos_y = 0;
+  int repeat_x = 0; //cases séparant chaque répitiion
+  int repeat_y = 0;
+  int dim_x = 0;//dimension du décor en case de collision
+  int dim_y = 0;//dimension du décor en case de collision
+  int init_x = 0;//dimension du décor en case de collision
+  int init_y = 0;//dimension du décor en case de collision
+
+  while (actuel != NULL){
+    pos_x = actuel->pos_x; //coordonées de la case (axe des x)
+    pos_y = actuel->pos_y; //coordonées de la case (axe des y)
+    dim_x = actuel->dim_x;
+    dim_y = actuel->dim_y;
+    init_x = 0;
+    init_y = 0;
+    switch (actuel->type) {
+      case ARBRE:
+        dim_y--;
+        dim_x--;
+        init_y++;
+      break;
+      case BATIMENT:
+        dim_y--;
+        dim_x--;
+        init_y+=2;
+      break;
+      default:
+      break;
+    }
+    if((actuel->repeat_x > 0) || (actuel->repeat_y > 0)){
+        repeat_x = actuel->dim_x;
+        repeat_y = actuel->dim_y;
+        switch (actuel->type) {
+          case ARBRE:
+            repeat_x--;
+            repeat_y-=2;
+          break;
+          case BATIMENT:
+            repeat_x++;
+          break;
+          default:
+          break;
+        }
+        for(int i=0; i<(actuel->repeat_x); i++){
+          pos_x = actuel->pos_x+(i*repeat_x);
+          for(int j=0; j<(actuel->repeat_y); j++){
+            pos_y = actuel->pos_y+(j*repeat_y);
+              for(int k=0; k < dim_y; k++){
+                for(int l=0; l < dim_x; l++){
+                    Map[pos_y+k][pos_x+l].type = 1;
+                }
+            }
+            //  SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &position);
+        }
+      }
+    }
+    else{
+        for(int k=0; k < dim_y; k++){
+            for(int l=0; l < dim_x; l++){
+                Map[pos_y+k][pos_x+l].type = 1;
+            }
+        }
     }
     actuel = actuel->suivant;
   }
