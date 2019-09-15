@@ -14,7 +14,7 @@ void chargerSpritesPerso(int numSpritePerso, SDL_Surface **Perso_Sprites){
   path[25]=49; // on affecte 1 au chiffre des dizaines
   for(int i=0; i<3; i++){
     path[26]= i+48; //on affecte i au caractère des unités
-    Perso_Sprites[i+10]=IMG_Load(path);
+    Perso_Sprites[i+9]=IMG_Load(path);
   }
 }
 
@@ -80,10 +80,10 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
                 }
             break;
             case SDL_KEYUP:
-                iSpriteH=1;
-                iSpriteB=1;
-                iSpriteG=1;
-                iSpriteD=1;
+                iSpriteH=0;
+                iSpriteB=0;
+                iSpriteG=0;
+                iSpriteD=0;
                     switch(event.key.keysym.sym){
                         case SDLK_UP: // Flèche haut
                           current=3;
@@ -130,29 +130,28 @@ int autoriserDeplacement(Case ** Map, Direction direction, Perso perso){
   printf("%d\t%d\n", (perso.position.x%16), (perso.position.y%16));
   switch(direction){
     case GAUCHE:
-        if((perso.position.y%16)==0){
-          if(Map[perso.y+1][perso.x].type == 0){
-            return 1;
-          }
-        }
-        else{
-          if(Map[perso.y+2][perso.x].type == 0){
-            return 1;
-          }
+        if(Map[perso.y+1][perso.x].type == 0){
+          return 1;
         }
         return 0;
     break;
     case DROITE:
-        if(Map[perso.y+1][perso.x+2].type == 0){
+        if(Map[perso.y+1][perso.x+1].type == 0){
             return 1;
-          }
+        }
         return 0;
     break;
     case HAUT:
-        return 1;
+        if(Map[perso.y][perso.x].type == 0 && Map[perso.y][perso.x+1].type == 0){
+            return 1;
+        }
+        return 0;
     break;
     case BAS:
-        return 1;
+        if(Map[perso.y+2][perso.x].type == 0 && Map[perso.y+2][perso.x+1].type == 0){
+          return 1;
+        }
+        return 0;
     break;
   }
 
