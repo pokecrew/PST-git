@@ -11,6 +11,7 @@
 #include "map.c"
 #include "perso.c"
 #include "game.c"
+#include "combat.c"
 
 
 int main ( int argc, char** argv ){
@@ -74,7 +75,8 @@ int main ( int argc, char** argv ){
 
             break;
             case 4: //Theo
-
+              // lancement de la fenetre de combat
+                fenetre (ecran);
             break;
         }
     }

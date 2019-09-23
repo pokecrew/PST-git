@@ -12,4 +12,5 @@
   #include "map.h"
   #include "perso.h"
   #include "game.h"
+  #include "combat.h"
 #endif // DEF_INCL
