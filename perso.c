@@ -32,7 +32,7 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
   perso.position.y=400; //valeurs à récupérer depuis le fichier sauvegarde
   perso.x=(perso.position.x-(perso.position.x%16))/TAILLE_SPRITE;
   perso.y=(perso.position.y-(perso.position.y%16))/TAILLE_SPRITE;
-  printf("%d\t%d\n", perso.x, perso.y);
+//  printf("%d\t%d\n", perso.x, perso.y);
 
   while (continuer){
       SDL_PollEvent(&event);

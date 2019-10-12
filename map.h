@@ -5,7 +5,7 @@
 typedef enum Decors_type Decors_type;
 enum Decors_type
 {
-    ARBRE, BATIMENT, AUTRE
+    SOL, MUR, ARBRE, BATIMENT, AUTRE
 };
 
 
