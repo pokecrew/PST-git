@@ -20,9 +20,9 @@ int main ( int argc, char** argv ){
     SDL_Init(SDL_INIT_VIDEO); //initialisation de la sdl
     SDL_WM_SetIcon(IMG_Load("images/icon.png"), NULL); // Chargement de l'icône AVANT SDL_SetVideoMode
     SDL_Surface *ecran = NULL; //Surface sur laquelle on affichera les différents éléments
-    ecran = SDL_SetVideoMode((1280), (720), 32, SDL_HWSURFACE | SDL_DOUBLEBUF); //on affiche un écran de la taille souhaitée
+    ecran = SDL_SetVideoMode((1280), (720), 32, SDL_HWSURFACE | SDL_DOUBLEBUF ); //on affiche un écran de la taille souhaitée
     SDL_WM_SetCaption("PST v0.0", NULL);   //titre de la fenêtre
-     SDL_EnableKeyRepeat(10, 15); //répétition des touches
+    SDL_EnableKeyRepeat(10, 10); //répétition des touches
     //initialisation des maps
     Case **Map=createMap(mapPath); //On crée un tableau  de cases aux dimensions correspondantes au nombre de cases de la map
     FileDecors *fileDecors = initialiserFileDecors();
@@ -48,6 +48,8 @@ int main ( int argc, char** argv ){
                     chargementMap=loadMap(mapPath, Map);
                     chargerSpritesPerso(perso.numSprite,perso.Perso_Sprites);
                     chargerCollisionsDecors(fileDecors, Map);
+                    printf("Load ok \n");
+                    //SDL_Delay(1000);
 
 
                 //Affichage
@@ -55,16 +57,16 @@ int main ( int argc, char** argv ){
                   //  displayMap(Map, ecran);
                   // afficherDecors(fileDecors, ecran);
                   //  afficherFileTerm(fileDecors);
-                  for(int k=0;k<NBLIN;k++){
+                  /*for(int k=0;k<NBLIN;k++){
                            for(int l=0;l<NBCOL;l++){
                                    printf("%d ", Map[k][l].type);
                            }
                            printf("\n");
-                  }
+                  }*/
                   deplacerPerso(perso,ecran , Map, fileDecors);
 
                 //Libération de la mémoire
-                    viderFileDecors(fileDecors);
+                viderFileDecors(fileDecors);
 
                 //SDL_Delay(3500);
             break;
