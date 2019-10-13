@@ -392,12 +392,11 @@ void chargerCollisionsDecors(FileDecors *file, Case ** Map){
       break;
       case ARBRE:
         dim_y--;
-        dim_x--;
+        //dim_x--;
         init_y++;
       break;
       case BATIMENT:
         dim_y--;
-        dim_x--;
         init_y+=2;
       break;
       default:
@@ -421,7 +420,7 @@ void chargerCollisionsDecors(FileDecors *file, Case ** Map){
             pos_x = actuel->pos_x+(i*repeat_x);
             for(int j=0; j<(actuel->repeat_y); j++){
               pos_y = actuel->pos_y+(j*repeat_y);
-                for(int k=0; k < dim_y; k++){
+                for(int k=init_y; k < dim_y; k++){
                   for(int l=0; l < dim_x; l++){
                       Map[pos_y+k][pos_x+l].type = typeCollisions;
                   }
@@ -431,7 +430,7 @@ void chargerCollisionsDecors(FileDecors *file, Case ** Map){
         }
       }
       else{
-          for(int k=0; k < dim_y; k++){
+          for(int k=init_y; k < dim_y; k++){
               for(int l=0; l < dim_x; l++){
                   Map[pos_y+k][pos_x+l].type = 1;
               }
@@ -439,5 +438,17 @@ void chargerCollisionsDecors(FileDecors *file, Case ** Map){
       }
     typeCollisions = 1;
     actuel = actuel->suivant;
+  }
+}
+
+void afficheCollisions(Case ** Map, SDL_Surface *ecran){
+  SDL_Surface *image = NULL;
+  image = IMG_Load("map/Sprites/collision.png");
+  for(int i=0;i<NBLIN;i++){
+     for(int j=0;j<NBCOL;j++){
+        if(Map[i][j].type == 1){
+          SDL_BlitSurface(image, NULL, ecran, &Map[i][j].position);
+        }
+      }
   }
 }
