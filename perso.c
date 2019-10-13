@@ -117,42 +117,113 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
       }
       displayMap(Map, ecran);
       afficherDecors(file, ecran);
+  //    afficheCollisions(Map, ecran);
       SDL_BlitSurface(perso.Perso_Sprites[numSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
       SDL_Flip(ecran); // Mise à jour de l'écran
       SDL_Delay(30); //attente de 30ms entre chaque chargement (sert à ne pas réafficher pour rien)
       }
 }
 
-int autoriserDeplacement(Case ** Map, Direction direction, Perso perso){
+
+int autoriserDeplacement(Case ** Map, Direction direction, Perso perso){ //fonction qui calcule si une déplacement est possible (retourne 1 si possible, 0 si impossible)
 
   perso.x=(perso.position.x-(perso.position.x%TAILLE_SPRITE))/TAILLE_SPRITE;
   perso.y=(perso.position.y-(perso.position.y%TAILLE_SPRITE))/TAILLE_SPRITE;
-  //printf("%d\t%d\n", (perso.position.x%16), (perso.position.y%16));
+//  printf("%d\t%d\n", (perso.position.x%16), (perso.position.y%16));
+//  printf("%d\t%d\n", (perso.x), (perso.y));
+
   switch(direction){
     case GAUCHE:
-        if(Map[perso.y+1][perso.x-1].type != 0 && (perso.position.x%TAILLE_SPRITE) != 0){
-          return 0;
-        }
-        return 1;
-    break;
-    case DROITE:
-        if(Map[perso.y+1][perso.x+2].type != 0 && ((perso.position.x%TAILLE_SPRITE) != 0)){
-            return 0;
-        }
-        return 1;
-    break;
-    case HAUT:
-        if(Map[perso.y][perso.x].type == 0 && Map[perso.y][perso.x+1].type == 0){
-            return 1;
-        }
-        return 0;
-    break;
-    case BAS:
-
-        if(Map[perso.y+2][perso.x].type == 0 && Map[perso.y+2][perso.x+1].type == 0){
+        if(perso.position.x%TAILLE_SPRITE == 0){
           return 1;
         }
-        return 0;
+        else{
+          if(perso.position.y%TAILLE_SPRITE == 0){
+            if((Map[perso.y+1][perso.x].type != 0)){
+              return 0;
+            }
+            else{
+              return 1;
+            }
+          }
+          else{//perso.position.y%TAILLE_SPRITE != 0
+            if((Map[perso.y+1][perso.x].type != 0) || (Map[perso.y+2][perso.x].type != 0)){
+              return 0;
+            }
+            else{
+              return 1;
+            }
+          }
+        }
+    break;
+    case DROITE:
+        if(perso.position.x%TAILLE_SPRITE == 0){
+          return 1;
+        }
+        else{
+          if(perso.position.y%TAILLE_SPRITE == 0){
+            if((Map[perso.y+1][perso.x+2].type != 0)){
+              return 0;
+            }
+            else{
+              return 1;
+            }
+          }
+          else{//perso.position.y%TAILLE_SPRITE != 0
+            if((Map[perso.y+1][perso.x+2].type != 0) || (Map[perso.y+2][perso.x+2].type != 0)){
+              return 0;
+            }
+            else{
+              return 1;
+            }
+          }
+        }
+    break;
+    case HAUT:
+        if(perso.position.y%TAILLE_SPRITE != 0){
+          return 1;
+        }
+        else{
+          if(perso.position.x%TAILLE_SPRITE == 0){
+            if((Map[perso.y][perso.x].type != 0) || (Map[perso.y][perso.x+1].type != 0)){
+              return 0;
+            }
+            else{
+              return 1;
+            }
+          }
+          else{//perso.position.y%TAILLE_SPRITE != 0
+            if(Map[perso.y][perso.x+1].type != 0){
+              return 0;
+            }
+            else{
+              return 1;
+            }
+          }
+        }
+    break;
+    case BAS:
+        if(perso.position.y%TAILLE_SPRITE != 0){
+          return 1;
+        }
+        else{
+          if(perso.position.x%TAILLE_SPRITE == 0){
+            if((Map[perso.y+2][perso.x].type != 0) || (Map[perso.y+2][perso.x+1].type != 0)){
+              return 0;
+            }
+            else{
+              return 1;
+            }
+          }
+          else{//perso.position.y%TAILLE_SPRITE != 0
+            if(Map[perso.y+2][perso.x+1].type != 0){
+              return 0;
+            }
+            else{
+              return 1;
+            }
+          }
+        }
     break;
   }
 
