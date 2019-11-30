@@ -99,6 +99,21 @@ void chargerSpritesMap(){
             }
         }
     }
+    //récupération de tous les décors intérieurs (partie 1) (2000 à 2999)
+          SpritePath[12]='I';
+          SpritePath[13]='n';
+          SpritePath[14]='1';
+          SpritePath[16]= '2';
+          for(int j=0; j<10; j++){//chiffre des centaines
+              SpritePath[17]=j+48;
+              for(int k=0; k<10; k++){//chiffre des dizaines
+                  SpritePath[18]=k+48;
+                  for(int l=0; l<10; l++){//chiffre des unités
+                      SpritePath[19]=l+48;
+                      Map_Sprites[(2*1000)+(j*100)+(k*10)+l]=IMG_Load(SpritePath);
+                  }
+              }
+          }
   //récupération de tous les arbres (5000 à 5999)
         SpritePath[12]='A';
         SpritePath[13]='r';
@@ -201,6 +216,11 @@ Decors chargerCaracteristiquesDecors(char *chaine){
     else if (strcmp(objetType, "mur") == 0){ // Si il s'agit d'un arbre
             decor.type = MUR; //on affecte le bon type à l'objet
             decor.numIMG = 1000; //on affecte le bon rang d'image à l'objet
+              //printf("L'objet est un arbre");
+    }
+    else if (strcmp(objetType, "in1") == 0){ // Si il s'agit d'un arbre
+            decor.type = INTERIEUR1; //on affecte le bon type à l'objet
+            decor.numIMG = 2000; //on affecte le bon rang d'image à l'objet
               //printf("L'objet est un arbre");
     }
     else if (strcmp(objetType, "arb") == 0){ // Si il s'agit d'un arbre
@@ -451,4 +471,18 @@ void afficheCollisions(Case ** Map, SDL_Surface *ecran){
         }
       }
   }
+}
+//fonction qui permet de changer de carte
+int changeMap(int numMap, Case ** Map, FileDecors *fileDecors){
+  //printf("%s \n", mapPath);
+  mapPath[4]= (numMap/10)+48;
+  mapPath[5]= numMap%10+48;
+//  printf("%s \n", mapPath);
+  viderFileDecors(fileDecors);
+  chargerDecors(mapPath, fileDecors);//on charge les décors
+  int chargementMap=loadMap(mapPath, Map);
+  //chargerSpritesPerso(perso.numSprite,perso.Perso_Sprites);
+  chargerCollisionsDecors(fileDecors, Map);
+  printf("Load ok \n");
+
 }

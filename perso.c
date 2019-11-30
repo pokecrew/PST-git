@@ -28,6 +28,7 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
   int canmove =1;
   int current = 4;
   int numSprite=0;
+  int refresh = 1;//variable qui stocke si on doit rafraichir l'affichage
   perso.position.x=560; //valeurs à récupérer depuis le fichier sauvegarde
   perso.position.y=400; //valeurs à récupérer depuis le fichier sauvegarde
   perso.x=(perso.position.x-(perso.position.x%16))/TAILLE_SPRITE;
@@ -35,14 +36,26 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
 //  printf("%d\t%d\n", perso.x, perso.y);
 
   while (continuer){
-      SDL_PollEvent(&event);
+    //Séquence d'affichage
+      if(refresh == 1){ //si on a besoin de raifraichir l'affichage
+        displayMap(Map, ecran); //on affiche les sols
+        afficherDecors(file, ecran); //puis les decors
+        afficheCollisions(Map, ecran); //fonctionde developpement qui applique un filtre rouge aux zones considérées comme des murs
+        SDL_BlitSurface(perso.Perso_Sprites[numSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
+        SDL_Flip(ecran); // Mise à jour de l'écran
+      //  SDL_Delay(30); //attente de 30ms entre chaque chargement (sert à ne pas réafficher pour rien)
+        refresh = 0;
+      }
+      SDL_WaitEvent(&event);
           switch(event.type){
               case SDL_QUIT:
                   SDL_Quit();
               break;
               case SDL_KEYDOWN:
+                  refresh = 1; //on dit à l'ordinateur de rafraichir l'affichage
                   switch(event.key.keysym.sym){
                     case SDLK_ESCAPE: // arrêter le jeu
+                        refresh = 0; //pas besoin de rafraichir
                         continuer = 0;
                     break;
                     case SDLK_UP: // Flèche haut
@@ -77,6 +90,10 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
                             iSpriteG=(iSpriteG+1)%3;
                             perso.position.x = perso.position.x-8;
                         }
+                    break;
+                    default:
+                        refresh = 0;
+                    break;
                 }
             break;
             case SDL_KEYUP:
@@ -85,6 +102,11 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
                 iSpriteG=0;
                 iSpriteD=0;
                     switch(event.key.keysym.sym){
+                      case 'a': // arrêter le jeu
+                          //return 1;
+                        //  changeMap(2, Map, file);
+                          refresh = 1;
+                      break;
                         case SDLK_UP: // Flèche haut
                           current=3;
                         break;
@@ -115,13 +137,8 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
           numSprite = (3*current)+(iSpriteH);
         break;
       }
-      displayMap(Map, ecran);
-      afficherDecors(file, ecran);
-  //    afficheCollisions(Map, ecran);
-      SDL_BlitSurface(perso.Perso_Sprites[numSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
-      SDL_Flip(ecran); // Mise à jour de l'écran
-      SDL_Delay(30); //attente de 30ms entre chaque chargement (sert à ne pas réafficher pour rien)
-      }
+
+    }
 }
 
 
