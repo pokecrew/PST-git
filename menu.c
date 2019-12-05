@@ -23,12 +23,12 @@ int menu(SDL_Surface *ecran){ //menu d'accueil du jeu
     option1 = TTF_RenderText_Blended(police2, "Alexis", couleurTitre);
     option2 = TTF_RenderText_Blended(police2, "Camille", couleurTitre);
     option3 = TTF_RenderText_Blended(police2, "Sarah", couleurTitre);
-    parametre = TTF_RenderText_Blended(police2, "Theo", couleurTitre);
+    parametre = TTF_RenderText_Blended(police2, "Quitter", couleurTitre);
     quitter = TTF_RenderText_Blended(police2, "Thomas", couleurTitre);
     option1_j = TTF_RenderText_Blended(police2, "Alexis", couleurJaune);
     option2_j = TTF_RenderText_Blended(police2, "Camille", couleurJaune);
     option3_j = TTF_RenderText_Blended(police2, "Sarah", couleurJaune);
-    parametre_j = TTF_RenderText_Blended(police2, "Theo", couleurJaune);
+    parametre_j = TTF_RenderText_Blended(police2, "Quitter", couleurJaune);
     quitter_j = TTF_RenderText_Blended(police2, "Thomas", couleurJaune);
     positionMenu.x = 0; //on centre l'image
     positionMenu.y = 0;

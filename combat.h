@@ -1,6 +1,11 @@
 #ifndef DEF_COMBAT
 #define DEF_COMBAT
 
-//Entrer ici les prototypes
-void fenetre (SDL_Surface *ecran);
-#endif // DEF_GAME
+
+void combat(SDL_Surface *ecran);
+void poke_alea(SDL_Surface *ecran);
+void my_pokemons(SDL_Surface *ecran);
+void changer_poke(SDL_Surface *ecran);
+
+#endif // DEF_COMBAT
+

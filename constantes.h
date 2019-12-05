@@ -1,5 +1,10 @@
-#define TAILLE_SPRITE 16
+#define TAILLE_SPRITE 16 //variable préprocesseur
 
+typedef enum Direction Direction;
+enum Direction
+{
+    HAUT, GAUCHE, DROITE, BAS
+};
 //Sont déclarées dans ce fichier les constantes et les variables globales au programme
 
 int NBLIN=0; //Nombre de lignes de la carte (0 au démarrage)
@@ -12,3 +17,5 @@ SDL_Color couleurJaune = {182, 120, 35};
 SDL_Color couleurTitre = {0, 0, 0};
 Mix_Music *soundEffect[4]; //Tableau contenant les Musiques
 SDL_Surface *Map_Sprites[10000];//Tableau des sprites de la Map
+
+char mapPath[]="map/02.lvl"; //chemin vers le fichier source de la carte actuelle
