@@ -56,22 +56,22 @@ int loadMap(char mapPath[], Case **Map){
                                     Map[i][j].numIMG = (1000*millier)+(100*centaine)+(10*dizaine)+(unite);
 
                                   //chargement du type de case (sol, mur, etc)
-                                    if(Map[i][j].numIMG < 199){ //si le numéro du sprite est compris entre 000 et 199 (sol)
-                                      Map[i][j].type = 0;
+                                    if(Map[i][j].numIMG < 1000){ //si le numéro du sprite est compris entre 000 et 999 (franchissable)
+                                      Map[i][j].type = 0; //type franchissable
                                     }
-                                    else if ((Map[i][j].numIMG > 199) && (Map[i][j].numIMG < 399)){ //si le numéro du sprite est compris entre 200 et 399 (mur)
-                                      Map[i][j].type = 1;
+                                    else {
+                                      Map[i][j].type = 1; //type infranchissable
                                     }
 
 
                             }
         }
-      /*  for(int k=0;k<NBLIN;k++){
-                            for(int l=0;l<NBCOL;l++){
-                              printf("%d ", Map[k][l].numIMG);
-                            }
-                    printf("\n");
-        }*/
+        /*        for(int k=0;k<NBLIN;k++){
+                      for(int l=0;l<NBCOL;l++){
+                              printf("%d ", Map[k][l].type);
+                      }
+                      printf("\n");
+                  }*/
     }
     else{
       return -1;
@@ -85,8 +85,8 @@ int loadMap(char mapPath[], Case **Map){
 void chargerSpritesMap(){
 
   char SpritePath[]="map/Sprites/Sol/0000.png";
-  //récupération de tous les sols (de 0 à 4999)
-    for(int i=0; i<5; i++){//chiffre des miliers
+  //récupération de tous les sols (de 0 à 1999)
+    for(int i=0; i<2; i++){//chiffre des miliers
         SpritePath[16]= i+48;
         for(int j=0; j<10; j++){//chiffre des centaines
             SpritePath[17]=j+48;
@@ -134,8 +134,6 @@ void chargerSpritesMap(){
 
 //fonction qui affiche les cases (le sol)
 void displayMap(Case ** Map, SDL_Surface *ecran){
-
-
         for(int i=0;i<NBLIN;i++){
 			     for(int j=0;j<NBCOL;j++){
 
@@ -143,8 +141,6 @@ void displayMap(Case ** Map, SDL_Surface *ecran){
                 SDL_BlitSurface(Map_Sprites[(Map[i][j].numIMG)], NULL, ecran, &Map[i][j].position);
               }
 			     }
-
-
 }
 
 //fonction qui initialise la file de Décors
@@ -197,7 +193,17 @@ Decors chargerCaracteristiquesDecors(char *chaine){
     }
     //printf("type d'objet = %s \n", objetType);
     //Traitement en fonction du type d'objet
-    if (strcmp(objetType, "arb") == 0){ // Si il s'agit d'un arbre
+    if(strcmp(objetType, "sol") == 0){ // Si il s'agit d'un sol
+            decor.type = SOL;
+            decor.numIMG = 0000;
+              //printf("L'objet est un sol");
+    }
+    else if (strcmp(objetType, "mur") == 0){ // Si il s'agit d'un arbre
+            decor.type = MUR; //on affecte le bon type à l'objet
+            decor.numIMG = 1000; //on affecte le bon rang d'image à l'objet
+              //printf("L'objet est un arbre");
+    }
+    else if (strcmp(objetType, "arb") == 0){ // Si il s'agit d'un arbre
             decor.type = ARBRE; //on affecte le bon type à l'objet
             decor.numIMG = 5000; //on affecte le bon rang d'image à l'objet
               //printf("L'objet est un arbre");
@@ -252,8 +258,7 @@ void ajouterElementFileDecors(FileDecors *file, char *chaine){
     *nouveau = chargerCaracteristiquesDecors(chaine);
     nouveau->suivant = NULL;
 
-    if (file->premier != NULL) // La file n'est pas vide
-    {
+    if (file->premier != NULL){ // La file n'est pas vide
         // On se positionne à la fin de la file
         Decors *elementActuel = file->premier;
         while (elementActuel->suivant != NULL)
@@ -305,7 +310,7 @@ void afficherFileTerm(FileDecors *file){
         printf("Position: (%d;%d) / (%d,%d)\n", actuel->pos_x, actuel->pos_y, actuel->position.x, actuel->position.y);
         printf("Répétition : (%d;%d)\n", actuel->repeat_x, actuel->repeat_y);
 
-        //printf("%d\n", actuel->nombre);
+      //  printf("%d", actuel->nombre);
         actuel = actuel->suivant;
         i++;
     }
@@ -322,29 +327,29 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran){
   }
   Decors *actuel = file->premier;
   SDL_Rect position;
-  int case_x = 0;
-  int case_y = 0;
+  int repeat_x = 0;
+  int repeat_y = 0;
 
   while (actuel != NULL){
     if((actuel->repeat_x > 0) || (actuel->repeat_y > 0)){
         position = actuel->position; //positions de la surface
-        case_x = actuel->dim_x;
-        case_y = actuel->dim_y;
+        repeat_x = actuel->dim_x;
+        repeat_y = actuel->dim_y;
         switch (actuel->type) {
           case ARBRE:
-            case_x--;
-            case_y-=2;
+            repeat_x--;
+            repeat_y-=2;
           break;
           case BATIMENT:
-            case_x++;
+            repeat_x++;
           break;
           default:
           break;
         }
         for(int i=0; i<(actuel->repeat_x); i++){
-          position.x = actuel->position.x+i*(case_x*TAILLE_SPRITE);
+          position.x = actuel->position.x+i*(repeat_x*TAILLE_SPRITE);
           for(int j=0; j<(actuel->repeat_y); j++){
-              position.y = actuel->position.y+j*(case_y*TAILLE_SPRITE);
+              position.y = actuel->position.y+j*(repeat_y*TAILLE_SPRITE);
               SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &position);
         }
       }
@@ -353,5 +358,97 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran){
       SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &actuel->position);
     }
     actuel = actuel->suivant;
+  }
+}
+
+//fonction qui charge les collisions des décors
+void chargerCollisionsDecors(FileDecors *file, Case ** Map){
+
+  if (file == NULL)
+  {
+      exit(EXIT_FAILURE);
+  }
+  Decors *actuel = file->premier;
+  int pos_x = 0;
+  int pos_y = 0;
+  int repeat_x = 0; //cases séparant chaque répitiion
+  int repeat_y = 0;
+  int dim_x = 0;//dimension du décor en case de collision
+  int dim_y = 0;//dimension du décor en case de collision
+  int init_x = 0;//dimension du décor en case de collision
+  int init_y = 0;//dimension du décor en case de collision
+  int typeCollisions = 1 ; //type de collision (0: franchissable, 1 : infranchissable)
+
+  while (actuel != NULL){
+    pos_x = actuel->pos_x; //coordonées de la case (axe des x)
+    pos_y = actuel->pos_y; //coordonées de la case (axe des y)
+    dim_x = actuel->dim_x; //largeur de l'objet décor (en cases)
+    dim_y = actuel->dim_y; //hauteur de l'objet décor (en cases)
+    init_x = 0; //case à laquelle commence les collisions (sur l'axe des x)
+    init_y = 0; //case à laquelle commence les collisions (sur l'axe des y)
+    switch (actuel->type) {
+      case SOL :
+        typeCollisions = 0;
+      break;
+      case ARBRE:
+        dim_y--;
+        //dim_x--;
+        init_y++;
+      break;
+      case BATIMENT:
+        dim_y--;
+        init_y+=2;
+      break;
+      default:
+      break;
+    }
+      if((actuel->repeat_x > 0) || (actuel->repeat_y > 0)){
+          repeat_x = actuel->dim_x;
+          repeat_y = actuel->dim_y;
+          switch (actuel->type) {
+            case ARBRE:
+              repeat_x--;
+              repeat_y-=2;
+            break;
+            case BATIMENT:
+              repeat_x++;
+            break;
+            default:
+            break;
+          }
+          for(int i=0; i<(actuel->repeat_x); i++){
+            pos_x = actuel->pos_x+(i*repeat_x);
+            for(int j=0; j<(actuel->repeat_y); j++){
+              pos_y = actuel->pos_y+(j*repeat_y);
+                for(int k=init_y; k < dim_y; k++){
+                  for(int l=0; l < dim_x; l++){
+                      Map[pos_y+k][pos_x+l].type = typeCollisions;
+                  }
+              }
+              //  SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &position);
+          }
+        }
+      }
+      else{
+          for(int k=init_y; k < dim_y; k++){
+              for(int l=0; l < dim_x; l++){
+                  Map[pos_y+k][pos_x+l].type = 1;
+              }
+          }
+      }
+    typeCollisions = 1;
+    actuel = actuel->suivant;
+  }
+}
+
+void afficheCollisions(Case ** Map, SDL_Surface *ecran){
+  SDL_Surface *image = NULL;
+  image = IMG_Load("map/Sprites/collision.png");
+  for(int i=0;i<NBLIN;i++){
+     for(int j=0;j<NBCOL;j++){
+        if(Map[i][j].type == 1){
+          SDL_BlitSurface(image, NULL, ecran, &Map[i][j].position);
+        }
+      }
   }
 }

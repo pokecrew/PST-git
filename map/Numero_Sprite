@@ -1,0 +1,6 @@
+Numéros Sprites Map :
+
+0000 à 0999 : Sols franchissables
+1000 à 1999 : Murs (Sols infranchissables)
+5000 à 5999 : Arbres
+6000 à 6999 : Bâtiments

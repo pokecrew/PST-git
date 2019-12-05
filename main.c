@@ -21,18 +21,18 @@ int main ( int argc, char** argv ){
     SDL_Init(SDL_INIT_VIDEO); //initialisation de la sdl
     SDL_WM_SetIcon(IMG_Load("images/icon.png"), NULL); // Chargement de l'icône AVANT SDL_SetVideoMode
     SDL_Surface *ecran = NULL; //Surface sur laquelle on affichera les différents éléments
-    ecran = SDL_SetVideoMode((1280), (720), 32, SDL_HWSURFACE | SDL_DOUBLEBUF); //on affiche un écran de la taille souhaitée
+    ecran = SDL_SetVideoMode((1280), (720), 32, SDL_HWSURFACE | SDL_DOUBLEBUF ); //on affiche un écran de la taille souhaitée
     SDL_WM_SetCaption("PST v0.0", NULL);   //titre de la fenêtre
-     SDL_EnableKeyRepeat(10, 15); //répétition des touches
+    SDL_EnableKeyRepeat(10, 10); //répétition des touches
     //initialisation des maps
     Case **Map=createMap(mapPath); //On crée un tableau  de cases aux dimensions correspondantes au nombre de cases de la map
     FileDecors *fileDecors = initialiserFileDecors();
     int chargementMap = 0;
     chargerSpritesMap(); //chargement en mémoire des sprites de la Map
     //initialisation du personnage
-    int numSpritePerso = 0;//numéro du sprite du personnage du joueur
-    SDL_Surface *Perso_Sprites[12];//Tableau des srpties du personnage
-      //la boucle suivante constitue le menu
+    Perso perso;
+    perso.numSprite = 0;
+    //la boucle suivante constitue le menu
     int continuer = 1;
     int Menu=0;
     SDL_Event event; //on crée un evenement
@@ -47,8 +47,10 @@ int main ( int argc, char** argv ){
                 //chargement
                     chargerDecors(mapPath, fileDecors);//on charge les décors
                     chargementMap=loadMap(mapPath, Map);
-                    chargerSpritesPerso(0,Perso_Sprites);
-
+                    chargerSpritesPerso(perso.numSprite,perso.Perso_Sprites);
+                    chargerCollisionsDecors(fileDecors, Map);
+                    printf("Load ok \n");
+                    //SDL_Delay(1000);
 
 
                 //Affichage
@@ -56,10 +58,16 @@ int main ( int argc, char** argv ){
                   //  displayMap(Map, ecran);
                   // afficherDecors(fileDecors, ecran);
                   //  afficherFileTerm(fileDecors);
-                  deplacerPerso(Perso_Sprites,ecran , Map, fileDecors);
+                  /*for(int k=0;k<NBLIN;k++){
+                           for(int l=0;l<NBCOL;l++){
+                                   printf("%d ", Map[k][l].type);
+                           }
+                           printf("\n");
+                  }*/
+                  deplacerPerso(perso,ecran , Map, fileDecors);
 
                 //Libération de la mémoire
-                    viderFileDecors(fileDecors);
+                viderFileDecors(fileDecors);
 
                 //SDL_Delay(3500);
             break;

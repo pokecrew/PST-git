@@ -5,7 +5,7 @@
 typedef enum Decors_type Decors_type;
 enum Decors_type
 {
-    ARBRE, BATIMENT, AUTRE
+    SOL, MUR, ARBRE, BATIMENT, AUTRE
 };
 
 
@@ -55,4 +55,6 @@ void ajouterElementFileDecors(FileDecors *file, char *chaine);//Fonction qui raj
 int viderFileDecors(FileDecors *file);//Fonction qui vide la file
 void afficherFileTerm(FileDecors *file); //Fonction qui affiche dans le terminal les éléments de la file des décors
 void afficherDecors(FileDecors *file, SDL_Surface *ecran); //fonction d'affichage des decors
+void chargerCollisionsDecors(FileDecors *file, Case ** Map);//fonction qui charge les collisions des décors
+void afficheCollisions(Case ** Map, SDL_Surface *ecran);
 #endif // MAP_H_INCLUDED
