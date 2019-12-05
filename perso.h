@@ -9,7 +9,7 @@ struct Perso{
     int y;        //position sur les y (coin supérieur gauche)(nombre de case)
     int numSprite; //nom de l'image de la case
     SDL_Rect position; //positions de la surface
-    SDL_Surface *Perso_Sprites[12];//Tableau des srpties du personnage
+    SDL_Surface *Perso_Sprites[12];//Tableau des sprites du personnage
 };
 
 //Entrer ici les prototypes

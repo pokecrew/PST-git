@@ -17,3 +17,5 @@ SDL_Color couleurJaune = {182, 120, 35};
 SDL_Color couleurTitre = {0, 0, 0};
 Mix_Music *soundEffect[4]; //Tableau contenant les Musiques
 SDL_Surface *Map_Sprites[10000];//Tableau des sprites de la Map
+
+char mapPath[]="map/02.lvl"; //chemin vers le fichier source de la carte actuelle
