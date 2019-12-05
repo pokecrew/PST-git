@@ -38,7 +38,6 @@ void fenetre (SDL_Surface *ecran)
 
 
 }
-=======
 SDL_Surface *temp = NULL;
 SDL_Surface *my_poke[6];
 
@@ -279,4 +278,3 @@ void changer_poke(SDL_Surface *ecran)
 		SDL_Flip(ecran);
 
 }
-
