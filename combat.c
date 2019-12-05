@@ -42,13 +42,12 @@ void fenetre (SDL_Surface *ecran)
 SDL_Surface *temp = NULL;
 SDL_Surface *my_poke[6];
 
-/*typedef struct
-{
+typedef struct Poke Poke;
+
+struct Poke{
   char nom[25];
-  int x;
-	int y;
   int PV;
-}Info;*/
+};
 
 void combat(SDL_Surface *ecran)
 {
@@ -202,13 +201,30 @@ SDL_Surface *poke[16];
 
 void poke_alea(SDL_Surface *ecran)
 {
-	//Info pokemon[20] = {"", 0, 0, 0};
-	SDL_Rect pos_poke;
+	Poke pokemon[20];
+	SDL_Surface *nom = NULL;
+	SDL_Rect pos_poke, pos_nom;
 
+	strcat(pokemon[0].nom,"BULBIZARRE");
+	strcat(pokemon[1].nom,"SALAMECHE");
+	strcat(pokemon[2].nom,"CARAPUCE");
+	strcat(pokemon[3].nom,"CHENIPAN");
+	strcat(pokemon[4].nom,"ASPICOT");
+	strcat(pokemon[5].nom,"ROUCOOL");
+	strcat(pokemon[6].nom,"RATATA");
+	strcat(pokemon[7].nom,"PIAFABEC");
+	strcat(pokemon[8].nom,"ABO");
+	strcat(pokemon[9].nom,"PIKACHU");
+	strcat(pokemon[10].nom,"SABELETE");
+	strcat(pokemon[11].nom,"NIDORAN F");
+	strcat(pokemon[12].nom,"NIDORAN M");
+	strcat(pokemon[13].nom,"MELOFEE");
+	strcat(pokemon[14].nom,"GOUPIX");
+	strcat(pokemon[15].nom,"RONDOUDOU");
 	//pokemon[0].nom = "BULBIZARRE";
 
-  //pokemon[0].x = 700;
-//  pokemon[0].y = 55;
+	pos_nom.x =
+	pos_nom.y =
 	pos_poke.x = 700;
 	pos_poke.y = 55;
 
@@ -235,6 +251,7 @@ void poke_alea(SDL_Surface *ecran)
 
           alea = rand()%16;
 					temp = poke[alea];
+
 					SDL_BlitSurface(poke[alea], NULL, ecran, &pos_poke);
 }
 
@@ -262,5 +279,4 @@ void changer_poke(SDL_Surface *ecran)
 		SDL_Flip(ecran);
 
 }
-//salameche, carapuce, chenipan, aspicot, roucool, ratata, piafabec, abo;
 
