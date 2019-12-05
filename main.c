@@ -11,6 +11,7 @@
 #include "map.c"
 #include "perso.c"
 #include "game.c"
+#include "combat.c"
 
 
 int main ( int argc, char** argv ){
@@ -76,6 +77,7 @@ int main ( int argc, char** argv ){
             break;
             case 2: //Camille
 
+              combat(ecran);
 
             break;
             case 3: //Sarah
