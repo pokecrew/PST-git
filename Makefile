@@ -16,7 +16,6 @@ main.o : main.c
 	gcc -c main.c `sdl-config --cflags --libs` -lSDL_mixer -lSDL_ttf -lSDL_image
 COMPIL : menu.o map.o perso.o game.o combat.o main.o
 	gcc -o PST main.c `sdl-config --cflags --libs` -lSDL_mixer -lSDL_ttf -lSDL_image
-
 EXEC :
 	./PST
 CLEAN:

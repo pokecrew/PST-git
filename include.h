@@ -8,6 +8,7 @@
   #include <SDL/SDL_mixer.h>
   #include <SDL/SDL_image.h>
   #include <SDL/SDL_ttf.h>
+  //#include <sqlite3.h>
   #include "constantes.h"
   #include "menu.h"
   #include "map.h"
