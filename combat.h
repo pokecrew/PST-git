@@ -15,12 +15,12 @@ struct Poke{
 };
 
 void combat(SDL_Surface *ecran);
-void poke_nom();
-void sauvage();
-void poke_alea(SDL_Surface *ecran);
+void poke_nom(Poke pokemon[20]);
+void sauvage(SDL_Surface *poke[16]);
+void poke_alea(SDL_Surface *ecran, SDL_Surface *poke[16], Poke pokemon[20]);
 void my_pokemons();
 void changer_poke(SDL_Surface *ecran);
-void deroulement( SDL_Surface *ecran, Poke *j1, Poke *j2);
+int deroulement( SDL_Surface *ecran, Poke *j1, Poke *j2, int joueur);
 
 
 #endif // DEF_COMBAT
