@@ -5,6 +5,12 @@ typedef struct Poke Poke;
 struct Poke{
   char nom[25];
   int PV;
+  int exp;
+  int niv;
+  int def;
+  int att;
+  int vit;
+  int id;
 };
 
 SDL_Surface *temp = NULL;
@@ -42,8 +48,10 @@ void combat(SDL_Surface *ecran)
 	pos_texte_changer.y = 565;
 	pos_pokemon.x = 4;
 	pos_pokemon.y = 5;
+
   pos_nom.x = 725;
   pos_nom.y = 400;
+
 
 	police = TTF_OpenFont("combat/king.ttf", 25);
 	fond_combat = IMG_Load("combat/plateau_combat.png");
@@ -88,7 +96,6 @@ void combat(SDL_Surface *ecran)
         menu(ecran);
         continuer = 0;
 			break;
-
 			case SDL_KEYDOWN: //appuyer sur une touche du clavier
 				switch (event.key.keysym.sym) //évènement concernant les touches du clavier
 				{
@@ -126,6 +133,7 @@ void combat(SDL_Surface *ecran)
 					{
 						texte_changer = TTF_RenderText_Blended(police, "Changer", couleurNoire);
 					}
+
 					SDL_BlitSurface(rect, NULL, ecran, &pos_rect);
 					SDL_BlitSurface(texte_attaques, NULL, ecran, &pos_texte_attaques);
 					SDL_BlitSurface(texte_fuite, NULL, ecran, &pos_texte_fuite);
@@ -374,3 +382,17 @@ while(changer)
   SDL_FreeSurface(rect);
   TTF_CloseFont(police);
 }
+  int attaque(SDL_Surface *ecran){
+    SDL_Surface *rect = NULL;
+
+    SDL_Rect pos_rect;
+
+    pos_rect.x = 709;
+  	pos_rect.y = 487;
+
+    rect = IMG_Load("combat/rect_attaque.png");
+
+
+    SDL_BlitSurface(rect, NULL, ecran, &pos_rect);
+
+  }
