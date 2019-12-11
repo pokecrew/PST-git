@@ -78,7 +78,7 @@ int main ( int argc, char** argv ){
 
             break;
             case 3: //Sarah
-
+            combat(ecran);
             break;
             case 4: //Theo
                 continuer = 0;
