@@ -1,33 +1,48 @@
 #include "include.h" //inclusion des .h nécessaires regroupés dans le fichier include.h
 
 void chargerSpritesPerso(int numSpritePerso, SDL_Surface **Perso_Sprites){
-  char path[]="images/sprites/Perso/000/01.png";
+  char path[]="images/sprites/Perso/000/32/01.png";
   path[21]= (numSpritePerso/100)+48; //on récupère le chiffre des centaines du numéro de sprite
   numSpritePerso = numSpritePerso%100;//on enleve le chiffre des centaines
   path[22]= (numSpritePerso/10)+48; //on récupère le chiffre des dizaines du numéro de sprite
   numSpritePerso = numSpritePerso%10;//on enleve le chiffre des dizaines
   path[23]= numSpritePerso+48; //on récupère le chiffre des unités du numéro de sprite
+  //chargement des sprites 32 pixels
   for(int i=0; i<9; i++){
-    path[26]= i+49; //on affecte i+1 au caractère des unités
+    path[29]= i+49; //on affecte i+1 au caractère des unités
     Perso_Sprites[i]=IMG_Load(path);
   }
-  path[25]=49; // on affecte 1 au chiffre des dizaines
+  path[28]=49; // on affecte 1 au chiffre des dizaines
+  for(int j=0; j<3; j++){
+    path[29]= j+48; //on affecte i au caractère des unités
+    Perso_Sprites[j+9]=IMG_Load(path);
+  }
+  //chargement des sprites 48 pixels
+  //on passe du dossier '32' à '48' dans le chemin
+  path [25]='4';
+  path[26]='8';
+  path[28]=48;// on remet le chiffre des dizaines à 0
+  for(int i=0; i<9; i++){
+    path[29]= i+49; //on affecte i+1 au caractère des unités
+    Perso_Sprites[i+12]=IMG_Load(path);
+  }
+  path[28]=49; // on affecte 1 au chiffre des dizaines
   for(int i=0; i<3; i++){
-    path[26]= i+48; //on affecte i au caractère des unités
-    Perso_Sprites[i+9]=IMG_Load(path);
+    path[29]= i+48; //on affecte i au caractère des unités
+    Perso_Sprites[i+21]=IMG_Load(path);
   }
 }
 
-void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *file){
+void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte){
   SDL_Event event;
   int continuer = 1;
   int iSpriteH = 1;
   int iSpriteD = 1;
   int iSpriteB = 1;
   int iSpriteG = 1;
-  int canmove =1;
-  int current = 4;
-  int numSprite=0;
+  int canmove =1; //stocke si on peux se déplacer ou non
+  int current = 4; //sprite courant
+  int numSprite=0;//numéro du sprite à afficher (0 à 11 : petites tailles, 12 à 23 : grandes tailles)
   int refresh = 1;//variable qui stocke si on doit rafraichir l'affichage
   perso.position.x=560; //valeurs à récupérer depuis le fichier sauvegarde
   perso.position.y=400; //valeurs à récupérer depuis le fichier sauvegarde
@@ -36,12 +51,16 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
 //  printf("%d\t%d\n", perso.x, perso.y);
 
   while (continuer){
+
     //Séquence d'affichage
       if(refresh == 1){ //si on a besoin de raifraichir l'affichage
+      //verification du changement de la map
+        verifChangementMap(Map,fileDecors,filePorte, &perso.position);
         displayMap(Map, ecran); //on affiche les sols
-        afficherDecors(file, ecran); //puis les decors
-        afficheCollisions(Map, ecran); //fonctionde developpement qui applique un filtre rouge aux zones considérées comme des murs
-        SDL_BlitSurface(perso.Perso_Sprites[numSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
+        afficherDecors(fileDecors, ecran); //puis les decors
+        //afficheCollisions(Map, ecran); //fonction de developpement qui applique un filtre rouge aux zones considérées comme des murs
+        afficherFilePorteSDL(filePorte,ecran); //fonction de developpement qui applique un filtre bleu aux zones considérées comme des portes
+        SDL_BlitSurface(perso.Perso_Sprites[numSprite+typeSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
         SDL_Flip(ecran); // Mise à jour de l'écran
       //  SDL_Delay(30); //attente de 30ms entre chaque chargement (sert à ne pas réafficher pour rien)
         refresh = 0;
@@ -102,9 +121,22 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
                 iSpriteG=0;
                 iSpriteD=0;
                     switch(event.key.keysym.sym){
-                      case 'a': // arrêter le jeu
-                          //return 1;
-                        //  changeMap(2, Map, file);
+                      case 'a': // changement de map manuel
+                          numMap = (numMap+1)%3;
+                          if(numMap == 0){
+                            numMap = 3;
+                          }
+                          changeMap(numMap, Map, fileDecors, filePorte);
+                          refresh = 1;
+                      break;
+                      case 'z': // changement de map manuel
+                          if(typeSprite > 0){
+                            typeSprite = 0;
+                          }
+                          else{
+                            typeSprite = 12;
+                          }
+                          printf("typeSprite : %d\n", typeSprite);
                           refresh = 1;
                       break;
                         case SDLK_UP: // Flèche haut
