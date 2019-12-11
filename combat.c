@@ -177,7 +177,6 @@ void combat(SDL_Surface *ecran)
 	SDL_FreeSurface(texte_changer);
 	SDL_FreeSurface(fond_noir);
   SDL_FreeSurface(texte_charge);
-//  SDL_FreeSurface(nom);
 	TTF_CloseFont(police);
 }
 
@@ -223,8 +222,6 @@ void sauvage()
 
 void poke_alea(SDL_Surface *ecran)
 {
-//  Poke pokemon[20] = {"", 0};
-  //SDL_Surface *nom = NULL;
 	SDL_Rect pos_poke, pos_nom;
   SDL_Color couleurNoire = {0, 0, 0};
   TTF_Font *police = NULL;
@@ -250,7 +247,7 @@ void poke_alea(SDL_Surface *ecran)
 	SDL_BlitSurface(poke[alea], NULL, ecran, &pos_poke);
 
   SDL_FreeSurface(nom1);
-  SDL_FreeSurface(nom2);
+  //SDL_FreeSurface(nom2);
   TTF_CloseFont(police);
 }
 
@@ -372,6 +369,5 @@ while(changer)
 }
 
   SDL_FreeSurface(rect);
-  //SDL_FreeSurface(nom);
   TTF_CloseFont(police);
 }
