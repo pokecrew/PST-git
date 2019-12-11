@@ -372,6 +372,5 @@ while(changer)
 }
 
   SDL_FreeSurface(rect);
-  //SDL_FreeSurface(nom);
   TTF_CloseFont(police);
 }

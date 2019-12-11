@@ -43,19 +43,45 @@ struct FileDecors
     Decors *premier; //adresse du premier décors de la file
 };
 
+typedef struct Porte Porte;
+struct Porte{
+    int pos_x;        //position coin supérieur gauche en largeur(case)
+    int pos_y;        //position coin supérieur gauche en hauteur(case)
+    int dim_x;        //position coin inférieur droit en largeur (case)
+    int dim_y;        //position coin inférieur droit en hauteur (case)
+    int map;         //nom de la map vers laquelle il pointe
+    SDL_Rect position; //positions de la surface (débogage)
+    SDL_Rect pos_perso; //positions du personnage sur la nouvelle map
+    Porte *suivant; //adresse de la porte suivante dans la file
+};
 
+typedef struct FilePorte FilePorte;
+struct FilePorte
+{
+    Porte *premier; //adresse du premier décors de la file
+};
+//Map
 Case **createMap(char mapPath[]);
 int loadMap(char mapPath[], Case **Map);
 void chargerSpritesMap();
 void displayMap(Case **Map, SDL_Surface *ecran);
+int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte);//fonction qui charge les  objets décors, portes, un à un dans leurs files
+//Décors
 FileDecors *initialiserFileDecors();//fonction qui initialise la file de Décors
-int chargerDecors(char mapPath[], FileDecors *file);//fonction qui charge les éléments un à un dans la file
 Decors chargerCaracteristiquesDecors(char *chaine);
 void ajouterElementFileDecors(FileDecors *file, char *chaine);//Fonction qui rajoute un élément à la file de décors (à la fin)
 int viderFileDecors(FileDecors *file);//Fonction qui vide la file
-void afficherFileTerm(FileDecors *file); //Fonction qui affiche dans le terminal les éléments de la file des décors
+void afficherFileDecorsTerm(FileDecors *file); //Fonction qui affiche dans le terminal les éléments de la file des décors
 void afficherDecors(FileDecors *file, SDL_Surface *ecran); //fonction d'affichage des decors
 void chargerCollisionsDecors(FileDecors *file, Case ** Map);//fonction qui charge les collisions des décors
 void afficheCollisions(Case ** Map, SDL_Surface *ecran); //Fonction de développement qui surligne en rouge les cases infranchissables
-int changeMap(int numMap, Case ** Map, FileDecors *fileDecors);//fonction qui permet de changer de carte
+//Changement Map
+int changeMap(int numMap, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte);//fonction qui permet de changer de carte
+FilePorte *initialiserFilePorte();
+void ajouterElementFilePorte(FilePorte *file, char *chaine);
+int viderFilePorte(FilePorte *file);
+Porte chargerCaracteristiquesPortes(char *chaine);
+void afficherFilePorteTerm(FilePorte *file); //Fonction qui affiche dans le terminal les éléments de la file des porte
+void afficherFilePorteSDL(FilePorte *file, SDL_Surface *ecran);//Fonction qui affiche en rouge les portes de la map
+int verifChangementMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position);
 #endif // MAP_H_INCLUDED
