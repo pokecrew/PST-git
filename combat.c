@@ -1,17 +1,6 @@
 #include "include.h"
 
-typedef struct Poke Poke;
 
-struct Poke{
-  char nom[25];
-  int PV;
-  int exp;
-  int niv;
-  int def;
-  int att;
-  int vit;
-  int id;
-};
 
 SDL_Surface *temp = NULL;
 SDL_Surface *my_poke[6];
@@ -22,16 +11,21 @@ Poke pokemon[20] = {"", 0};
 
 void combat(SDL_Surface *ecran)
 {
-	SDL_Surface *fond_combat = NULL, *rect = NULL, *texte_attaques = NULL, *texte_fuite = NULL, *texte_changer = NULL, *fond_noir = NULL, *texte_charge = NULL;
+	SDL_Surface *fond_combat = NULL, *rect = NULL, *texte_attaques = NULL, *texte_fuite = NULL, *texte_changer = NULL, *fond_noir = NULL, *texte_charge = NULL, *pv = NULL;
 	SDL_Event event;
-	SDL_Rect pos_fond, pos_fond_noir, pos_rect, pos_texte_attaques, pos_texte_fuite, pos_texte_changer, pos_pokemon, pos_mypoke, pos_nom;
+	SDL_Rect pos_fond, pos_fond_noir, pos_rect, pos_texte_attaques, pos_texte_fuite, pos_texte_changer, pos_pokemon, pos_mypoke, pos_nom, pos_pv;
 	TTF_Font *police = NULL;
 	SDL_Color couleurNoire = {0, 0, 0}, couleurRouge = {255, 27, 27};
 	int continuer = 1, bouton = 1, attaque = 0;
 	int longueur = 125, hauteur = 20, longueur2 = 70, longueur3 = 105, longueur4 = 85;
 	int i;
-//  Poke pokemon[20] = {"", 0};
 
+//  Poke pokemon[20] = {"", 0};
+ Poke j1, j2;
+  j1.PV = j2.PV = 100;
+  char TAB[1000];
+  TAB[1];
+  sprintf(TAB,"pv : %d ",j1.PV);
 	pos_mypoke.x = 280;
 	pos_mypoke.y = 300;
 	pos_fond.x = 244;
@@ -52,6 +46,11 @@ void combat(SDL_Surface *ecran)
   pos_nom.x = 725;
   pos_nom.y = 400;
 
+  pos_pv.x = 730;
+  pos_pv.y = 437;
+
+
+
 
 	police = TTF_OpenFont("combat/king.ttf", 25);
 	fond_combat = IMG_Load("combat/plateau_combat.png");
@@ -61,6 +60,7 @@ void combat(SDL_Surface *ecran)
 	texte_fuite = TTF_RenderText_Blended(police, "Fuite", couleurNoire);
 	texte_changer = TTF_RenderText_Blended(police, "Changer", couleurNoire);
   texte_charge = TTF_RenderText_Blended(police, "Charge", couleurNoire);
+  pv = TTF_RenderText_Blended(police,TAB, couleurNoire);
 
 	SDL_FillRect(fond_noir,NULL,SDL_MapRGB(ecran->format, 0, 0, 0));
 	SDL_BlitSurface(fond_noir,NULL,ecran,&pos_fond_noir);
@@ -85,6 +85,7 @@ void combat(SDL_Surface *ecran)
 	SDL_BlitSurface(texte_attaques, NULL, ecran, &pos_texte_attaques);
 	SDL_BlitSurface(texte_fuite, NULL, ecran, &pos_texte_fuite);
 	SDL_BlitSurface(texte_changer, NULL, ecran, &pos_texte_changer);
+  SDL_BlitSurface(pv, NULL, ecran, &pos_pv);
 	SDL_Flip(ecran);
 
 	while(continuer) //Boucle infini qui s'arrête lorsque continuer = 0
@@ -148,10 +149,12 @@ void combat(SDL_Surface *ecran)
           {
             if ((pos_texte_attaques.x <= event.button.x) && ((pos_texte_attaques.x + longueur) >= event.button.x) && (pos_texte_attaques.y <= event.button.y) && (pos_texte_attaques.y + hauteur >= event.button.y))
 					  {
+
               SDL_BlitSurface(rect, NULL, ecran, &pos_rect);
               SDL_BlitSurface(texte_charge, NULL, ecran, &pos_texte_attaques);
               bouton = 0;
               attaque = 1;
+
 					  }
 
 					  if ((pos_texte_fuite.x <= event.button.x) && ((pos_texte_fuite.x + longueur2) >= event.button.x) && (pos_texte_fuite.y <= event.button.y) && (pos_texte_fuite.y + hauteur >= event.button.y))
@@ -167,15 +170,24 @@ void combat(SDL_Surface *ecran)
           }
           else if(attaque)
           {
+            printf("Lancement Attaques \n");
             if ((pos_texte_attaques.x <= event.button.x) && ((pos_texte_attaques.x + longueur4) >= event.button.x) && (pos_texte_attaques.y <= event.button.y) && (pos_texte_attaques.y + hauteur >= event.button.y))
             {
-              continuer = 0;
+              printf(" lancement charge \n");
+              deroulement(ecran, &j1, &j2);
+              printf("%d\n",j1.PV);
+              sprintf(TAB,"pv : %d ",j1.PV);
+              pv = TTF_RenderText_Blended(police,TAB, couleurNoire);
+              SDL_BlitSurface(pv, NULL, ecran,&pos_pv);
+              attaque = 0;
+              bouton=1;
+
             }
           }
 			  }
 			break;
 		}
-			SDL_Flip(ecran);
+		SDL_Flip(ecran);
 	}
 
 	SDL_FreeSurface(fond_combat);
@@ -391,5 +403,11 @@ while(changer)
 
 
     SDL_BlitSurface(rect, NULL, ecran, &pos_rect);
+
+  }
+   void deroulement(SDL_Surface *ecran, Poke *j1, Poke *j2){
+     j1->PV-=20;
+     printf("%d\n",j1->PV);
+
 
   }
