@@ -59,7 +59,7 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
         displayMap(Map, ecran); //on affiche les sols
         afficherDecors(fileDecors, ecran); //puis les decors
         //afficheCollisions(Map, ecran); //fonction de developpement qui applique un filtre rouge aux zones considérées comme des murs
-        afficherFilePorteSDL(filePorte,ecran); //fonction de developpement qui applique un filtre bleu aux zones considérées comme des portes
+        //afficherFilePorteSDL(filePorte,ecran); //fonction de developpement qui applique un filtre bleu aux zones considérées comme des portes
         SDL_BlitSurface(perso.Perso_Sprites[numSprite+typeSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
         SDL_Flip(ecran); // Mise à jour de l'écran
       //  SDL_Delay(30); //attente de 30ms entre chaque chargement (sert à ne pas réafficher pour rien)
@@ -78,7 +78,7 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
                         continuer = 0;
                     break;
                     case SDLK_UP: // Flèche haut
-                        canmove = autoriserDeplacement(Map, HAUT, perso);
+                        canmove = autoriserDeplacement(Map, HAUT, perso, ecran);
                         current=3;
                             if(canmove==1){
                             iSpriteH=(iSpriteH+1)%3;
@@ -86,7 +86,7 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
                     }
                     break;
                     case SDLK_DOWN: // Flèche bas
-                        canmove = autoriserDeplacement(Map, BAS, perso);
+                        canmove = autoriserDeplacement(Map, BAS, perso, ecran);
                         current=0;
                         if(canmove==1){
                           iSpriteB=(iSpriteB+1)%3;
@@ -94,7 +94,7 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
                         }
                     break;
                     case SDLK_RIGHT: // Flèche droite
-                        canmove = autoriserDeplacement(Map, DROITE, perso);
+                        canmove = autoriserDeplacement(Map, DROITE, perso, ecran);
                         current=1;
                         if(canmove==1){
                          iSpriteD=(iSpriteD+1)%3;
@@ -103,7 +103,7 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
                     break;
 
                     case SDLK_LEFT: // Flèche gauche
-                        canmove = autoriserDeplacement(Map, GAUCHE, perso);
+                        canmove = autoriserDeplacement(Map, GAUCHE, perso, ecran);
                         current=2;
                         if(canmove==1){
                             iSpriteG=(iSpriteG+1)%3;
@@ -174,7 +174,7 @@ void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fil
 }
 
 
-int autoriserDeplacement(Case ** Map, Direction direction, Perso perso){ //fonction qui calcule si une déplacement est possible (retourne 1 si possible, 0 si impossible)
+int autoriserDeplacement(Case ** Map, Direction direction, Perso perso, SDL_Surface *ecran){ //fonction qui calcule si une déplacement est possible (retourne 1 si possible, 0 si impossible)
 
   perso.x=(perso.position.x-(perso.position.x%TAILLE_SPRITE))/TAILLE_SPRITE;
   perso.y=(perso.position.y-(perso.position.y%TAILLE_SPRITE))/TAILLE_SPRITE;
@@ -188,20 +188,24 @@ int autoriserDeplacement(Case ** Map, Direction direction, Perso perso){ //fonct
         }
         else{
           if(perso.position.y%TAILLE_SPRITE == 0){
-            if((Map[perso.y+1][perso.x].type != 0)){
+            if((Map[perso.y+1][perso.x].type == 1)){ //si la case est un mur
               return 0;
             }
-            else{
-              return 1;
+            else if((Map[perso.y+1][perso.x].type == 2)){//si la case est un évènement (haute herbes)
+              combat(ecran);
             }
+            return 1;
+
           }
           else{//perso.position.y%TAILLE_SPRITE != 0
-            if((Map[perso.y+1][perso.x].type != 0) || (Map[perso.y+2][perso.x].type != 0)){
+            if((Map[perso.y+1][perso.x].type == 1) || (Map[perso.y+2][perso.x].type == 1)){ //si une des deux cases est un mur
               return 0;
             }
-            else{
-              return 1;
+            else if((Map[perso.y+1][perso.x].type == 2) || (Map[perso.y+2][perso.x].type == 2)){//si une des deux cases est un évènement(hautes herbes)
+              //appel fonction camille
+              combat(ecran);
             }
+            return 1;
           }
         }
     break;
@@ -211,20 +215,22 @@ int autoriserDeplacement(Case ** Map, Direction direction, Perso perso){ //fonct
         }
         else{
           if(perso.position.y%TAILLE_SPRITE == 0){
-            if((Map[perso.y+1][perso.x+2].type != 0)){
+            if((Map[perso.y+1][perso.x+2].type == 1)){ //si la case est un mur
               return 0;
             }
-            else{
-              return 1;
+            if((Map[perso.y+1][perso.x+2].type == 2)){ //si la case est un évènement (hautes herbes)
+              combat(ecran);
             }
+            return 1;
           }
           else{//perso.position.y%TAILLE_SPRITE != 0
-            if((Map[perso.y+1][perso.x+2].type != 0) || (Map[perso.y+2][perso.x+2].type != 0)){
+            if((Map[perso.y+1][perso.x+2].type == 1) || (Map[perso.y+2][perso.x+2].type == 1)){
               return 0;
             }
-            else{
-              return 1;
+            else if((Map[perso.y+1][perso.x+2].type == 2) || (Map[perso.y+2][perso.x+2].type == 2)){
+              combat(ecran);
             }
+            return 1;
           }
         }
     break;
@@ -234,20 +240,22 @@ int autoriserDeplacement(Case ** Map, Direction direction, Perso perso){ //fonct
         }
         else{
           if(perso.position.x%TAILLE_SPRITE == 0){
-            if((Map[perso.y][perso.x].type != 0) || (Map[perso.y][perso.x+1].type != 0)){
+            if((Map[perso.y][perso.x].type == 1) || (Map[perso.y][perso.x+1].type == 1)){
               return 0;
             }
-            else{
-              return 1;
+            else if((Map[perso.y][perso.x].type == 2) || (Map[perso.y][perso.x+1].type == 2)){
+              combat(ecran);
             }
+            return 1;
           }
           else{//perso.position.y%TAILLE_SPRITE != 0
-            if(Map[perso.y][perso.x+1].type != 0){
+            if(Map[perso.y][perso.x+1].type == 1){
               return 0;
             }
-            else{
-              return 1;
+            else if(Map[perso.y][perso.x+1].type == 2){
+              combat(ecran);
             }
+            return 1;
           }
         }
     break;
@@ -257,20 +265,22 @@ int autoriserDeplacement(Case ** Map, Direction direction, Perso perso){ //fonct
         }
         else{
           if(perso.position.x%TAILLE_SPRITE == 0){
-            if((Map[perso.y+2][perso.x].type != 0) || (Map[perso.y+2][perso.x+1].type != 0)){
+            if((Map[perso.y+2][perso.x].type == 1) || (Map[perso.y+2][perso.x+1].type == 1)){
               return 0;
             }
-            else{
-              return 1;
+            else if((Map[perso.y+2][perso.x].type == 2) || (Map[perso.y+2][perso.x+1].type == 2)){
+              combat(ecran);
             }
+            return 1;
           }
           else{//perso.position.y%TAILLE_SPRITE != 0
-            if(Map[perso.y+2][perso.x+1].type != 0){
+            if(Map[perso.y+2][perso.x+1].type == 1){
               return 0;
             }
-            else{
-              return 1;
+            else if(Map[perso.y+2][perso.x+1].type == 2){
+              combat(ecran);
             }
+            return 1;
           }
         }
     break;

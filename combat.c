@@ -1,31 +1,33 @@
 #include "include.h"
 
-typedef struct Poke Poke;
 
-struct Poke{
-  char nom[25];
-  int PV;
-};
 
-SDL_Surface *temp = NULL;
+
 SDL_Surface *my_poke[6];
-SDL_Surface *poke[16];
 SDL_Surface *nom1 = NULL;
 SDL_Surface *nom2 = NULL;
-Poke pokemon[20] = {"", 0};
+
 
 void combat(SDL_Surface *ecran)
 {
-	SDL_Surface *fond_combat = NULL, *rect = NULL, *texte_attaques = NULL, *texte_fuite = NULL, *texte_changer = NULL, *fond_noir = NULL, *texte_charge = NULL;
+	SDL_Surface *fond_combat = NULL, *rect = NULL, *texte_attaques = NULL, *texte_fuite = NULL, *texte_changer = NULL, *fond_noir = NULL, *texte_charge = NULL, *pv = NULL, *rect_pv = NULL, *pv_2= NULL;
+  SDL_Surface *poke[16];
+  Poke pokemon[20] = {"", 0};
 	SDL_Event event;
-	SDL_Rect pos_fond, pos_fond_noir, pos_rect, pos_texte_attaques, pos_texte_fuite, pos_texte_changer, pos_pokemon, pos_mypoke, pos_nom;
+	SDL_Rect pos_fond, pos_fond_noir, pos_rect, pos_texte_attaques, pos_texte_fuite, pos_texte_changer, pos_pokemon, pos_mypoke, pos_nom, pos_pv,pos_rect_pv, pos_pv_2,pos_rect_pv_2;
 	TTF_Font *police = NULL;
 	SDL_Color couleurNoire = {0, 0, 0}, couleurRouge = {255, 27, 27};
 	int continuer = 1, bouton = 1, attaque = 0;
 	int longueur = 125, hauteur = 20, longueur2 = 70, longueur3 = 105, longueur4 = 85;
 	int i;
+  int joueur = 0;
 //  Poke pokemon[20] = {"", 0};
-
+ Poke j1, j2;
+  j1.PV = j2.PV = 100;
+  char TAB[100];
+  char TAB1[100];
+  sprintf(TAB,"pv : %d ",j1.PV);
+  sprintf(TAB1,"pv : %d",j2.PV);
 	pos_mypoke.x = 280;
 	pos_mypoke.y = 300;
 	pos_fond.x = 244;
@@ -42,32 +44,54 @@ void combat(SDL_Surface *ecran)
 	pos_texte_changer.y = 565;
 	pos_pokemon.x = 4;
 	pos_pokemon.y = 5;
+
   pos_nom.x = 725;
   pos_nom.y = 400;
+
+  pos_pv.x = 730;
+  pos_pv.y = 437;
+
+  pos_rect_pv.x = 715;
+  pos_rect_pv.y = 427;
+
+  pos_pv_2.x = 337;
+  pos_pv_2.y = 185;
+
+  pos_rect_pv_2.x = 321;
+  pos_rect_pv_2.y = 177;
+
+
 
 	police = TTF_OpenFont("combat/king.ttf", 25);
 	fond_combat = IMG_Load("combat/plateau_combat.png");
 	fond_noir = SDL_CreateRGBSurface(SDL_HWSURFACE, 1280, 720, 32, 0, 0, 0, 0);
 	rect = IMG_Load("combat/rect_attaque.png");
+  rect_pv = IMG_Load("combat/carre_blanc.png");
 	texte_attaques = TTF_RenderText_Blended(police, "Attaques", couleurNoire);
 	texte_fuite = TTF_RenderText_Blended(police, "Fuite", couleurNoire);
 	texte_changer = TTF_RenderText_Blended(police, "Changer", couleurNoire);
   texte_charge = TTF_RenderText_Blended(police, "Charge", couleurNoire);
+  pv = TTF_RenderText_Blended(police,TAB, couleurNoire);
+  pv_2 = TTF_RenderText_Blended(police,TAB1, couleurNoire);
 
 	SDL_FillRect(fond_noir,NULL,SDL_MapRGB(ecran->format, 0, 0, 0));
 	SDL_BlitSurface(fond_noir,NULL,ecran,&pos_fond_noir);
 
 	SDL_BlitSurface(fond_combat, NULL, ecran, &pos_fond);
 	SDL_Flip(ecran);
-	SDL_Delay(500);
-
-	poke_alea(ecran);
-	SDL_Flip(ecran);
-  SDL_Delay(500);
-
+	SDL_Delay(100);
   my_pokemons();
+  SDL_BlitSurface(rect_pv, NULL, ecran, &pos_rect_pv);
+  SDL_BlitSurface(rect_pv, NULL, ecran, &pos_rect_pv_2);
+  SDL_Flip(ecran);
+  poke_nom(pokemon);
+	poke_alea(ecran, poke, pokemon);
+	SDL_Flip(ecran);
+  SDL_Delay(100);
+
+
 	SDL_BlitSurface(my_poke[0], NULL, ecran, &pos_mypoke);
-  poke_nom();
+
   nom2 = TTF_RenderText_Blended(police, pokemon[0].nom, couleurNoire);
   SDL_BlitSurface(nom2, NULL, ecran, &pos_nom);
 	SDL_Flip(ecran);
@@ -77,6 +101,8 @@ void combat(SDL_Surface *ecran)
 	SDL_BlitSurface(texte_attaques, NULL, ecran, &pos_texte_attaques);
 	SDL_BlitSurface(texte_fuite, NULL, ecran, &pos_texte_fuite);
 	SDL_BlitSurface(texte_changer, NULL, ecran, &pos_texte_changer);
+  SDL_BlitSurface(pv, NULL, ecran, &pos_pv);
+  SDL_BlitSurface(pv_2, NULL, ecran , &pos_pv_2);
 	SDL_Flip(ecran);
 
 	while(continuer) //Boucle infini qui s'arrête lorsque continuer = 0
@@ -88,7 +114,6 @@ void combat(SDL_Surface *ecran)
         menu(ecran);
         continuer = 0;
 			break;
-
 			case SDL_KEYDOWN: //appuyer sur une touche du clavier
 				switch (event.key.keysym.sym) //évènement concernant les touches du clavier
 				{
@@ -126,6 +151,7 @@ void combat(SDL_Surface *ecran)
 					{
 						texte_changer = TTF_RenderText_Blended(police, "Changer", couleurNoire);
 					}
+
 					SDL_BlitSurface(rect, NULL, ecran, &pos_rect);
 					SDL_BlitSurface(texte_attaques, NULL, ecran, &pos_texte_attaques);
 					SDL_BlitSurface(texte_fuite, NULL, ecran, &pos_texte_fuite);
@@ -140,10 +166,12 @@ void combat(SDL_Surface *ecran)
           {
             if ((pos_texte_attaques.x <= event.button.x) && ((pos_texte_attaques.x + longueur) >= event.button.x) && (pos_texte_attaques.y <= event.button.y) && (pos_texte_attaques.y + hauteur >= event.button.y))
 					  {
+
               SDL_BlitSurface(rect, NULL, ecran, &pos_rect);
               SDL_BlitSurface(texte_charge, NULL, ecran, &pos_texte_attaques);
               bouton = 0;
               attaque = 1;
+
 					  }
 
 					  if ((pos_texte_fuite.x <= event.button.x) && ((pos_texte_fuite.x + longueur2) >= event.button.x) && (pos_texte_fuite.y <= event.button.y) && (pos_texte_fuite.y + hauteur >= event.button.y))
@@ -159,15 +187,29 @@ void combat(SDL_Surface *ecran)
           }
           else if(attaque)
           {
+            printf("Lancement Attaques \n");
             if ((pos_texte_attaques.x <= event.button.x) && ((pos_texte_attaques.x + longueur4) >= event.button.x) && (pos_texte_attaques.y <= event.button.y) && (pos_texte_attaques.y + hauteur >= event.button.y))
             {
-              continuer = 0;
+              printf(" lancement charge \n");
+              joueur = deroulement(ecran, &j1, &j2, joueur);
+              printf("%d\n",j1.PV);
+              sprintf(TAB,"pv : %d ",j1.PV);
+              sprintf(TAB1,"pv : %d ",j2.PV);
+              pv = TTF_RenderText_Blended(police,TAB, couleurNoire);
+              pv_2 = TTF_RenderText_Blended(police,TAB1, couleurNoire);
+              SDL_BlitSurface(rect_pv, NULL, ecran, &pos_rect_pv);
+              SDL_BlitSurface(rect_pv, NULL, ecran,&pos_rect_pv_2);
+              SDL_BlitSurface(pv, NULL, ecran,&pos_pv);
+              SDL_BlitSurface(pv_2, NULL, ecran , &pos_pv_2);
+              attaque = 0;
+              bouton=1;
+
             }
           }
 			  }
 			break;
 		}
-			SDL_Flip(ecran);
+		SDL_Flip(ecran);
 	}
 
 	SDL_FreeSurface(fond_combat);
@@ -180,8 +222,7 @@ void combat(SDL_Surface *ecran)
 	TTF_CloseFont(police);
 }
 
-void poke_nom()
-{
+void poke_nom(Poke pokemon[20]){
   strcat(pokemon[0].nom,"BULBIZARRE");
   strcat(pokemon[1].nom,"SALAMECHE");
   strcat(pokemon[2].nom,"CARAPUCE");
@@ -200,7 +241,7 @@ void poke_nom()
   strcat(pokemon[15].nom,"RONDOUDOU");
 }
 
-void sauvage()
+void sauvage(SDL_Surface *poke[16])
 {
   poke[0] = IMG_Load("sprites/poke/1.png");
   poke[1] = IMG_Load("sprites/poke/4.png");
@@ -220,7 +261,7 @@ void sauvage()
   poke[15] = IMG_Load("sprites/poke/39.png");
 }
 
-void poke_alea(SDL_Surface *ecran)
+void poke_alea(SDL_Surface *ecran, SDL_Surface *poke[16], Poke pokemon[20])
 {
 	SDL_Rect pos_poke, pos_nom;
   SDL_Color couleurNoire = {0, 0, 0};
@@ -236,12 +277,12 @@ void poke_alea(SDL_Surface *ecran)
   srand(time(NULL));
   int alea = 0;
 
-  sauvage();
+  sauvage(poke);
 
-  poke_nom();
+  //poke_nom();
 
   alea = rand()%16;
-	temp = poke[alea];
+
   nom1 = TTF_RenderText_Blended(police, pokemon[alea].nom, couleurNoire);
   SDL_BlitSurface(nom1, NULL, ecran, &pos_nom);
 	SDL_BlitSurface(poke[alea], NULL, ecran, &pos_poke);
@@ -253,12 +294,12 @@ void poke_alea(SDL_Surface *ecran)
 
 void my_pokemons()
 {
-  my_poke[0] = IMG_Load("sprites/poke/dos/1.png");
-  my_poke[1] = IMG_Load("sprites/poke/dos/4.png");
-  my_poke[2] = IMG_Load("sprites/poke/dos/7.png");
-  my_poke[3] = IMG_Load("sprites/poke/dos/10.png");
-  my_poke[4] = IMG_Load("sprites/poke/dos/13.png");
-  my_poke[5] = IMG_Load("sprites/poke/dos/16.png");
+	my_poke[0] = IMG_Load("sprites/poke/dos/01.png");
+	my_poke[1] = IMG_Load("sprites/poke/dos/04.png");
+	my_poke[2] = IMG_Load("sprites/poke/dos/07.png");
+	my_poke[3] = IMG_Load("sprites/poke/dos/10.png");
+	my_poke[4] = IMG_Load("sprites/poke/dos/13.png");
+	my_poke[5] = IMG_Load("sprites/poke/dos/16.png");
 }
 
 void changer_poke(SDL_Surface *ecran)
@@ -370,4 +411,39 @@ while(changer)
 
   SDL_FreeSurface(rect);
   TTF_CloseFont(police);
+}
+  int attaque(SDL_Surface *ecran){
+    SDL_Surface *rect = NULL;
+
+    SDL_Rect pos_rect;
+
+    pos_rect.x = 709;
+  	pos_rect.y = 487;
+
+    rect = IMG_Load("combat/rect_attaque.png");
+
+
+    SDL_BlitSurface(rect, NULL, ecran, &pos_rect);
+
+  }
+   int deroulement(SDL_Surface *ecran, Poke *j1, Poke *j2, int joueur)
+   {
+     if (joueur == 0)
+     {
+        if(j1->PV <= 0)
+       {
+         printf("il est mort");
+       }
+       else
+        j1->PV-=20;
+    }  else {
+      if(j2->PV <= 0)
+     {
+       printf("il est mort");
+     }
+     else
+      j2->PV-=20;
+
+    }
+    return (joueur +1)%2;
 }

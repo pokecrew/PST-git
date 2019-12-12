@@ -144,7 +144,22 @@ void chargerSpritesMap(){
                 }
             }
         }
-
+      //récupération de tous les évènements (8000 à 8999)
+            SpritePath[12]='E';
+            SpritePath[13]='v';
+            SpritePath[14]='e';
+            SpritePath[16]= '8';
+            for(int j=0; j<10; j++){//chiffre des centaines
+                SpritePath[17]=j+48;
+                for(int k=0; k<10; k++){//chiffre des dizaines
+                    SpritePath[18]=k+48;
+                    for(int l=0; l<10; l++){//chiffre des unités
+                        SpritePath[19]=l+48;
+                        Map_Sprites[(8*1000)+(j*100)+(k*10)+l]=IMG_Load(SpritePath);
+                    }
+                }
+            }
+          printf("%s\n", SpritePath);
 }
 
 //fonction qui affiche les cases (le sol)
@@ -245,6 +260,11 @@ Decors chargerCaracteristiquesDecors(char *chaine){
     else if(strcmp(objetType, "bat") == 0){ // Si il s'agit d'un batiment
             decor.type = BATIMENT;
             decor.numIMG = 6000;
+              //printf("L'objet est un batiment");
+    }
+    else if(strcmp(objetType, "eve") == 0){ // Si il s'agit d'un évènement
+            decor.type = EVENEMENT;
+            decor.numIMG = 8000;
               //printf("L'objet est un batiment");
     }
     else{
@@ -433,6 +453,9 @@ void chargerCollisionsDecors(FileDecors *file, Case ** Map){
         dim_y--;
         init_y+=2;
       break;
+      case EVENEMENT :
+        typeCollisions = 2;
+      break;
       default:
       break;
     }
@@ -466,7 +489,7 @@ void chargerCollisionsDecors(FileDecors *file, Case ** Map){
       else{
           for(int k=init_y; k < dim_y; k++){
               for(int l=0; l < dim_x; l++){
-                  Map[pos_y+k][pos_x+l].type = 1;
+                  Map[pos_y+k][pos_x+l].type = typeCollisions;
               }
           }
       }
@@ -495,8 +518,8 @@ int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *fil
   viderFileDecors(fileDecors);
   viderFilePorte(filePorte);
   chargerObjets(mapPath, fileDecors, filePorte);//on charge les décors
+  afficherFileDecorsTerm(fileDecors);
   int chargementMap=loadMap(mapPath, Map);
-  //chargerSpritesPerso(perso.numSprite,perso.Perso_Sprites);
   chargerCollisionsDecors(fileDecors, Map);
   printf("Load ok \n");
 
