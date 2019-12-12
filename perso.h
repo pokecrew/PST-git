@@ -15,5 +15,5 @@ struct Perso{
 //Entrer ici les prototypes
 void chargerSpritesPerso(int numSpritePerso, SDL_Surface **Perso_Sprites);
 void deplacerPerso(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *file, FilePorte *filePorte);
-int autoriserDeplacement(Case ** Map,Direction direction, Perso perso);
+int autoriserDeplacement(Case ** Map,Direction direction, Perso perso, SDL_Surface *ecran);
 #endif // DEF_PERSO

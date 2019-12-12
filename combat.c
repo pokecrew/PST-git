@@ -219,7 +219,6 @@ void combat(SDL_Surface *ecran)
 	SDL_FreeSurface(texte_changer);
 	SDL_FreeSurface(fond_noir);
   SDL_FreeSurface(texte_charge);
-//  SDL_FreeSurface(nom);
 	TTF_CloseFont(police);
 }
 
@@ -264,8 +263,6 @@ void sauvage(SDL_Surface *poke[16])
 
 void poke_alea(SDL_Surface *ecran, SDL_Surface *poke[16], Poke pokemon[20])
 {
-//  Poke pokemon[20] = {"", 0};
-  //SDL_Surface *nom = NULL;
 	SDL_Rect pos_poke, pos_nom;
   SDL_Color couleurNoire = {0, 0, 0};
   TTF_Font *police = NULL;
@@ -291,18 +288,18 @@ void poke_alea(SDL_Surface *ecran, SDL_Surface *poke[16], Poke pokemon[20])
 	SDL_BlitSurface(poke[alea], NULL, ecran, &pos_poke);
 
   SDL_FreeSurface(nom1);
-  SDL_FreeSurface(nom2);
+  //SDL_FreeSurface(nom2);
   TTF_CloseFont(police);
 }
 
 void my_pokemons()
 {
-  my_poke[0] = IMG_Load("sprites/poke/dos/1.png");
-  my_poke[1] = IMG_Load("sprites/poke/dos/4.png");
-  my_poke[2] = IMG_Load("sprites/poke/dos/7.png");
-  my_poke[3] = IMG_Load("sprites/poke/dos/10.png");
-  my_poke[4] = IMG_Load("sprites/poke/dos/13.png");
-  my_poke[5] = IMG_Load("sprites/poke/dos/16.png");
+	my_poke[0] = IMG_Load("sprites/poke/dos/01.png");
+	my_poke[1] = IMG_Load("sprites/poke/dos/04.png");
+	my_poke[2] = IMG_Load("sprites/poke/dos/07.png");
+	my_poke[3] = IMG_Load("sprites/poke/dos/10.png");
+	my_poke[4] = IMG_Load("sprites/poke/dos/13.png");
+	my_poke[5] = IMG_Load("sprites/poke/dos/16.png");
 }
 
 void changer_poke(SDL_Surface *ecran)
