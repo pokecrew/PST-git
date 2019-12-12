@@ -273,12 +273,12 @@ void poke_alea(SDL_Surface *ecran)
 
 void my_pokemons()
 {
-  my_poke[0] = IMG_Load("sprites/poke/dos/1.png");
-  my_poke[1] = IMG_Load("sprites/poke/dos/4.png");
-  my_poke[2] = IMG_Load("sprites/poke/dos/7.png");
-  my_poke[3] = IMG_Load("sprites/poke/dos/10.png");
-  my_poke[4] = IMG_Load("sprites/poke/dos/13.png");
-  my_poke[5] = IMG_Load("sprites/poke/dos/16.png");
+	my_poke[0] = IMG_Load("sprites/poke/dos/01.png");
+	my_poke[1] = IMG_Load("sprites/poke/dos/04.png");
+	my_poke[2] = IMG_Load("sprites/poke/dos/07.png");
+	my_poke[3] = IMG_Load("sprites/poke/dos/10.png");
+	my_poke[4] = IMG_Load("sprites/poke/dos/13.png");
+	my_poke[5] = IMG_Load("sprites/poke/dos/16.png");
 }
 
 void changer_poke(SDL_Surface *ecran)
