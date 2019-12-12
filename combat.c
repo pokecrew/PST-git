@@ -176,9 +176,9 @@ void poke_alea(SDL_Surface *ecran)
     srand(time(NULL));
     int alea = 0;
 
-    poke[0] = IMG_Load("sprites/poke/1.png");
-    poke[1] = IMG_Load("sprites/poke/4.png");
-    poke[2] = IMG_Load("sprites/poke/7.png");
+    poke[0] = IMG_Load("sprites/poke/01.png");
+    poke[1] = IMG_Load("sprites/poke/04.png");
+    poke[2] = IMG_Load("sprites/poke/07.png");
     poke[3] = IMG_Load("sprites/poke/10.png");
     poke[4] = IMG_Load("sprites/poke/13.png");
     poke[5] = IMG_Load("sprites/poke/16.png");
@@ -202,9 +202,9 @@ void poke_alea(SDL_Surface *ecran)
 
 void my_pokemons(SDL_Surface *ecran)
 {
-	my_poke[0] = IMG_Load("sprites/poke/dos/1.png");
-	my_poke[1] = IMG_Load("sprites/poke/dos/4.png");
-	my_poke[2] = IMG_Load("sprites/poke/dos/7.png");
+	my_poke[0] = IMG_Load("sprites/poke/dos/01.png");
+	my_poke[1] = IMG_Load("sprites/poke/dos/04.png");
+	my_poke[2] = IMG_Load("sprites/poke/dos/07.png");
 	my_poke[3] = IMG_Load("sprites/poke/dos/10.png");
 	my_poke[4] = IMG_Load("sprites/poke/dos/13.png");
 	my_poke[5] = IMG_Load("sprites/poke/dos/16.png");
