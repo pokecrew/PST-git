@@ -44,8 +44,8 @@ int loadMap(char mapPath[], Case **Map){
                                   //initialisation des positions de la case
                                     Map[i][j].x = i; //numéro de la ligne de la case
                                     Map[i][j].y = j; //numéro de la colonne de la case
-                                    Map[i][j].position.x = j*16; //position en pixel du coin supérieur gauche de l'image
-                                    Map[i][j].position.y = i*16; //position en pixel du coin supérieur gauche de l'image
+                                    Map[i][j].position.x = j*TAILLE_SPRITE; //position en pixel du coin supérieur gauche de l'image
+                                    Map[i][j].position.y = i*TAILLE_SPRITE; //position en pixel du coin supérieur gauche de l'image
 
                                   //chargement du numéro du sprite à afficher (numIMG)
                                     millier=(fgetc(mapFile)-48); //on récupère le chiffre des centaine
@@ -84,7 +84,10 @@ int loadMap(char mapPath[], Case **Map){
 //fonction qui charge tous les sprites dans la mémoire
 void chargerSpritesMap(){
 
-  char SpritePath[]="map/Sprites/Sol/0000.png";
+  char SpritePath[]="map/Tiles32/Sol/0000.png";
+  //Récupération de la taille des sprites à aller charger
+  SpritePath[9]=TAILLE_SPRITE/10+48;
+  SpritePath[10]=TAILLE_SPRITE%10+48;
   //récupération de tous les sols (de 0 à 1999)
     for(int i=0; i<2; i++){//chiffre des miliers
         SpritePath[16]= i+48;
@@ -159,19 +162,33 @@ void chargerSpritesMap(){
                     }
                 }
             }
-          printf("%s\n", SpritePath);
+      //    printf("%s\n", SpritePath);
 }
 
 //fonction qui affiche les cases (le sol)
-void displayMap(Case ** Map, SDL_Surface *ecran){
+void displayMap(Case ** Map, SDL_Surface *ecran, Perso perso){
+        effacerEcran(Map_Sprites[1533], ecran);
         for(int i=0;i<NBLIN;i++){
 			     for(int j=0;j<NBCOL;j++){
-
+             if(Map[i][j].position.x >= 0 && Map[i][j].position.x <= FENETRE_W && Map[i][j].position.y >=0 && Map[i][j].position.y <= FENETRE_H){
                 SDL_BlitSurface(Map_Sprites[0], NULL, ecran, &Map[i][j].position);
                 SDL_BlitSurface(Map_Sprites[(Map[i][j].numIMG)], NULL, ecran, &Map[i][j].position);
+                }
               }
 			     }
+
 }
+//met un fond noir sur la map
+void effacerEcran(SDL_Surface *noir, SDL_Surface *ecran){
+  SDL_Rect pos;
+   for(int i=0; i<(FENETRE_W/TAILLE_SPRITE); i++ ){
+     for(int j=0;j<(FENETRE_H/TAILLE_SPRITE); j++){
+       pos.x = i*TAILLE_SPRITE;
+       pos.y = j*TAILLE_SPRITE;
+       SDL_BlitSurface(noir, NULL, ecran, &pos);
+     }
+   }
+ }
 
 //fonction qui initialise la file de Décors
 FileDecors *initialiserFileDecors(){
@@ -226,6 +243,109 @@ int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte){
     return 0;
 }
 
+void deplacerObjets(FileDecors *fileDecors, FilePorte *filePorte, Direction direction){//déplace les objets en même temps que la carte
+  //Partie décors
+  if (fileDecors->premier != NULL){ // La file n'est pas vide
+      // On se positionne à la fin de la file
+      Decors *elementActuel = fileDecors->premier;
+      while (elementActuel != NULL){
+        switch(direction){
+          case HAUT:
+            elementActuel->pos_y += 1;
+            elementActuel->position.y += TAILLE_SPRITE/2;
+          break;
+          case BAS:
+            elementActuel->pos_y -= 1;
+            elementActuel->position.y -= TAILLE_SPRITE/2;
+          break;
+          case DROITE:
+            elementActuel->pos_x -= 1;
+            elementActuel->position.x -= TAILLE_SPRITE/2;
+          break;
+          case GAUCHE:
+            elementActuel->pos_x += 1;
+            elementActuel->position.x += TAILLE_SPRITE/2;
+          break;
+        }
+        elementActuel = elementActuel->suivant;
+      }
+  }
+  //partie porte
+  if (filePorte->premier != NULL){ // La file n'est pas vide
+      // On se positionne à la fin de la file
+      Porte *element = filePorte->premier;
+      while (element != NULL){
+        switch(direction){
+          case HAUT:
+            element->pos_y += 1;
+            element->position.y += TAILLE_SPRITE/2;
+          break;
+          case BAS:
+            element->pos_y -= 1;
+            element->position.y -= TAILLE_SPRITE/2;
+          break;
+          case DROITE:
+            element->pos_x -= 1;
+            element->position.x -= TAILLE_SPRITE/2;
+          break;
+          case GAUCHE:
+            element->pos_x += 1;
+            element->position.x += TAILLE_SPRITE/2;
+          break;
+        }
+        element = element->suivant;
+      }
+  }
+}
+int chargerTypeEvenement(Decors element){
+  //La fonction permet de calculer le type de la map en fonction de l'evenement que l'on applique dessus
+  if(element.numIMG == 8000){//hautes herbes
+    return 2;
+  }
+  else if(element.numIMG >= 8001 && element.numIMG <= 8003){//rampe vers le bas
+    return 3;
+  }
+  else if(element.numIMG >= 8004 && element.numIMG <= 8006){//rampe vers la droite
+    return 4;
+  }
+  else if(element.numIMG >= 8007 && element.numIMG <= 8009){//rampe vers la gauche
+    return 5;
+  }
+  else if(element.numIMG == 8010){ //rampe vers la droite ou le bas
+    return 6;
+  }
+  else if(element.numIMG == 8011){ //rampe vers la gauche ou le bas
+    return 7;
+  }
+  else if(element.numIMG == 8012){//bord eau coin supérieur gauche
+    return 8;
+  }
+  else if(element.numIMG == 8013){//bord eau avec eau à droite
+    return 9;
+  }
+  else if(element.numIMG == 8014){ //bord eau coin inférieur gauche
+    return 10;
+  }
+  else if(element.numIMG == 8015){//bord eau avec eau au dessus
+    return 11;
+  }
+  else if(element.numIMG == 8016){//bord eau coin inférieur droit
+    return 12;
+  }
+  else if(element.numIMG == 8017){ //bord eau avec eau à gauche
+    return 13;
+  }
+  else if(element.numIMG == 8018){//bord eau coin supérieur droit
+    return 14;
+  }
+  else if(element.numIMG == 8019){//bord eau avec eau au dessous
+    return 15;
+  }
+  else{
+    return 0;
+  }
+
+}
 Decors chargerCaracteristiquesDecors(char *chaine){
     char objetType[4] =""; //chaine qui contiendra le type d'objet
     Decors decor;
@@ -265,7 +385,7 @@ Decors chargerCaracteristiquesDecors(char *chaine){
     else if(strcmp(objetType, "eve") == 0){ // Si il s'agit d'un évènement
             decor.type = EVENEMENT;
             decor.numIMG = 8000;
-              //printf("L'objet est un batiment");
+              //printf("L'objet est un évènement");
     }
     else{
             decor.type = AUTRE;
@@ -373,7 +493,7 @@ void afficherFileDecorsTerm(FileDecors *file){
 }
 
 //fonction qui affiche les décors
-void afficherDecors(FileDecors *file, SDL_Surface *ecran){
+void afficherDecors(FileDecors *file, SDL_Surface *ecran, Perso perso, int currentSprite){
 
   if (file == NULL)
   {
@@ -383,10 +503,12 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran){
   SDL_Rect position;
   int repeat_x = 0;
   int repeat_y = 0;
-
+  int affichage_Perso = 0; //stocke si le perso est déja affiché ou non
+/*  printf("\n");*/
   while (actuel != NULL){
+    position = actuel->position; //positions de la surface
     if((actuel->repeat_x > 0) || (actuel->repeat_y > 0)){
-        position = actuel->position; //positions de la surface
+        //position = actuel->position; //positions de la surface
         repeat_x = actuel->dim_x;
         repeat_y = actuel->dim_y;
         switch (actuel->type) {
@@ -404,14 +526,33 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran){
           position.x = actuel->position.x+i*(repeat_x*TAILLE_SPRITE);
           for(int j=0; j<(actuel->repeat_y); j++){
               position.y = actuel->position.y+j*(repeat_y*TAILLE_SPRITE);
-              SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &position);
+              /*if(affichage_Perso == 0 && position.y >= perso.position.y){// && (position.x >= perso.position.x)){
+                SDL_BlitSurface(perso.Perso_Sprites[currentSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
+                affichage_Perso = 1;
+                printf(BLUE"R:perso : (%d;%d) \n"RESET, perso.position.x, perso.position.y);
+              }*/
+              if(position.x >= 0 && position.x <= FENETRE_W && position.y >= 0 && position.y <= FENETRE_H){
+              /*  printf("R :décors %d : (%d;%d) \n", actuel->numIMG, actuel->position.x,actuel->position.y);*/
+                SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &position);
+              }
         }
       }
     }
     else{
-      SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &actuel->position);
+      if(affichage_Perso == 0 && position.y >= perso.position.y){// && (position.x >= perso.position.x)){
+        SDL_BlitSurface(perso.Perso_Sprites[currentSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
+        /*printf(BLUE"S :perso : (%d;%d) \n"RESET, perso.position.x, perso.position.y);*/
+        affichage_Perso = 1;
+      }
+      if(position.x >= 0 && position.x <= FENETRE_W && position.y >= 0 && position.y <= FENETRE_H){
+      /*  printf("S: décors %d : (%d;%d) \n", actuel->numIMG, position.x,position.y);*/
+        SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &actuel->position);
+      }
     }
     actuel = actuel->suivant;
+  }
+  if(affichage_Perso == 0){
+    SDL_BlitSurface(perso.Perso_Sprites[currentSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
   }
 }
 
@@ -454,7 +595,7 @@ void chargerCollisionsDecors(FileDecors *file, Case ** Map){
         init_y+=2;
       break;
       case EVENEMENT :
-        typeCollisions = 2;
+        typeCollisions = chargerTypeEvenement(*actuel);
       break;
       default:
       break;
@@ -500,28 +641,39 @@ void chargerCollisionsDecors(FileDecors *file, Case ** Map){
 
 void afficheCollisions(Case ** Map, SDL_Surface *ecran){
   SDL_Surface *image = NULL;
-  image = IMG_Load("map/Sprites/collision.png");
+  char SpritePath[]="map/Tiles32/collision.png";
+  //Récupération de la taille des sprites à aller charger
+  SpritePath[9]=TAILLE_SPRITE/10+48;
+  SpritePath[10]=TAILLE_SPRITE%10+48;
+
+  image = IMG_Load(SpritePath);
   for(int i=0;i<NBLIN;i++){
      for(int j=0;j<NBCOL;j++){
         if(Map[i][j].type == 1){
-          SDL_BlitSurface(image, NULL, ecran, &Map[i][j].position);
+          if(Map[i][j].position.x > 0 && Map[i][j].position.x < FENETRE_W && Map[i][j].position.y >0 && Map[i][j].position.y < FENETRE_H){
+            SDL_BlitSurface(image, NULL, ecran, &Map[i][j].position);
+          }
         }
       }
   }
 }
 //fonction qui permet de changer de carte
-int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte){
+int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position){
 
   mapPath[4]= (numeroMap/10)+48;
   mapPath[5]= numeroMap%10+48;
   numMap=numeroMap;
   viderFileDecors(fileDecors);
   viderFilePorte(filePorte);
+  //On libère la map
+  viderMap(Map);
+  Map = createMap(mapPath);
   chargerObjets(mapPath, fileDecors, filePorte);//on charge les décors
-  afficherFileDecorsTerm(fileDecors);
+//  afficherFileDecorsTerm(fileDecors);
   int chargementMap=loadMap(mapPath, Map);
   chargerCollisionsDecors(fileDecors, Map);
-  printf("Load ok \n");
+  centrerMap(Map,fileDecors,filePorte, perso_position);
+//  printf("Load ok \n");
 
 }
 //fonction qui initialise la file de Décors
@@ -626,7 +778,11 @@ void afficherFilePorteTerm(FilePorte *file){
 void afficherFilePorteSDL(FilePorte *file, SDL_Surface *ecran){
     SDL_Surface *image = NULL;
     SDL_Rect position;
-    image = IMG_Load("map/Sprites/portes.png");
+    char SpritePath[]="map/Tiles32/portes.png";
+    //Récupération de la taille des sprites à aller charger
+    SpritePath[9]=TAILLE_SPRITE/10+48;
+    SpritePath[10]=TAILLE_SPRITE%10+48;
+    image = IMG_Load(SpritePath);
 
     if (file == NULL)
     {
@@ -662,7 +818,8 @@ int verifChangementMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte
         //printf("\ndimensions porte : (%d,%d)", actuel->dim_x, actuel->dim_y);
         //printf("\nperso_position = (%d;%d)", perso_position->x, perso_position->y);
         *perso_position = actuel->pos_perso;
-        changeMap(actuel->map, Map, fileDecors, filePorte);
+        changeMap(actuel->map, Map, fileDecors, filePorte, perso_position);
+        //centrerMap(Map,fileDecors,filePorte, perso_position);
         return 1;
       }
       //printf("position porte : (%d,%d)\n", actuel->position.x, actuel->position.y);
@@ -670,4 +827,245 @@ int verifChangementMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte
       actuel = actuel->suivant;
     }
     return 0;
+}
+void lancementCombat(SDL_Surface *ecran){
+  //srand(time(NULL));
+  int alea = 0;
+  alea = rand()%13;
+  lancerCombat++;
+  //printf("lancerCombat = %d, alea= %d \n", lancerCombat, alea);
+  if(lancerCombat > 8 && (alea == 0 || lancerCombat > 60)){
+  //if(alea == 0){
+    combat(ecran);
+    lancerCombat = 0;
+  }
+}
+void centrerMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position){
+  //Calcul du déplacement à effectuer
+  int x;
+  int y =  FENETRE_H/2 - perso_position->y;
+  int largeurMap = Map[0][NBCOL-1].position.x + TAILLE_SPRITE - Map[0][0].position.x ;
+  int hauteurMap = Map[NBLIN-1][0].position.y + TAILLE_SPRITE - Map[0][0].position.y ;
+  //printf(ONLINE BLUE"%d;%d"RESET, x, y);
+
+  //si la map est moins large que l'écran, on la centre horizontalement
+  if(largeurMap < FENETRE_W){
+      x = (FENETRE_W - largeurMap)/2;
+      //centrage vertical
+      //Déplacement du fond
+      for(int i=0;i<NBLIN;i++){
+                          for(int j=0;j<NBCOL;j++){
+                            Map[i][j].position.x += x;
+                            Map[i][j].x += x/TAILLE_SPRITE;
+                          }
+      }
+      //Partie décors
+      if (fileDecors->premier != NULL){ // La file n'est pas vide
+          // On se positionne à la fin de la file
+          Decors *elementActuel = fileDecors->premier;
+          while (elementActuel != NULL){
+                elementActuel->pos_x += x/TAILLE_SPRITE;
+                elementActuel->position.x += x;
+            elementActuel = elementActuel->suivant;
+          }
+      }
+      //partie porte
+      if (filePorte->premier != NULL){ // La file n'est pas vide
+          // On se positionne à la fin de la file
+          Porte *element = filePorte->premier;
+          while (element != NULL){
+            element->pos_x += x/TAILLE_SPRITE;
+            element->position.x += x;
+            element = element->suivant;
+          }
+      }
+      perso_position->x += x;
+
+  }
+  else{
+      //on centre d'abord la carte sur le joueur
+      x =  FENETRE_W/2 - perso_position->x;
+      //centrage vertical
+      //Déplacement du fond
+      for(int i=0;i<NBLIN;i++){
+                          for(int j=0;j<NBCOL;j++){
+                            Map[i][j].position.x += x;
+                            Map[i][j].x += x/TAILLE_SPRITE;
+                          }
+      }
+      //Partie décors
+      if (fileDecors->premier != NULL){ // La file n'est pas vide
+          // On se positionne à la fin de la file
+          Decors *elementActuel = fileDecors->premier;
+          while (elementActuel != NULL){
+                elementActuel->pos_x += x/TAILLE_SPRITE;
+                elementActuel->position.x += x;
+            elementActuel = elementActuel->suivant;
+          }
+      }
+      //partie porte
+      if (filePorte->premier != NULL){ // La file n'est pas vide
+          // On se positionne à la fin de la file
+          Porte *element = filePorte->premier;
+          while (element != NULL){
+            element->pos_x += x/TAILLE_SPRITE;
+            element->position.x += x;
+            element = element->suivant;
+          }
+      }
+      perso_position->x = FENETRE_W/2;
+
+      //On colle les bords
+      if(Map[0][0].position.x > 0){
+        x = 0 - Map[0][0].position.x;
+      }
+      else if((Map[0][NBCOL-1].position.x + TAILLE_SPRITE) < FENETRE_W){
+        x = FENETRE_W - Map[0][NBCOL-1].position.x + TAILLE_SPRITE;
+      }
+      //Déplacement du fond
+      for(int i=0;i<NBLIN;i++){
+                          for(int j=0;j<NBCOL;j++){
+                            Map[i][j].position.x += x;
+                            Map[i][j].x += x/TAILLE_SPRITE;
+                          }
+      }
+      //Partie décors
+      if (fileDecors->premier != NULL){ // La file n'est pas vide
+          // On se positionne à la fin de la file
+          Decors *elementActuel = fileDecors->premier;
+          while (elementActuel != NULL){
+                elementActuel->pos_x += x/TAILLE_SPRITE;
+                elementActuel->position.x += x;
+            elementActuel = elementActuel->suivant;
+          }
+      }
+      //partie porte
+      if (filePorte->premier != NULL){ // La file n'est pas vide
+          // On se positionne à la fin de la file
+          Porte *element = filePorte->premier;
+          while (element != NULL){
+            element->pos_x += x/TAILLE_SPRITE;
+            element->position.x += x;
+            element = element->suivant;
+          }
+      }
+      perso_position->x += x;
+  }
+  //Centrage vertical
+  if(hauteurMap < FENETRE_H){
+      y = (FENETRE_H - hauteurMap)/2;
+      //centrage vertical
+      //Déplacement du fond
+      for(int i=0;i<NBLIN;i++){
+                          for(int j=0;j<NBCOL;j++){
+                            Map[i][j].position.y += y;
+                            Map[i][j].y += y/TAILLE_SPRITE;
+                          }
+      }
+      //Partie décors
+      if (fileDecors->premier != NULL){ // La file n'est pas vide
+          // On se positionne à la fin de la file
+          Decors *elementActuel = fileDecors->premier;
+          while (elementActuel != NULL){
+                elementActuel->pos_y += y/TAILLE_SPRITE;
+                elementActuel->position.y += y;
+            elementActuel = elementActuel->suivant;
+          }
+      }
+      //partie porte
+      if (filePorte->premier != NULL){ // La file n'est pas vide
+          // On se positionne à la fin de la file
+          Porte *element = filePorte->premier;
+          while (element != NULL){
+            element->pos_y += y/TAILLE_SPRITE;
+            element->position.y += y;
+            element = element->suivant;
+          }
+      }
+      perso_position->y += y;
+
+  }
+  else{
+  //  printf("Fenetre plus haute\n");
+      //on centre d'abord la carte sur le joueur
+      y =  FENETRE_H/2 - perso_position->y;
+      //centrage vertical
+      //Déplacement du fond
+      for(int i=0;i<NBLIN;i++){
+                          for(int j=0;j<NBCOL;j++){
+                            Map[i][j].position.y += y;
+                            Map[i][j].y += y/TAILLE_SPRITE;
+                          }
+      }
+      //Partie décors
+      if (fileDecors->premier != NULL){ // La file n'est pas vide
+          // On se positionne à la fin de la file
+          Decors *elementActuel = fileDecors->premier;
+          while (elementActuel != NULL){
+                elementActuel->pos_y += y/TAILLE_SPRITE;
+                elementActuel->position.y += y;
+            elementActuel = elementActuel->suivant;
+          }
+      }
+      //partie porte
+      if (filePorte->premier != NULL){ // La file n'est pas vide
+          // On se positionne à la fin de la file
+          Porte *element = filePorte->premier;
+          while (element != NULL){
+            element->pos_y += y/TAILLE_SPRITE;
+            element->position.y += y;
+            element = element->suivant;
+          }
+      }
+      perso_position->y = FENETRE_H/2 ;
+
+      //On colle les bords
+      if(Map[0][0].position.y > 0){
+        y = 0 - Map[0][0].position.y;
+      }
+      else if((Map[NBLIN-1][0].position.y + TAILLE_SPRITE) < FENETRE_H){
+        y = FENETRE_H - Map[NBLIN-1][0].position.y + TAILLE_SPRITE;
+      }
+      else{
+        //printf("break");
+        y=0;
+        //break;
+      }
+      //Déplacement du fond
+      for(int i=0;i<NBLIN;i++){
+                          for(int j=0;j<NBCOL;j++){
+                            Map[i][j].position.y += y;
+                            Map[i][j].y += y/TAILLE_SPRITE;
+                          }
+      }
+      //Partie décors
+      if (fileDecors->premier != NULL){ // La file n'est pas vide
+          // On se positionne à la fin de la file
+          Decors *elementActuel = fileDecors->premier;
+          while (elementActuel != NULL){
+                elementActuel->pos_y += y/TAILLE_SPRITE;
+                elementActuel->position.y += y;
+            elementActuel = elementActuel->suivant;
+          }
+      }
+      //partie porte
+      if (filePorte->premier != NULL){ // La file n'est pas vide
+          // On se positionne à la fin de la file
+          Porte *element = filePorte->premier;
+          while (element != NULL){
+            element->pos_y += y/TAILLE_SPRITE;
+            element->position.y += y;
+            element = element->suivant;
+          }
+      }
+      perso_position->y += y;
+    }
+}
+void viderMap(Case **Map){
+  for(int i=0; i<NBLIN; i++){
+    free(Map[i]);
+    Map[i] = NULL;
+  }
+  free(Map);
+  Map = NULL;
 }

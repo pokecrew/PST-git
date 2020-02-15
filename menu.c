@@ -60,7 +60,7 @@ int menu(SDL_Surface *ecran){ //menu d'accueil du jeu
                         continuer = 0;
                         choix = -1;
                     break;
-                    case SDLK_UP: //si c'est la flèche du haut
+                    case SDLK_LEFT: //si c'est la flèche du haut
                         switch(choix){ //en fonction de l'onglet en surbrillance actuel
                             case 0 :
                                 choix = 4;
@@ -90,7 +90,7 @@ int menu(SDL_Surface *ecran){ //menu d'accueil du jeu
 
                         }
                     break;
-                    case SDLK_DOWN: //si c'est flèche du bas
+                    case SDLK_RIGHT: //si c'est flèche du bas
                         switch(choix){ //en fonction de l'élément en surbrillance actuelle
                             case 0 :
                                 choix++ ;
