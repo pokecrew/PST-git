@@ -2,24 +2,13 @@
 //fonction créant un tableau de cases des dimensions indiquées dans le fichier map
 Case **createMap(char mapPath[]){
   Case **Map;
-  FILE* mapFile = NULL;
-  mapFile = fopen(mapPath, "r");
-  if (mapFile != NULL){
-      fscanf(mapFile,"%d %d", &NBLIN, &NBCOL);
-      fclose(mapFile);
+//  printf(GREEN"[createMap]:"RESET"mapPath = %s \n", mapPath);
+  Map = malloc(100*sizeof(Case *));
+  for(int i=0; i<100; i++){
+    Map[i]= malloc(100*sizeof(Case));
   }
-  else{
-      fclose(mapFile);
-      printf("Erreur lors de l'ouverture de %s", mapPath);
-  }
-  Map = malloc(NBLIN*sizeof(Case *));
-  for(int i=0; i<NBLIN; i++){
-    Map[i]= malloc(NBCOL*sizeof(Case));
-  }
-  //printf("Création Map ok \n");
-  //printf("mapPath = %s \n", mapPath);
+  printf(GREEN"[createMap]:"RESET"Création Map ok \n");
   return Map;
-
 }
 
 //fonction servant à charger les caractéristiques des cases de la carte
@@ -28,6 +17,7 @@ int loadMap(char mapPath[], Case **Map){
     mapPath[7]='l';
     mapPath[8]='v';
     mapPath[9]='l';
+    //printf(GREEN"[loadMap]:"RESET"%s %d;%d\n",mapPath,NBLIN,NBCOL);
     mapFile = fopen(mapPath, "r");
     int millier = 0;
     int centaine = 0;
@@ -147,6 +137,21 @@ void chargerSpritesMap(){
                 }
             }
         }
+        //récupération de tous les décors "autre" (7000 à 7999)
+        SpritePath[12]='A';
+        SpritePath[13]='u';
+        SpritePath[14]='t';
+        SpritePath[16]= '7';
+        for(int j=0; j<10; j++){//chiffre des centaines
+            SpritePath[17]=j+48;
+            for(int k=0; k<10; k++){//chiffre des dizaines
+                SpritePath[18]=k+48;
+                for(int l=0; l<10; l++){//chiffre des unités
+                    SpritePath[19]=l+48;
+                    Map_Sprites[(7*1000)+(j*100)+(k*10)+l]=IMG_Load(SpritePath);
+                }
+            }
+        }
       //récupération de tous les évènements (8000 à 8999)
             SpritePath[12]='E';
             SpritePath[13]='v';
@@ -162,9 +167,8 @@ void chargerSpritesMap(){
                     }
                 }
             }
-      //    printf("%s\n", SpritePath);
+        //  printf(GREEN"[chargerSpritesMap]:"RESET"%s\n", SpritePath);
 }
-
 //fonction qui affiche les cases (le sol)
 void displayMap(Case ** Map, SDL_Surface *ecran, Perso perso){
         effacerEcran(Map_Sprites[1533], ecran);
@@ -176,7 +180,6 @@ void displayMap(Case ** Map, SDL_Surface *ecran, Perso perso){
                 }
               }
 			     }
-
 }
 //met un fond noir sur la map
 void effacerEcran(SDL_Surface *noir, SDL_Surface *ecran){
@@ -194,7 +197,6 @@ void effacerEcran(SDL_Surface *noir, SDL_Surface *ecran){
 FileDecors *initialiserFileDecors(){
     FileDecors *file = malloc(sizeof(*file));
     file->premier = NULL;
-
     return file;
 }
 
@@ -208,18 +210,14 @@ int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte){
     mapPath[7]='o';
     mapPath[8]='b';
     mapPath[9]='j';
-  //  printf("%s\n", mapPath);
+    //printf(GREEN"[chargerObjets]:"RESET"%s\n", mapPath);
     mapFile = fopen(mapPath, "r"); //ouverture du fichier mapPath en lecture seule
     char chaine[30] =""; //chaine qui contiendra la ligne lue par fgets
 
-    //Decors decors;
-
     if (mapFile != NULL){
-        //printf("Coucou\n");
         while (fgets(chaine, 30, mapFile) != NULL){ //tant qu'on est pas arrivé à la dernière ligne
                 cmp = strcmp(chaine,"##########\n");
                 if(cmp != 0){
-
                   switch (objet_type) {
                     case 1 : //décors
                         ajouterElementFileDecors(fileDecors,chaine);
@@ -236,7 +234,7 @@ int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte){
 
     }
     else{
-      printf("Erreur lors de l'ouverture de %s /n", mapPath);
+      printf(GREEN"[chargerObjets]:"RESET"Erreur lors de l'ouverture de %s /n", mapPath);
       return -1;
     }
     fclose(mapFile);
@@ -341,6 +339,9 @@ int chargerTypeEvenement(Decors element){
   else if(element.numIMG == 8019){//bord eau avec eau au dessous
     return 15;
   }
+  else if(element.numIMG == 8020){//bord eau avec eau au dessous
+    return 16;
+  }
   else{
     return 0;
   }
@@ -354,43 +355,48 @@ Decors chargerCaracteristiquesDecors(char *chaine){
     for(int i=0; i<3; i++){
       objetType[i] = chaine[i];
     }
-    //printf("type d'objet = %s \n", objetType);
+    //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"type d'objet = %s \n", objetType);
     //Traitement en fonction du type d'objet
     if(strcmp(objetType, "sol") == 0){ // Si il s'agit d'un sol
             decor.type = SOL;
             decor.numIMG = 0000;
-              //printf("L'objet est un sol");
+              //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un sol");
     }
     else if (strcmp(objetType, "mur") == 0){ // Si il s'agit d'un arbre
             decor.type = MUR; //on affecte le bon type à l'objet
             decor.numIMG = 1000; //on affecte le bon rang d'image à l'objet
-              //printf("L'objet est un arbre");
+              //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un arbre");
     }
     else if (strcmp(objetType, "in1") == 0){ // Si il s'agit d'un arbre
             decor.type = INTERIEUR1; //on affecte le bon type à l'objet
             decor.numIMG = 2000; //on affecte le bon rang d'image à l'objet
             typeSprite = 12; //on passe à la grande taille de sprites
-              //printf("L'objet est un arbre");
+              //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un arbre");
     }
     else if (strcmp(objetType, "arb") == 0){ // Si il s'agit d'un arbre
             decor.type = ARBRE; //on affecte le bon type à l'objet
             decor.numIMG = 5000; //on affecte le bon rang d'image à l'objet
-              //printf("L'objet est un arbre");
+              //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un arbre");
     }
     else if(strcmp(objetType, "bat") == 0){ // Si il s'agit d'un batiment
             decor.type = BATIMENT;
             decor.numIMG = 6000;
-              //printf("L'objet est un batiment");
+              //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un batiment");
+    }
+    else if(strcmp(objetType, "aut") == 0){ // Si il s'agit d'une décoration "autre"
+            decor.type = AUTRE;
+            decor.numIMG = 7000;
+              //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est de la classe autre");
     }
     else if(strcmp(objetType, "eve") == 0){ // Si il s'agit d'un évènement
             decor.type = EVENEMENT;
             decor.numIMG = 8000;
-              //printf("L'objet est un évènement");
+              //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un évènement");
     }
     else{
-            decor.type = AUTRE;
+            decor.type = PNJ;
             decor.numIMG = 9000;
-              //printf("Le type d'objet n'est pas défini");
+              //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"Le type d'objet est un pnj");
     }
 
     //on recupère les chiffre qui suivent le type d'objet et on les stock dans numIMG
@@ -428,10 +434,8 @@ void ajouterElementFileDecors(FileDecors *file, char *chaine){
     if (file == NULL || nouveau == NULL){
         exit(EXIT_FAILURE);
     }
-
     *nouveau = chargerCaracteristiquesDecors(chaine);
     nouveau->suivant = NULL;
-
     if (file->premier != NULL){ // La file n'est pas vide
         // On se positionne à la fin de la file
         Decors *elementActuel = file->premier;
@@ -461,6 +465,7 @@ int viderFileDecors(FileDecors *file){
         Decors *elementDefile = file->premier;
         file->premier = elementDefile->suivant;
         free(elementDefile);
+        elementDefile=NULL;
     }
 
     return 0;
@@ -474,21 +479,18 @@ void afficherFileDecorsTerm(FileDecors *file){
     }
     Decors *actuel = file->premier;
     int i=0;
-
     while (actuel != NULL){
-
-        printf("\nDécor n°%d\n",i);
-        printf("Type: %d\n", actuel->type);
-        printf("Sprite : %d.png\n", actuel->numIMG);
-        printf("Dimensions: (%d;%d)\n", actuel->dim_x, actuel->dim_y);
-        printf("Position: (%d;%d) / (%d,%d)\n", actuel->pos_x, actuel->pos_y, actuel->position.x, actuel->position.y);
-        printf("Répétition : (%d;%d)\n", actuel->repeat_x, actuel->repeat_y);
+        printf("\n"BLUE"Décor"RESET" n°%d\n",i);
+        printf(BLUE"Type:"RESET" %d\n", actuel->type);
+        printf(BLUE"Sprite :"RESET" %d.png\n", actuel->numIMG);
+        printf(BLUE"Dimensions:"RESET" (%d;%d)\n", actuel->dim_x, actuel->dim_y);
+        printf(BLUE"Position:"RESET" (%d;%d) / (%d,%d)\n", actuel->pos_x, actuel->pos_y, actuel->position.x, actuel->position.y);
+        printf(BLUE"Répétition :"RESET" (%d;%d)\n", actuel->repeat_x, actuel->repeat_y);
 
       //  printf("%d", actuel->nombre);
         actuel = actuel->suivant;
         i++;
     }
-
     printf("\n");
 }
 
@@ -504,11 +506,9 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran, Perso perso, int curre
   int repeat_x = 0;
   int repeat_y = 0;
   int affichage_Perso = 0; //stocke si le perso est déja affiché ou non
-/*  printf("\n");*/
   while (actuel != NULL){
     position = actuel->position; //positions de la surface
     if((actuel->repeat_x > 0) || (actuel->repeat_y > 0)){
-        //position = actuel->position; //positions de la surface
         repeat_x = actuel->dim_x;
         repeat_y = actuel->dim_y;
         switch (actuel->type) {
@@ -526,13 +526,11 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran, Perso perso, int curre
           position.x = actuel->position.x+i*(repeat_x*TAILLE_SPRITE);
           for(int j=0; j<(actuel->repeat_y); j++){
               position.y = actuel->position.y+j*(repeat_y*TAILLE_SPRITE);
-              /*if(affichage_Perso == 0 && position.y >= perso.position.y){// && (position.x >= perso.position.x)){
+              if(i == 0 && j == 0 && affichage_Perso == 0 && position.y >= perso.position.y){// && (position.x >= perso.position.x)){
                 SDL_BlitSurface(perso.Perso_Sprites[currentSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
                 affichage_Perso = 1;
-                printf(BLUE"R:perso : (%d;%d) \n"RESET, perso.position.x, perso.position.y);
-              }*/
+              }
               if(position.x >= 0 && position.x <= FENETRE_W && position.y >= 0 && position.y <= FENETRE_H){
-              /*  printf("R :décors %d : (%d;%d) \n", actuel->numIMG, actuel->position.x,actuel->position.y);*/
                 SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &position);
               }
         }
@@ -541,11 +539,11 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran, Perso perso, int curre
     else{
       if(affichage_Perso == 0 && position.y >= perso.position.y){// && (position.x >= perso.position.x)){
         SDL_BlitSurface(perso.Perso_Sprites[currentSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
-        /*printf(BLUE"S :perso : (%d;%d) \n"RESET, perso.position.x, perso.position.y);*/
+      //  printf(GREEN"[afficherDecors]:"RESET"S :perso : (%d;%d) \n", perso.position.x, perso.position.y);
         affichage_Perso = 1;
       }
       if(position.x >= 0 && position.x <= FENETRE_W && position.y >= 0 && position.y <= FENETRE_H){
-      /*  printf("S: décors %d : (%d;%d) \n", actuel->numIMG, position.x,position.y);*/
+      //  printf(GREEN"[afficherDecors]:"RESET"S: décors %d : (%d;%d) \n", actuel->numIMG, position.x,position.y);
         SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &actuel->position);
       }
     }
@@ -623,7 +621,6 @@ void chargerCollisionsDecors(FileDecors *file, Case ** Map){
                       Map[pos_y+k][pos_x+l].type = typeCollisions;
                   }
               }
-              //  SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &position);
           }
         }
       }
@@ -656,25 +653,37 @@ void afficheCollisions(Case ** Map, SDL_Surface *ecran){
         }
       }
   }
+  SDL_FreeSurface(image);
 }
 //fonction qui permet de changer de carte
 int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position){
-
+  int mapPrec = numMap; //stocke la map précédente
   mapPath[4]= (numeroMap/10)+48;
   mapPath[5]= numeroMap%10+48;
+  //printf("\n"BLUE"[changeMap]:"RESET"x,y :%d,%d\n",perso_position->x,perso_position->y);
   numMap=numeroMap;
   viderFileDecors(fileDecors);
   viderFilePorte(filePorte);
-  //On libère la map
-  viderMap(Map);
-  Map = createMap(mapPath);
+//  printf(GREEN"[changeMap]:"RESET"vider objets OK\n");
+  changerDimensionsMap(mapPath,Map);
+//  printf(GREEN"[changeMap]:"RESET"Dimensions Map OK\n");
   chargerObjets(mapPath, fileDecors, filePorte);//on charge les décors
-//  afficherFileDecorsTerm(fileDecors);
+  if(numMap == 2 || (numMap >= 9 && numMap <=11)){ //si on doit charger une map réutilisable (Centre Pkmn, maison, etc...)
+    printf(GREEN"[changeMap]:"RESET"MapCommune\n");
+    if(mapPrec != 1 ){
+      numMapPrec = mapPrec;
+    }
+    ajouterPorteMapCommune(Map[0][0],filePorte);
+  }
+  //afficherFilePorteTerm(filePorte);
   int chargementMap=loadMap(mapPath, Map);
+  //afficherFileDecorsTerm(fileDecors);
+  //printf(GREEN"[changeMap]:"RESET"chargement map OK\n");
   chargerCollisionsDecors(fileDecors, Map);
+  //printf(GREEN"[changeMap]:"RESET"collisions ok\n");
   centrerMap(Map,fileDecors,filePorte, perso_position);
-//  printf("Load ok \n");
-
+  //printf(GREEN"[changeMap]:"RESET"centrage OK\n");
+  //printf(GREEN"[changeMap]:"RESET"Load ok \n");
 }
 //fonction qui initialise la file de Décors
 FilePorte *initialiserFilePorte(){
@@ -711,7 +720,7 @@ void ajouterElementFilePorte(FilePorte *file, char *chaine){
 int viderFilePorte(FilePorte *file){
     if (file == NULL)
     {
-        printf("Erreur lors du nettoyage de la file de portes/n");
+        printf(RED"[viderFilePorte]:"RESET"Erreur lors du nettoyage de la file de portes/n");
         exit(EXIT_FAILURE);//on retourne qu'il y a une erreur
     }
 
@@ -721,6 +730,7 @@ int viderFilePorte(FilePorte *file){
         Porte *elementDefile = file->premier;
         file->premier = elementDefile->suivant;
         free(elementDefile);
+        elementDefile=NULL;
     }
 
     return 0;
@@ -728,7 +738,7 @@ int viderFilePorte(FilePorte *file){
 //Fonction qui charge les caractéristiques des portes
 Porte chargerCaracteristiquesPortes(char *chaine){
     Porte porte;
-      //on recupère les chiffres qui suivent le type d'objet et on les stock dans Porte.map
+    //on recupère les chiffres qui suivent le type d'objet et on les stock dans Porte.map
     porte.map = ((chaine[3]-48)*100)+((chaine[4]-48)*10)+(chaine[5]-48);
     //printf(" et l'image correspondante est %d.png \n", decor.numIMG);
 
@@ -763,16 +773,15 @@ void afficherFilePorteTerm(FilePorte *file){
 
     while (actuel != NULL){
 
-        printf("\nPorte n°%d\n",i);
-        printf("Lien: map n°%d\n", actuel->map);
-        printf("Dimensions: (%d;%d)\n", actuel->dim_x, actuel->dim_y);
-        printf("Position: (%d;%d) / (%d,%d)\n", actuel->pos_x, actuel->pos_y, actuel->position.x, actuel->position.y);
-        printf("Position du perso sur la nouvelle map (en pixels): (%d;%d)", actuel->pos_perso.x, actuel->pos_perso.y);
+        printf(BLUE"\nPorte"RESET" n°%d\n",i);
+        printf(BLUE"Lien:"RESET" map n°%d\n", actuel->map);
+        printf(BLUE"Dimensions:"RESET" (%d;%d)\n", actuel->dim_x, actuel->dim_y);
+        printf(BLUE"Position:"RESET" (%d;%d) / (%d,%d)\n", actuel->pos_x, actuel->pos_y, actuel->position.x, actuel->position.y);
+        printf(BLUE"Position du perso sur la nouvelle map (en pixels):"RESET" (%d;%d)", actuel->pos_perso.x, actuel->pos_perso.y);
 
         actuel = actuel->suivant;
         i++;
     }
-
     printf("\n");
 }
 void afficherFilePorteSDL(FilePorte *file, SDL_Surface *ecran){
@@ -800,11 +809,9 @@ void afficherFilePorteSDL(FilePorte *file, SDL_Surface *ecran){
             SDL_BlitSurface(image, NULL, ecran, &position);
           }
         }
-
-
         actuel = actuel->suivant;
-
     }
+    SDL_FreeSurface(image);
 }
 int verifChangementMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position){
     if (fileDecors == NULL)
@@ -815,15 +822,19 @@ int verifChangementMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte
 
     while (actuel != NULL){
       if( ((perso_position->x+(TAILLE_SPRITE/2)) >= actuel->position.x) && ((perso_position->y+(TAILLE_SPRITE*3/2)) >= actuel->position.y) && ((perso_position->x+(TAILLE_SPRITE/2)) < (actuel->position.x+(TAILLE_SPRITE*(actuel->dim_x)))) && ((perso_position->y+(TAILLE_SPRITE*3/2)) < (actuel->position.y+(TAILLE_SPRITE*actuel->dim_y)))){
-        //printf("\ndimensions porte : (%d,%d)", actuel->dim_x, actuel->dim_y);
-        //printf("\nperso_position = (%d;%d)", perso_position->x, perso_position->y);
+        //printf(GREEN"[verifChangementMap]:"RESET"\ndimensions porte : (%d,%d)", actuel->dim_x, actuel->dim_y);
+        //printf(GREEN"[verifChangementMap]:"RESET"\nperso_position = (%d;%d)", perso_position->x, perso_position->y);
+        if(numMap > 2){
+          printf(GREEN"[verifChangementMap]:"RESET"\nChangement de perso_position_old lors du passage de la map n°%d à %d\n",numMap,actuel->map);
+          perso_position_old.x = perso_position->x - Map[0][0].position.x;
+          perso_position_old.y = perso_position->y - Map[0][0].position.y;
+        }
         *perso_position = actuel->pos_perso;
         changeMap(actuel->map, Map, fileDecors, filePorte, perso_position);
-        //centrerMap(Map,fileDecors,filePorte, perso_position);
         return 1;
       }
-      //printf("position porte : (%d,%d)\n", actuel->position.x, actuel->position.y);
-      //printf("perso_position = (%d;%d)\n", perso_position->x+TAILLE_SPRITE, perso_position->y+(TAILLE_SPRITE*3/2));
+      //printf(GREEN"[verifChangementMap]:"RESET"position porte : (%d,%d)\n", actuel->position.x, actuel->position.y);
+      //printf(GREEN"[verifChangementMap]:"RESET"perso_position = (%d;%d)\n", perso_position->x+TAILLE_SPRITE, perso_position->y+(TAILLE_SPRITE*3/2));
       actuel = actuel->suivant;
     }
     return 0;
@@ -833,9 +844,8 @@ void lancementCombat(SDL_Surface *ecran){
   int alea = 0;
   alea = rand()%13;
   lancerCombat++;
-  //printf("lancerCombat = %d, alea= %d \n", lancerCombat, alea);
+  //printf(GREEN"[lancementCombat]:"RESET"lancerCombat = %d, alea= %d \n", lancerCombat, alea);
   if(lancerCombat > 8 && (alea == 0 || lancerCombat > 60)){
-  //if(alea == 0){
     combat(ecran);
     lancerCombat = 0;
   }
@@ -846,7 +856,7 @@ void centrerMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_R
   int y =  FENETRE_H/2 - perso_position->y;
   int largeurMap = Map[0][NBCOL-1].position.x + TAILLE_SPRITE - Map[0][0].position.x ;
   int hauteurMap = Map[NBLIN-1][0].position.y + TAILLE_SPRITE - Map[0][0].position.y ;
-  //printf(ONLINE BLUE"%d;%d"RESET, x, y);
+  //printf(GREEN"[centrerMap]:"RESET"%d;%d", x, y);
 
   //si la map est moins large que l'écran, on la centre horizontalement
   if(largeurMap < FENETRE_W){
@@ -986,7 +996,7 @@ void centrerMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_R
 
   }
   else{
-  //  printf("Fenetre plus haute\n");
+    //printf(GREEN"[centrerMap]:"RESET"Fenetre plus haute\n");
       //on centre d'abord la carte sur le joueur
       y =  FENETRE_H/2 - perso_position->y;
       //centrage vertical
@@ -1027,9 +1037,7 @@ void centrerMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_R
         y = FENETRE_H - Map[NBLIN-1][0].position.y + TAILLE_SPRITE;
       }
       else{
-        //printf("break");
         y=0;
-        //break;
       }
       //Déplacement du fond
       for(int i=0;i<NBLIN;i++){
@@ -1062,10 +1070,81 @@ void centrerMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_R
     }
 }
 void viderMap(Case **Map){
-  for(int i=0; i<NBLIN; i++){
+  for(int i=0; i<100; i++){
     free(Map[i]);
     Map[i] = NULL;
   }
   free(Map);
   Map = NULL;
+}
+void changerDimensionsMap(char mapPath[],Case **Map){
+    //printf(GREEN"[changerDimensionsMap]:"RESET"DEBUT \n");
+    FILE* mapFile = NULL;
+    mapFile = fopen(mapPath, "r");
+    //printf(GREEN"[changerDimensionsMap]:"RESET"mapPath = %s \n", mapPath);
+    if (mapFile != NULL){
+        fscanf(mapFile,"%d %d", &NBLIN, &NBCOL);
+        fclose(mapFile);
+      //  printf(GREEN"[changerDimensionsMap]:"RESET"Nouvelles dimensions : %d;%d \n", NBLIN, NBCOL);
+    }
+    else{
+        fclose(mapFile);
+        printf(RED"[changerDimensionsMap]:"RESET"Erreur lors de l'ouverture de %s", mapPath);
+    }
+
+  //  printf(GREEN"[changerDimensionsMap]:"RESET"Nouvelles dimensions (nblin,nbcol):%d;%d\n",NBLIN,NBCOL);
+  //  printf(GREEN"[changerDimensionsMap]:"RESET"Redimensionnement Map ok \n");
+}
+void ajouterPorteMapCommune(Case origine, FilePorte *filePorte){
+//  printf(GREEN"[ajouterPorteMapCommune]:"RESET"DEBUT\n");
+  //ajout d'une porte pointant vers la map précédente
+  Porte *nouveau = malloc(sizeof(*nouveau));
+  //si il y a  une erreur on quitte
+  if (filePorte == NULL || nouveau == NULL){
+      exit(EXIT_FAILURE);
+  }
+  nouveau->map = numMapPrec;
+  //récupération de sa position (en cases)
+  switch (numMap) {
+    case 2:
+    nouveau->pos_x = 10;
+    nouveau->pos_y = 24;
+    break;
+    case 9:
+    nouveau->pos_x = 9;
+    nouveau->pos_y = 19;
+    break;
+    case 10:
+    break;
+    case 11:
+    break;
+  }
+  //Calcul de sa position en pixel
+  nouveau->position.x = nouveau->pos_x*TAILLE_SPRITE;
+  nouveau->position.y = nouveau->pos_y*TAILLE_SPRITE;
+
+  //récupération de ses dimensions (en cases)
+  nouveau->dim_x = 4;
+  nouveau->dim_y = 2;
+
+  //récupération de la position du perso sur la map d'arrivée
+  nouveau->pos_perso.x = perso_position_old.x ;//- origine.position.x;
+  nouveau->pos_perso.y = perso_position_old.y + TAILLE_SPRITE; //- origine.position.y;
+  //printf(GREEN"[ajouterPorteMapCommune]:"RESET"x,y :%d,%d\n",perso_position_old.x,perso_position_old.y);
+  nouveau->suivant = NULL;
+
+  if (filePorte->premier != NULL){ // La file n'est pas vide
+      // On se positionne à la fin de la file
+      Porte *elementActuel = filePorte->premier;
+      while (elementActuel->suivant != NULL)
+      {
+          elementActuel = elementActuel->suivant;
+      }
+      elementActuel->suivant = nouveau;
+  }
+  else // La file est vide, notre élément est le premier
+  {
+      filePorte->premier = nouveau;
+  }
+//  printf(GREEN"[ajouterPorteMapCommune]:"RESET"Fin\n");
 }

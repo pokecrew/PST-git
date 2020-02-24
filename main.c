@@ -69,13 +69,15 @@ int main ( int argc, char** argv ){
                 //Libération de la mémoire
                     viderFileDecors(fileDecors);
                     viderFilePorte(filePorte);
+                    //On libère la map
+
             break;
             case 4: //Options
 
             break;
         }
     }
-
+    viderMap(Map);
     Mix_CloseAudio(); //Fermeture de l'API audio
     TTF_Quit();//on quitte sdl_ttf
     SDL_Quit();
