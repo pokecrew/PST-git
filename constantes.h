@@ -1,5 +1,3 @@
-#define TAILLE_SPRITE 24 //variable préprocesseur
-
 //Raccourcis terminal
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"      /* Black */
@@ -33,6 +31,7 @@ enum bool
 };
 //Sont déclarées dans ce fichier les constantes et les variables globales au programme
 
+int TAILLE_SPRITE = 24; //variable taille affichage
 int NBLIN=0; //Nombre de lignes de la carte (0 au démarrage)
 int NBCOL=0; //Nombre de colonnes de la carte (0 au démarrage)
 
@@ -58,8 +57,11 @@ SDL_Color couleurJaune = {182, 120, 35};
 SDL_Color couleurTitre = {0, 0, 0};
 Mix_Music *soundEffect[4]; //Tableau contenant les Musiques
 SDL_Surface *Map_Sprites[10000];//Tableau des sprites de la Map
-int numMap = 5;
-char mapPath[]="map/01.lvl"; //chemin vers le fichier source de la carte actuelle
+SDL_Rect perso_position_old; //dernière position du joueur sur une map unique (= autre que maison, centre pkmn, etc...) (relatif au coordonnées de Map[0][0])
+int numMapPrec =3; //numéro de la map précédente (à charger depuis un fichier sauvegarde)
+int numMap = 3; //numéro de la map actuelle (à charger depuis un fichier sauvegarde)
+char mapPath[]="map/08.lvl"; //chemin vers le fichier source de la carte actuelle
 int typeSprite = 0; //sprites de petites tailles (0) ou de grande taille (12)
 int lancerCombat = 0; // variable qui stocke le nombre de pas dans les hautes herbes sans avoir lancé de combat
 bool surf = FALSE; //stocke si le perso peut surfer ou non
+int nbPokeJoueur = 6;

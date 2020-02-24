@@ -53,21 +53,18 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
 //  perso.position.y=720; //valeurs à récupérer depuis le fichier sauvegarde
   perso.x=(perso.position.x-(perso.position.x%TAILLE_SPRITE))/TAILLE_SPRITE;
   perso.y=(perso.position.y-(perso.position.y%TAILLE_SPRITE))/TAILLE_SPRITE;
-//  printf("%d\t%d\n", perso.x, perso.y);
+  //printf(GREEN"[Jeu]:"RESET"%d\t%d\n", perso.x, perso.y);
 
   while (continuer){
-
     //Séquence d'affichage
       if(refresh == 1){ //si on a besoin de raifraichir l'affichage
       //verification du changement de la map
         verifChangementMap(Map,fileDecors,filePorte, &perso.position);
         displayMap(Map, ecran , perso); //on affiche les sols
-        afficherDecors(fileDecors, ecran, perso, numSprite+typeSprite); //puis les decors
-      //  afficheCollisions(Map, ecran); //fonction de developpement qui applique un filtre rouge aux zones considérées comme des murs
+        afficherDecors(fileDecors, ecran, perso, numSprite+typeSprite); //puis les decors(+typeSprite)
+        //afficheCollisions(Map, ecran); //fonction de developpement qui applique un filtre rouge aux zones considérées comme des murs
         afficherFilePorteSDL(filePorte,ecran); //fonction de developpement qui applique un filtre bleu aux zones considérées comme des portes
-//        SDL_BlitSurface(perso.Perso_Sprites[numSprite+typeSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
         SDL_Flip(ecran); // Mise à jour de l'écran
-      //  SDL_Delay(30); //attente de 30ms entre chaque chargement (sert à ne pas réafficher pour rien)
         refresh = 0;
       }
       SDL_WaitEvent(&event);
@@ -126,9 +123,9 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                 iSpriteD=0;
                     switch(event.key.keysym.sym){
                       case 'a': // changement de map manuel
-                          numMap = (numMap+1)%5;
+                          numMap = (numMap+1)%9;
                           if(numMap == 0){
-                            numMap = 5;
+                            numMap = 9;
                           }
                           changeMap(numMap, Map, fileDecors, filePorte, &perso.position);
                           refresh = 1;
@@ -140,7 +137,7 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                           else{
                             typeSprite = 12;
                           }
-                          printf("typeSprite : %d\n", typeSprite);
+                          printf(GREEN"[Jeu]:"RESET"typeSprite : %d\n", typeSprite);
                           refresh = 1;
                       break;
                         case SDLK_UP: // Flèche haut
@@ -237,13 +234,13 @@ int autoriserDeplacement(Case ** Map, Direction direction, Perso perso, SDL_Surf
 
 perso.x=(perso.position.x-(perso.position.x%TAILLE_SPRITE))/TAILLE_SPRITE;
 perso.y=(perso.position.y-(perso.position.y%TAILLE_SPRITE))/TAILLE_SPRITE;
-//  printf("%d\t%d\n", (perso.position.x%16), (perso.position.y%16));
-//  printf("%d\t%d\n", (perso.x), (perso.y));
+//  printf(GREEN"[autoriserDeplacement]:"RESET"%d\t%d\n", (perso.position.x%16), (perso.position.y%16));
+//  printf(GREEN"[autoriserDeplacement]:"RESET"%d\t%d\n", (perso.x), (perso.y));
 int x = perso.position.x- Map[0][0].position.x;
 x = (x - (x%TAILLE_SPRITE))/TAILLE_SPRITE;
 int y = perso.position.y-Map[0][0].position.y;
 y = (y - (y%TAILLE_SPRITE))/TAILLE_SPRITE;
-//printf(ONLINE BOLDGREEN "[%d;" BOLDBLUE" %d]\n" RESET, x,y);
+//printf(GREEN"[autoriserDeplacement]:"RESET"[%d;%d]\n", x,y);
   switch(direction){
     case GAUCHE:
         if((perso.position.x - Map[0][0].position.x)%TAILLE_SPRITE == 0){
