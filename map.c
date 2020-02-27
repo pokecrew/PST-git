@@ -212,10 +212,10 @@ int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte){
     mapPath[9]='j';
     //printf(GREEN"[chargerObjets]:"RESET"%s\n", mapPath);
     mapFile = fopen(mapPath, "r"); //ouverture du fichier mapPath en lecture seule
-    char chaine[30] =""; //chaine qui contiendra la ligne lue par fgets
+    char chaine[40] =""; //chaine qui contiendra la ligne lue par fgets
 
     if (mapFile != NULL){
-        while (fgets(chaine, 30, mapFile) != NULL){ //tant qu'on est pas arrivé à la dernière ligne
+        while (fgets(chaine, 40, mapFile) != NULL){ //tant qu'on est pas arrivé à la dernière ligne
                 cmp = strcmp(chaine,"##########\n");
                 if(cmp != 0){
                   switch (objet_type) {
@@ -339,8 +339,8 @@ int chargerTypeEvenement(Decors element){
   else if(element.numIMG == 8019){//bord eau avec eau au dessous
     return 15;
   }
-  else if(element.numIMG == 8020){//bord eau avec eau au dessous
-    return 16;
+  else if(element.numIMG == 8020){//heal
+     return 16;
   }
   else{
     return 0;
@@ -406,6 +406,7 @@ Decors chargerCaracteristiquesDecors(char *chaine){
     //récupération de sa position (en cases)
     decor.pos_x = ((chaine[8]-48)*10)+(chaine[9]-48);
     decor.pos_y = ((chaine[11]-48)*10)+(chaine[12]-48);
+    decor.pos_z = (chaine[14]-48);
       //printf(", ses coordonnées sont (%d;%d) \n", decor.pos_x, decor.pos_y);
 
     //Calcul de sa position en pixel
@@ -414,13 +415,13 @@ Decors chargerCaracteristiquesDecors(char *chaine){
       //printf(", ses coordonnées en pixels sont (%d;%d) \n", decor.position.x, decor.position.y);
 
     //récupération de ses dimensions (en cases)
-    decor.dim_x = ((chaine[15]-48)*10)+(chaine[16]-48);
-    decor.dim_y = ((chaine[18]-48)*10)+(chaine[19]-48);
+    decor.dim_x = ((chaine[17]-48)*10)+(chaine[18]-48);
+    decor.dim_y = ((chaine[20]-48)*10)+(chaine[21]-48);
       //printf(", ses dimensions sont (%d;%d) \n", decor.dim_x, decor.dim_y);
 
     //récupération de ses dimensions (en cases)
-    decor.repeat_x = ((chaine[22]-48)*10)+(chaine[23]-48);
-    decor.repeat_y = ((chaine[25]-48)*10)+(chaine[26]-48);
+    decor.repeat_x = ((chaine[24]-48)*10)+(chaine[25]-48);
+    decor.repeat_y = ((chaine[27]-48)*10)+(chaine[28]-48);
   //      printf(", sa répétition se fera %d fois sur les x et %d fois sur les y \n", decor.repeat_x, decor.repeat_y);
 
 
@@ -526,7 +527,7 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran, Perso perso, int curre
           position.x = actuel->position.x+i*(repeat_x*TAILLE_SPRITE);
           for(int j=0; j<(actuel->repeat_y); j++){
               position.y = actuel->position.y+j*(repeat_y*TAILLE_SPRITE);
-              if(i == 0 && j == 0 && affichage_Perso == 0 && position.y >= perso.position.y){// && (position.x >= perso.position.x)){
+              if(i == 0 && j == 0 && affichage_Perso == 0 && position.y >= perso.position.y && actuel->pos_z >= 5){// && (position.x >= perso.position.x)){
                 SDL_BlitSurface(perso.Perso_Sprites[currentSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
                 affichage_Perso = 1;
               }
@@ -537,7 +538,7 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran, Perso perso, int curre
       }
     }
     else{
-      if(affichage_Perso == 0 && position.y >= perso.position.y){// && (position.x >= perso.position.x)){
+      if(affichage_Perso == 0 && position.y >= perso.position.y && actuel->pos_z >= 5){// && (position.x >= perso.position.x)){
         SDL_BlitSurface(perso.Perso_Sprites[currentSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
       //  printf(GREEN"[afficherDecors]:"RESET"S :perso : (%d;%d) \n", perso.position.x, perso.position.y);
         affichage_Perso = 1;

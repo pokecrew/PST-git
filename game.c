@@ -120,7 +120,7 @@ int lancerEvenement(Case **Map,int i, int j, Direction direction, Perso perso, S
         return 0;
       }
     break;
-    case 16://hill centre pokemon
+    case 16://heal centre pokemon
       //printf(GREEN"[lancerEvenement]:"RESET"lancement évènement hill possible\n");
       while (continuer) {
         SDL_WaitEvent(&event);
@@ -137,7 +137,7 @@ int lancerEvenement(Case **Map,int i, int j, Direction direction, Perso perso, S
                       //faire regarder vers le haut
                       break;
                       case SDLK_SPACE: //
-                          printf(GREEN"[lancerEvenement]:"RESET"Debut phrase hill (boite de dialogue)\n");
+                          printf(GREEN"[lancerEvenement]:"RESET"Debut phrase heall (boite de dialogue)\n");
                           position.x = Map[0][0].position.x+4*TAILLE_SPRITE;
                           position.y = Map[0][0].position.y+2*TAILLE_SPRITE;
                           //remplissage du chariot en fonction du nombre de pokéball
