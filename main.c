@@ -33,10 +33,8 @@ int main ( int argc, char** argv ){
     Perso perso;
     perso.numSprite = 0;
     chargerSpritesPerso(perso.numSprite,perso.Perso_Sprites);
-
-    SDL_Rect position_test;
-    position_test.x=10;
-    position_test.y=10;
+    perso.position.x=FENETRE_W/2;
+    perso.position.y=FENETRE_H/2;
 
     //la boucle suivante constitue le menu
     int continuer = 1;
@@ -57,33 +55,29 @@ int main ( int argc, char** argv ){
             return 0;
 
             break;
-            case 2: //Camille/Theo
+            case 2: //Camille/Théo(Combats)
 
               combat(ecran);
 
             break;
-            case 3: //Thomas
-
+            case 3: //Thomas(Jeu)
                 //chargement
-//                    test=IMG_Load("map/Sprites/Eve/8000.png");
-
-//                    SDL_BlitSurface(test, NULL, ecran, &position_test);
-//                    SDL_Flip(ecran);
-//                    SDL_Delay(3000);
-                    changeMap(numMap, Map, fileDecors, filePorte);
+                    changeMap(numMap, Map, fileDecors, filePorte, &perso.position);
                     //afficherFileDecorsTerm(fileDecors);
-                    deplacerPerso(perso,ecran , Map, fileDecors, filePorte);
+                    jeu(perso,ecran , Map, fileDecors, filePorte);
 
                 //Libération de la mémoire
                     viderFileDecors(fileDecors);
                     viderFilePorte(filePorte);
+                    //On libère la map
+
             break;
             case 4: //Options
 
             break;
         }
     }
-
+    viderMap(Map);
     Mix_CloseAudio(); //Fermeture de l'API audio
     TTF_Quit();//on quitte sdl_ttf
     SDL_Quit();

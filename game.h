@@ -2,5 +2,5 @@
 #define DEF_GAME
 
 //Entrer ici les prototypes
-
+int lancerEvenement(Case **Map,int i, int j, Direction direction, Perso perso, SDL_Surface *ecran);
 #endif // DEF_GAME
