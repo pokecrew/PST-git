@@ -29,6 +29,11 @@ enum bool
 {
     TRUE,FALSE
 };
+typedef enum Musique_Replay Musique_Replay;
+enum Musique_Replay
+{
+    BOUCLE = -1, UNIQUE = 1
+};
 //Sont déclarées dans ce fichier les constantes et les variables globales au programme
 
 int TAILLE_SPRITE = 24; //variable taille affichage
@@ -55,12 +60,15 @@ SDL_Color couleurRouge = {165, 38, 10};
 SDL_Color couleurBlanche = {190, 190, 190};
 SDL_Color couleurJaune = {182, 120, 35};
 SDL_Color couleurTitre = {0, 0, 0};
-Mix_Music *soundEffect[4]; //Tableau contenant les Musiques
+Mix_Music *music; //Musique du jeu
 SDL_Surface *Map_Sprites[10000];//Tableau des sprites de la Map
 SDL_Rect perso_position_old; //dernière position du joueur sur une map unique (= autre que maison, centre pkmn, etc...) (relatif au coordonnées de Map[0][0])
-int numMapPrec =3; //numéro de la map précédente (à charger depuis un fichier sauvegarde)
-int numMap = 3; //numéro de la map actuelle (à charger depuis un fichier sauvegarde)
-char mapPath[]="map/08.lvl"; //chemin vers le fichier source de la carte actuelle
+int musicMapPrec = -1; //musique jouée lors sur la carte précédente (par défaut -1)
+int musicMap=1; //musique jouée sur la map actuelle
+int numMapPrec =5; //numéro de la map précédente (à charger depuis un fichier sauvegarde)
+int numMap = 5; //numéro de la map actuelle (à charger depuis un fichier sauvegarde)
+char nomMap[40]="";
+char mapPath[]="map/05.lvl"; //chemin vers le fichier source de la carte actuelle
 int typeSprite = 0; //sprites de petites tailles (0) ou de grande taille (12)
 int lancerCombat = 0; // variable qui stocke le nombre de pas dans les hautes herbes sans avoir lancé de combat
 bool surf = FALSE; //stocke si le perso peut surfer ou non

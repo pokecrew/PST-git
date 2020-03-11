@@ -7,7 +7,7 @@ Case **createMap(char mapPath[]){
   for(int i=0; i<100; i++){
     Map[i]= malloc(100*sizeof(Case));
   }
-  printf(GREEN"[createMap]:"RESET"Création Map ok \n");
+//  printf(GREEN"[createMap]:"RESET"Création Map ok \n");
   return Map;
 }
 
@@ -225,6 +225,12 @@ int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte){
                     case 2: //changement map
                         ajouterElementFilePorte(filePorte,chaine);
                     break;
+                    case 3: //nom de la carte à afficher
+                        chargerNomCarte(chaine);
+                    break;
+                    case 4://musique à charger
+                        chargerMusicCarte(chaine);
+                    break;
                   }
                 }
                 else {
@@ -341,6 +347,9 @@ int chargerTypeEvenement(Decors element){
   }
   else if(element.numIMG == 8020){//heal
      return 16;
+  }
+  else if(element.numIMG >= 8021 && element.numIMG <= 8029){//Objets texte
+     return 17;
   }
   else{
     return 0;
@@ -659,6 +668,7 @@ void afficheCollisions(Case ** Map, SDL_Surface *ecran){
 //fonction qui permet de changer de carte
 int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position){
   int mapPrec = numMap; //stocke la map précédente
+  musicMapPrec = musicMap;
   mapPath[4]= (numeroMap/10)+48;
   mapPath[5]= numeroMap%10+48;
   //printf("\n"BLUE"[changeMap]:"RESET"x,y :%d,%d\n",perso_position->x,perso_position->y);
@@ -670,7 +680,7 @@ int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *fil
 //  printf(GREEN"[changeMap]:"RESET"Dimensions Map OK\n");
   chargerObjets(mapPath, fileDecors, filePorte);//on charge les décors
   if(numMap == 2 || (numMap >= 9 && numMap <=11)){ //si on doit charger une map réutilisable (Centre Pkmn, maison, etc...)
-    printf(GREEN"[changeMap]:"RESET"MapCommune\n");
+  //  printf(GREEN"[changeMap]:"RESET"MapCommune\n");
     if(mapPrec != 1 ){
       numMapPrec = mapPrec;
     }
@@ -685,6 +695,9 @@ int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *fil
   centrerMap(Map,fileDecors,filePorte, perso_position);
   //printf(GREEN"[changeMap]:"RESET"centrage OK\n");
   //printf(GREEN"[changeMap]:"RESET"Load ok \n");
+  //Partie Musique
+
+  changerSonCarte();
 }
 //fonction qui initialise la file de Décors
 FilePorte *initialiserFilePorte(){
@@ -826,7 +839,7 @@ int verifChangementMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte
         //printf(GREEN"[verifChangementMap]:"RESET"\ndimensions porte : (%d,%d)", actuel->dim_x, actuel->dim_y);
         //printf(GREEN"[verifChangementMap]:"RESET"\nperso_position = (%d;%d)", perso_position->x, perso_position->y);
         if(numMap > 2){
-          printf(GREEN"[verifChangementMap]:"RESET"\nChangement de perso_position_old lors du passage de la map n°%d à %d\n",numMap,actuel->map);
+          //printf(GREEN"[verifChangementMap]:"RESET"\nChangement de perso_position_old lors du passage de la map n°%d à %d\n",numMap,actuel->map);
           perso_position_old.x = perso_position->x - Map[0][0].position.x;
           perso_position_old.y = perso_position->y - Map[0][0].position.y;
         }
@@ -1148,4 +1161,12 @@ void ajouterPorteMapCommune(Case origine, FilePorte *filePorte){
       filePorte->premier = nouveau;
   }
 //  printf(GREEN"[ajouterPorteMapCommune]:"RESET"Fin\n");
+}
+void chargerNomCarte(char *chaine){
+  for(int i=0; i<40; i++){
+    nomMap[i] = chaine[i];
+  }
+}
+void chargerMusicCarte(char *chaine){
+  musicMap = (chaine[0] - '0')*100 + (chaine[1] - '0')*10 + (chaine[2] - '0');
 }

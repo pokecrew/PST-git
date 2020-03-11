@@ -12,16 +12,18 @@
 #include "perso.c"
 #include "game.c"
 #include "combat.c"
+#include "son.c"
 
 
 int main ( int argc, char** argv ){
     //initialisation des variables
     TTF_Init(); //on initialise les polices
     SDL_Init(SDL_INIT_VIDEO); //initialisation de la sdl
+    loadsoundEffect();//on charge les effets sonores
     SDL_WM_SetIcon(IMG_Load("icon.png"), NULL); // Chargement de l'icône AVANT SDL_SetVideoMode
-    SDL_Surface *ecran = NULL, *test=NULL; //Surface sur laquelle on affichera les différents éléments
+    SDL_Surface *ecran = NULL; //Surface sur laquelle on affichera les différents éléments
     ecran = SDL_SetVideoMode((1280), (720), 32, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_RESIZABLE); //on affiche un écran de la taille souhaitée
-    SDL_WM_SetCaption("PST v0.0", NULL);   //titre de la fenêtre
+    SDL_WM_SetCaption("PST v0.1.1", NULL);   //titre de la fenêtre
     SDL_EnableKeyRepeat(15, 50); //répétition des touches (millisecondes)
     //initialisation des maps
     Case **Map=createMap(mapPath); //On crée un tableau  de cases aux dimensions correspondantes au nombre de cases de la map
