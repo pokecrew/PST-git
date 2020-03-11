@@ -34,6 +34,11 @@ enum Musique_Replay
 {
     BOUCLE = -1, UNIQUE = 1
 };
+typedef enum adversaire_combat adversaire_combat;
+enum adversaire_combat
+{
+    SAUVAGE,DRESSEUR
+};
 //Sont déclarées dans ce fichier les constantes et les variables globales au programme
 
 int TAILLE_SPRITE = 24; //variable taille affichage
@@ -54,6 +59,20 @@ struct Perso{
     SDL_Surface *Perso_Sprites[24];//Tableau des sprites du personnage
 };
 
+typedef struct Poke Poke;
+
+struct Poke{
+  char nom[25];
+  int PV;
+  int exp;
+  int niv;
+  int def;
+  int att;
+  int vit;
+  int id;
+};
+
+
 //variables globales
 SDL_Color couleurBleue = {7, 58, 101}; //couleurs utilisées dans le jeu
 SDL_Color couleurRouge = {165, 38, 10};
@@ -73,3 +92,7 @@ int typeSprite = 0; //sprites de petites tailles (0) ou de grande taille (12)
 int lancerCombat = 0; // variable qui stocke le nombre de pas dans les hautes herbes sans avoir lancé de combat
 bool surf = FALSE; //stocke si le perso peut surfer ou non
 int nbPokeJoueur = 6;
+//poke Theo/Camille
+Poke poke1, poke2;
+// type d'adversaire
+adversaire_combat type_adversaire = SAUVAGE;

@@ -37,6 +37,15 @@ int main ( int argc, char** argv ){
     chargerSpritesPerso(perso.numSprite,perso.Perso_Sprites);
     perso.position.x=FENETRE_W/2;
     perso.position.y=FENETRE_H/2;
+    // initialisation pokemon et stats
+    poke1.id = 3;
+    poke1.niv = 30;
+    poke1.exp = (poke1.niv)*(poke1.niv)*(poke1.niv);
+    printf("%d\n",poke1.exp);
+    poke2.id = 2;
+    poke2.niv = 20;
+    calcul_stat(&poke2);
+    calcul_stat(&poke1);
 
     //la boucle suivante constitue le menu
     int continuer = 1;
