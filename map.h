@@ -28,6 +28,7 @@ struct Decors{
     int dim_y;        //dimension en longueur (nombre de case)
     int pos_x;        //position sur l'axe des x (nombre de case)
     int pos_y;        //position sur l'axe des y (nombre de case)
+    int pos_z;
     int repeat_x;     //nombre de répétitions de l'objet sur les x
     int repeat_y;     //nombre de répétitions de l'objet sur les y
     Decors_type type;   //type de décors (arbre, batiment, etc)
@@ -93,4 +94,8 @@ void changerDimensionsMap(char mapPath[], Case **Map);
 void ajouterPorteMapCommune(Case origine, FilePorte *filePorte);
 //Lancement combat
 void lancementCombat(SDL_Surface *ecran);
+//
+void chargerNomCarte(char *chaine);
+void chargerMusicCarte(char *chaine);
+
 #endif // MAP_H_INCLUDED

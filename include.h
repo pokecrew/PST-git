@@ -15,4 +15,5 @@
   #include "perso.h"
   #include "game.h"
   #include "combat.h"
+  #include "son.h"
 #endif // DEF_INCL

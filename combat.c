@@ -22,13 +22,12 @@ void combat(SDL_Surface *ecran)
 	int i;
   int joueur = 0;
 //  Poke pokemon[20] = {"", 0};
-
+ Poke j1, j2;
+  j1.PV = j2.PV = 100;
   char TAB[100];
   char TAB1[100];
-	printf("pv du pokemon 1 : %d\n",poke1.PV);
-	printf("pv du pokemon 2 : %d\n",poke2.PV);
-  sprintf(TAB,"pv : %d ",poke1.PV);
-  sprintf(TAB1,"pv : %d",poke2.PV);
+  sprintf(TAB,"pv : %d ",j1.PV);
+  sprintf(TAB1,"pv : %d",j2.PV);
 	pos_mypoke.x = 280;
 	pos_mypoke.y = 300;
 	pos_fond.x = 244;
@@ -192,22 +191,10 @@ void combat(SDL_Surface *ecran)
             if ((pos_texte_attaques.x <= event.button.x) && ((pos_texte_attaques.x + longueur4) >= event.button.x) && (pos_texte_attaques.y <= event.button.y) && (pos_texte_attaques.y + hauteur >= event.button.y))
             {
               printf(" lancement charge \n");
-              joueur = deroulement(ecran, joueur);
-              printf("%d\n",poke1.PV);
-							if(poke1.PV <= 0)
-							{
-								printf(" poke1 est mort\n");
-								continuer = 0;
-							}
-							else if(poke2.PV <= 0)
-							{
-								printf(" poke2 est mort \n");
-								printf("%d\n",calcul_exp_gagne(poke2));
-								ajout_exp(calcul_exp_gagne(poke2));
-								continuer = 0;
-							}
-              sprintf(TAB,"pv : %d ",poke1.PV);
-              sprintf(TAB1,"pv : %d ",poke2.PV);
+              joueur = deroulement(ecran, &j1, &j2, joueur);
+              printf("%d\n",j1.PV);
+              sprintf(TAB,"pv : %d ",j1.PV);
+              sprintf(TAB1,"pv : %d ",j2.PV);
               pv = TTF_RenderText_Blended(police,TAB, couleurNoire);
               pv_2 = TTF_RenderText_Blended(police,TAB1, couleurNoire);
               SDL_BlitSurface(rect_pv, NULL, ecran, &pos_rect_pv);
@@ -439,83 +426,24 @@ while(changer)
     SDL_BlitSurface(rect, NULL, ecran, &pos_rect);
 
   }
-   int deroulement(SDL_Surface *ecran, int joueur)
+   int deroulement(SDL_Surface *ecran, Poke *j1, Poke *j2, int joueur)
    {
      if (joueur == 0)
      {
-      	poke2.PV-=calcul_pv_perdu(poke1, poke2);
-    }
-
-		 else {
-
-    		poke1.PV-=calcul_pv_perdu(poke2, poke1);
+        if(j1->PV <= 0)
+       {
+         printf("il est mort");
+       }
+       else
+        j1->PV-=20;
+    }  else {
+      if(j2->PV <= 0)
+     {
+       printf("il est mort");
+     }
+     else
+      j2->PV-=20;
 
     }
     return (joueur +1)%2;
 }
-	int calcul_stat(Poke *poke){
-		FILE *fic = NULL;
-		fic = fopen("Ressources/Stat_poke","r");
-		char TAB[120];
-		fgets(TAB, 119, fic);
-		int id_f = 0;
-		while(id_f != poke->id){
-			fgets(TAB, 119, fic);
-			id_f =	(TAB[0]-'0')*100 + (TAB[1]-'0')*10 + TAB[2]-'0';
-		}
-		// charger les stats de base
-			poke->PV =	(TAB[32]-'0')*100 + (TAB[33]-'0')*10 + TAB[34]-'0';
-			printf("%d\n",poke->PV);
-			poke ->PV = ((2*poke->PV+31)*poke->niv)/100+poke->niv+10;
-			printf("%d\n",poke ->PV);
-			poke->att =	(TAB[40]-'0')*100 + (TAB[41]-'0')*10 + TAB[42]-'0';
-			printf("%d\n",poke->att);
-			poke ->att = ((2*poke->att+31)*poke->niv)/100+5;
-	//		printf("%d\n",poke ->att);
-			poke->def =	(TAB[48]-'0')*100 + (TAB[49]-'0')*10 + TAB[50]-'0';
-			printf("%d\n",poke -> def);
-			poke->def = ((2*poke->def+31)*poke->niv)/100+5;
-	//		printf("%d\n",poke -> def);
-			poke->vit =	(TAB[72]-'0')*100 + (TAB[73]-'0')*10 + TAB[74]-'0';
-		//	printf("%d\n",poke ->vit);
-			poke ->vit = ((2*poke->vit+31)*poke->niv)/100+5;
-			//	printf("%d\n",poke ->vit);
-}
-	int calcul_exp_gagne(Poke poke){
-		float a = 1;
-			if (type_adversaire==DRESSEUR){
-				a = 1.5;
-			}
-		FILE *fic = NULL;
-		fic = fopen("Ressources/Stat_poke","r");
-		char TAB[120];
-		fgets(TAB, 119, fic);
-		int id_f = 0;
-		while(id_f != poke.id){
-			fgets(TAB, 119, fic);
-			id_f =	(TAB[0]-'0')*100 + (TAB[1]-'0')*10 + TAB[2]-'0';
-		}
-			// charger les stats de base
-		int b =	(TAB[80]-'0')*100 + (TAB[81]-'0')*10 + TAB[82]-'0';
-
-		//calcul exp obtenue
-		return (a*b*poke.niv)/7;
-	}
-	void ajout_exp(int exp_gagne){
-		poke1.exp += exp_gagne;
-		printf("%d\n",poke1.exp);
-		printf("%d\n",poke1.niv);
-		while(poke1.exp >= ((poke1.niv+1)*(poke1.niv+1)*(poke1.niv+1))){
-			poke1.niv++;
-			printf("%d\n",poke1.niv);
-		}
-printf("experience total : %d\n",poke1.exp);
-	}
-
-	int calcul_pv_perdu(Poke attaquant, Poke defenseur){
-
-
-
-		return ((attaquant.niv*0.4+2)*attaquant.att*40)/(defenseur.def*50)+2;
-
-	}
