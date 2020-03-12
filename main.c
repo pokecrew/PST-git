@@ -11,74 +11,84 @@
 #include "map.c"
 #include "perso.c"
 #include "game.c"
+#include "combat.c"
+#include "son.c"
 
 
 int main ( int argc, char** argv ){
     //initialisation des variables
     TTF_Init(); //on initialise les polices
-    char mapPath[]="map/02.lvl"; //chemin vers le fichier source
     SDL_Init(SDL_INIT_VIDEO); //initialisation de la sdl
-    SDL_WM_SetIcon(IMG_Load("images/icon.png"), NULL); // Chargement de l'icône AVANT SDL_SetVideoMode
+    loadsoundEffect();//on charge les effets sonores
+    SDL_WM_SetIcon(IMG_Load("icon.png"), NULL); // Chargement de l'icône AVANT SDL_SetVideoMode
     SDL_Surface *ecran = NULL; //Surface sur laquelle on affichera les différents éléments
-    ecran = SDL_SetVideoMode((1280), (720), 32, SDL_HWSURFACE | SDL_DOUBLEBUF); //on affiche un écran de la taille souhaitée
-    SDL_WM_SetCaption("PST v0.0", NULL);   //titre de la fenêtre
-     SDL_EnableKeyRepeat(10, 15); //répétition des touches
+    ecran = SDL_SetVideoMode((1280), (720), 32, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_RESIZABLE); //on affiche un écran de la taille souhaitée
+    SDL_WM_SetCaption("PST v0.1.1", NULL);   //titre de la fenêtre
+    SDL_EnableKeyRepeat(15, 50); //répétition des touches (millisecondes)
     //initialisation des maps
     Case **Map=createMap(mapPath); //On crée un tableau  de cases aux dimensions correspondantes au nombre de cases de la map
     FileDecors *fileDecors = initialiserFileDecors();
+    FilePorte *filePorte = initialiserFilePorte();
     int chargementMap = 0;
     chargerSpritesMap(); //chargement en mémoire des sprites de la Map
     //initialisation du personnage
-    int numSpritePerso = 0;//numéro du sprite du personnage du joueur
-    SDL_Surface *Perso_Sprites[12];//Tableau des srpties du personnage
-      //la boucle suivante constitue le menu
+    Perso perso;
+    perso.numSprite = 0;
+    chargerSpritesPerso(perso.numSprite,perso.Perso_Sprites);
+    perso.position.x=FENETRE_W/2;
+    perso.position.y=FENETRE_H/2;
+    // initialisation pokemon et stats
+    poke1.id = 3;
+    poke1.niv = 30;
+    poke1.exp = (poke1.niv)*(poke1.niv)*(poke1.niv);
+    printf("%d\n",poke1.exp);
+    poke2.id = 2;
+    poke2.niv = 20;
+    calcul_stat(&poke2);
+    calcul_stat(&poke1);
+
+    //la boucle suivante constitue le menu
     int continuer = 1;
     int Menu=0;
     SDL_Event event; //on crée un evenement
-    while (continuer){
 
+    while (continuer){
         Menu = menu(ecran);
         switch(Menu){
-            case -1:
+            case -2:
               continuer = 0;
             break;
-            case 0: //Thomas
+            case 0: //Quitter
+                  continuer = 0;
+            break;
+            case 1: //Alexis/Sarah
+
+            return 0;
+
+            break;
+            case 2: //Camille/Théo(Combats)
+
+              combat(ecran);
+
+            break;
+            case 3: //Thomas(Jeu)
                 //chargement
-                    chargerDecors(mapPath, fileDecors);//on charge les décors
-                    chargementMap=loadMap(mapPath, Map);
-                    chargerSpritesPerso(0,Perso_Sprites);
-
-
-
-                //Affichage
-
-                  //  displayMap(Map, ecran);
-                  // afficherDecors(fileDecors, ecran);
-                  //  afficherFileTerm(fileDecors);
-                  deplacerPerso(Perso_Sprites,ecran , Map, fileDecors);
+                    changeMap(numMap, Map, fileDecors, filePorte, &perso.position);
+                    //afficherFileDecorsTerm(fileDecors);
+                    jeu(perso,ecran , Map, fileDecors, filePorte);
 
                 //Libération de la mémoire
                     viderFileDecors(fileDecors);
-
-                //SDL_Delay(3500);
-            break;
-            case 1: //Alexis
-
+                    viderFilePorte(filePorte);
+                    //On libère la map
 
             break;
-            case 2: //Camille
-
-
-            break;
-            case 3: //Sarah
-
-            break;
-            case 4: //Theo
+            case 4: //Options
 
             break;
         }
     }
-
+    viderMap(Map);
     Mix_CloseAudio(); //Fermeture de l'API audio
     TTF_Quit();//on quitte sdl_ttf
     SDL_Quit();

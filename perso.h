@@ -3,5 +3,7 @@
 
 //Entrer ici les prototypes
 void chargerSpritesPerso(int numSpritePerso, SDL_Surface **Perso_Sprites);
-void deplacerPerso(SDL_Surface **Perso_Sprites, SDL_Surface *ecran, Case ** Map, FileDecors *file);
+void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *file, FilePorte *filePorte);
+void deplacement(Case ** Map, Perso *perso, FileDecors *fileDecors, FilePorte *filePorte, Direction direction);
+int autoriserDeplacement(Case ** Map,Direction direction, Perso perso, SDL_Surface *ecran);
 #endif // DEF_PERSO

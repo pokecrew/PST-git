@@ -2,7 +2,7 @@
 
 int menu(SDL_Surface *ecran){ //menu d'accueil du jeu
     TTF_Font *police = NULL, *police2 =NULL; //polices propres au menu
-    police = TTF_OpenFont("fonts/angel_bilsh/AngeLBilsh-Demo.ttf", 55); //on charge les polices
+    police = TTF_OpenFont("fonts/LemonJuice.otf", 55); //on charge les polices
     police2 = TTF_OpenFont("fonts/angel_bilsh/AngeLBilsh-Demo.ttf", 37);
     SDL_Surface  *menu = NULL, *titre = NULL, *option1 = NULL, *option2 = NULL, *option3 =NULL, *quitter = NULL, *parametre = NULL; //surfaces servant pour l'ecran d'accueil
     SDL_Surface  *option1_j = NULL, *option2_j = NULL, *option3_j =NULL, *quitter_j = NULL, *parametre_j = NULL; //surfaces servant pour l'ecran d'accueil(couleur jaune)
@@ -18,32 +18,32 @@ int menu(SDL_Surface *ecran){ //menu d'accueil du jeu
     int widthOption = 220;
     int heightOption = 50;
     short int option1_status = 0, option2_status = 0, option3_status=0, quitter_status=0, parametre_status=0;
-    menu = IMG_Load("images/homescreen7.png"); //image de fond de l'écran d'accueil
-    titre = TTF_RenderText_Blended(police, "Pokemoon", couleurTitre);
-    option1 = TTF_RenderText_Blended(police2, "Alexis", couleurTitre);
-    option2 = TTF_RenderText_Blended(police2, "Camille", couleurTitre);
-    option3 = TTF_RenderText_Blended(police2, "Sarah", couleurTitre);
-    parametre = TTF_RenderText_Blended(police2, "Theo", couleurTitre);
-    quitter = TTF_RenderText_Blended(police2, "Thomas", couleurTitre);
-    option1_j = TTF_RenderText_Blended(police2, "Alexis", couleurJaune);
-    option2_j = TTF_RenderText_Blended(police2, "Camille", couleurJaune);
-    option3_j = TTF_RenderText_Blended(police2, "Sarah", couleurJaune);
-    parametre_j = TTF_RenderText_Blended(police2, "Theo", couleurJaune);
-    quitter_j = TTF_RenderText_Blended(police2, "Thomas", couleurJaune);
+    menu = IMG_Load("Ressources/menu11.jpg"); //image de fond de l'écran d'accueil
+    titre = TTF_RenderText_Blended(police, "", couleurTitre);
+    option1 = TTF_RenderText_Blended(police, "Alexis - Sarah", couleurTitre);
+    option2 = TTF_RenderText_Blended(police, "Camille - Theo", couleurTitre);
+    option3 = TTF_RenderText_Blended(police, "Thomas", couleurTitre);
+    parametre = TTF_RenderText_Blended(police, "Options", couleurTitre);
+    quitter = TTF_RenderText_Blended(police, "Quitter", couleurTitre);
+    option1_j = TTF_RenderText_Blended(police, "Alexis - Sarah", couleurJaune);
+    option2_j = TTF_RenderText_Blended(police, "Camille - Theo", couleurJaune);
+    option3_j = TTF_RenderText_Blended(police, "Thomas", couleurJaune);
+    parametre_j = TTF_RenderText_Blended(police, "Options", couleurJaune);
+    quitter_j = TTF_RenderText_Blended(police, "Quitter", couleurJaune);
     positionMenu.x = 0; //on centre l'image
     positionMenu.y = 0;
     positionTitre.x = 830;
     positionTitre.y = 70;
-    positionOption1.x = 830;//on centre l'image
-    positionOption1.y = 170;
-    positionOption2.x = 830; //on centre l'image
-    positionOption2.y = 230;
-    positionOption3.x = 830; //on centre l'image
-    positionOption3.y = 290;
-    positionParametre.x = 830;
-    positionParametre.y = 350;
-    positionQuitter.x = 830;
-    positionQuitter.y = 410;
+    positionOption1.x = 100;//on centre l'image
+    positionOption1.y = 580;
+    positionOption2.x = 350; //on centre l'image
+    positionOption2.y = 580;
+    positionOption3.x = 600; //on centre l'image
+    positionOption3.y = 580;
+    positionParametre.x = 800;
+    positionParametre.y = 580;
+    positionQuitter.x = 1000;
+    positionQuitter.y = 580;
     int choix = 0;
 
     //la boucle suivante constitue le menu
@@ -60,7 +60,7 @@ int menu(SDL_Surface *ecran){ //menu d'accueil du jeu
                         continuer = 0;
                         choix = -1;
                     break;
-                    case SDLK_UP: //si c'est la flèche du haut
+                    case SDLK_LEFT: //si c'est la flèche du haut
                         switch(choix){ //en fonction de l'onglet en surbrillance actuel
                             case 0 :
                                 choix = 4;
@@ -90,7 +90,7 @@ int menu(SDL_Surface *ecran){ //menu d'accueil du jeu
 
                         }
                     break;
-                    case SDLK_DOWN: //si c'est flèche du bas
+                    case SDLK_RIGHT: //si c'est flèche du bas
                         switch(choix){ //en fonction de l'élément en surbrillance actuelle
                             case 0 :
                                 choix++ ;
