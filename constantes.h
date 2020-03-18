@@ -29,11 +29,13 @@ enum bool
 {
     TRUE,FALSE
 };
+
 typedef enum Musique_Replay Musique_Replay;
 enum Musique_Replay
 {
     BOUCLE = -1, UNIQUE = 1
 };
+
 typedef enum adversaire_combat adversaire_combat;
 enum adversaire_combat
 {
@@ -52,7 +54,7 @@ typedef struct Perso Perso;
 
 //Structure des objets Case
 struct Perso{
-    int x;        //position sur les x (coin supérieur gauche) (nombre de case)
+    int x;        //position sur les x (coin supérieur gauche)(nombre de case)
     int y;        //position sur les y (coin supérieur gauche)(nombre de case)
     int numSprite; //numéro sprite
     SDL_Rect position; //positions de la surface

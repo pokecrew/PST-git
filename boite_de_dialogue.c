@@ -4,7 +4,8 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 
-int main(){
+int main()
+{
   SDL_Surface *ecran = NULL, *personnage = NULL, *pnj = NULL, *dialogue = NULL, *erased = NULL;
   SDL_Surface *dialogue2 = NULL, *dialogue3 = NULL, *nom = NULL, *bulle = NULL, *nom2 = NULL, *erased_bulle = NULL;
   SDL_Rect position_personnage, position_pnj, position_bulle, position_dialogue;
@@ -83,12 +84,14 @@ int main(){
       case SDL_QUIT:
         boucle = 0;
         break;
+
       case SDL_KEYDOWN:
         switch(event.key.keysym.sym)
         {
           case SDLK_ESCAPE:
             boucle = 0;
             break;
+
           case SDLK_RIGHT:
             if(pause_mvt == 1)
             {
@@ -110,6 +113,7 @@ int main(){
               SDL_Flip(ecran);
             }
             break;
+
           case SDLK_LEFT:
             if(pause_mvt == 1)
             {
@@ -131,6 +135,7 @@ int main(){
               SDL_Flip(ecran);
             }
             break;
+
           case SDLK_UP:
             if(pause_mvt == 1)
             {
@@ -152,6 +157,7 @@ int main(){
               SDL_Flip(ecran);
             }
             break;
+
           case SDLK_DOWN:
             if(pause_mvt == 1)
             {
@@ -173,6 +179,7 @@ int main(){
               SDL_Flip(ecran);
             }
             break;
+            
           case SDLK_RETURN:
             if(((position_personnage.x == position_pnj.x + 50) || (position_personnage.x == position_pnj.x - 50) || (position_personnage.y == position_pnj.y + 50) || (position_personnage.y == position_pnj.y - 50)) && ((position_personnage.x == position_pnj.x) || (position_personnage.y == position_pnj.y)))
             {

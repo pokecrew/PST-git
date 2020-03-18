@@ -62,6 +62,7 @@ struct FilePorte
     Porte *premier; //adresse du premier décors de la file
 };
 //Map
+
 Case **createMap(char mapPath[]);
 int loadMap(char mapPath[], Case **Map);
 void chargerSpritesMap();
