@@ -76,7 +76,10 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                   refresh = 1; //on dit à l'ordinateur de rafraichir l'affichage
                   switch(event.key.keysym.sym){
                     case SDLK_ESCAPE: // arrêter le jeu
+                        //Mix_RewindMusic();
+                        //Mix_PauseMusic();
                         refresh = 0; //pas besoin de rafraichir
+                        SDL_Delay(100);
                         continuer = 0;
                     break;
                     case SDLK_UP: // Flèche haut

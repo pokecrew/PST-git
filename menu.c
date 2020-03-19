@@ -52,13 +52,13 @@ int menu(SDL_Surface *ecran){ //menu d'accueil du jeu
         switch(event.type){ //on teste son type
             case SDL_QUIT: //si c'est un clic sur la croix rouge alors on quitter
                 continuer = 0;
-                choix = -1;
+                choix = -2;
             break;
             case SDL_KEYDOWN: //si c'est un appui sur une touche
                 switch(event.key.keysym.sym){
                     case SDLK_ESCAPE: // arrêter le jeu
                         continuer = 0;
-                        choix = -1;
+                        choix = -2;
                     break;
                     case SDLK_LEFT: //si c'est la flèche du haut
                         switch(choix){ //en fonction de l'onglet en surbrillance actuel
