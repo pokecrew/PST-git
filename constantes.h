@@ -1,6 +1,3 @@
-#ifndef DEF_CONST
-#define DEF_CONST
-
 //Raccourcis terminal
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"      /* Black */
@@ -32,11 +29,25 @@ enum bool
 {
     TRUE,FALSE
 };
+
+typedef enum Musique_Replay Musique_Replay;
+enum Musique_Replay
+{
+    BOUCLE = -1, UNIQUE = 1
+};
+
 typedef enum adversaire_combat adversaire_combat;
 enum adversaire_combat
 {
     SAUVAGE,DRESSEUR
 };
+
+typedef enum Type Type;
+enum Type
+{
+    COMBAT, EAU, ELEC, NORMAL, FEU, GLACE, INSECTE, PLANTE, POISON, PSY, ROCHE, GROUND, SPECTRE, VOL
+};
+
 //Sont déclarées dans ce fichier les constantes et les variables globales au programme
 
 int TAILLE_SPRITE = 24; //variable taille affichage
@@ -48,7 +59,7 @@ int FENETRE_W=1280;
 int FENETRE_H=720;
 typedef struct Perso Perso;
 
-//Structure des objets Case
+//Structure des objets Perso
 struct Perso{
     int x;        //position sur les x (coin supérieur gauche) (nombre de case)
     int y;        //position sur les y (coin supérieur gauche)(nombre de case)
@@ -56,6 +67,20 @@ struct Perso{
     SDL_Rect position; //positions de la surface
     SDL_Surface *Perso_Sprites[24];//Tableau des sprites du personnage
 };
+
+typedef struct Att Att;
+
+struct Att{
+  int id;
+  char nom[40];
+  Type type;
+  int classe; //0 = Physique, 1 = Spéciale
+  int puissance;
+  int precision;
+  int pp_max;
+  int pp;
+};
+
 
 typedef struct Poke Poke;
 
@@ -68,7 +93,10 @@ struct Poke{
   int att;
   int vit;
   int id;
+  Att  attaque[4];
 };
+
+
 
 //variables globales
 SDL_Color couleurBleue = {7, 58, 101}; //couleurs utilisées dans le jeu
@@ -76,12 +104,15 @@ SDL_Color couleurRouge = {165, 38, 10};
 SDL_Color couleurBlanche = {190, 190, 190};
 SDL_Color couleurJaune = {182, 120, 35};
 SDL_Color couleurTitre = {0, 0, 0};
-Mix_Music *soundEffect[4]; //Tableau contenant les Musiques
+Mix_Music *music; //Musique du jeu
 SDL_Surface *Map_Sprites[10000];//Tableau des sprites de la Map
 SDL_Rect perso_position_old; //dernière position du joueur sur une map unique (= autre que maison, centre pkmn, etc...) (relatif au coordonnées de Map[0][0])
-int numMapPrec =3; //numéro de la map précédente (à charger depuis un fichier sauvegarde)
-int numMap = 3; //numéro de la map actuelle (à charger depuis un fichier sauvegarde)
-char mapPath[]="map/08.lvl"; //chemin vers le fichier source de la carte actuelle
+int musicMapPrec = -1; //musique jouée lors sur la carte précédente (par défaut -1)
+int musicMap=1; //musique jouée sur la map actuelle
+int numMapPrec =5; //numéro de la map précédente (à charger depuis un fichier sauvegarde)
+int numMap = 5; //numéro de la map actuelle (à charger depuis un fichier sauvegarde)
+char nomMap[40]="";
+char mapPath[]="map/05.lvl"; //chemin vers le fichier source de la carte actuelle
 int typeSprite = 0; //sprites de petites tailles (0) ou de grande taille (12)
 int lancerCombat = 0; // variable qui stocke le nombre de pas dans les hautes herbes sans avoir lancé de combat
 bool surf = FALSE; //stocke si le perso peut surfer ou non
@@ -90,4 +121,3 @@ int nbPokeJoueur = 6;
 Poke poke1, poke2;
 // type d'adversaire
 adversaire_combat type_adversaire = SAUVAGE;
-#endif // DEF_CONST

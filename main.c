@@ -12,16 +12,18 @@
 #include "perso.c"
 #include "game.c"
 #include "combat.c"
-
+#include "son.c"
+#include "intro.c"
 
 int main ( int argc, char** argv ){
     //initialisation des variables
     TTF_Init(); //on initialise les polices
     SDL_Init(SDL_INIT_VIDEO); //initialisation de la sdl
+    loadsoundEffect();//on charge les effets sonores
     SDL_WM_SetIcon(IMG_Load("icon.png"), NULL); // Chargement de l'icône AVANT SDL_SetVideoMode
-    SDL_Surface *ecran = NULL, *test=NULL; //Surface sur laquelle on affichera les différents éléments
+    SDL_Surface *ecran = NULL; //Surface sur laquelle on affichera les différents éléments
     ecran = SDL_SetVideoMode((1280), (720), 32, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_RESIZABLE); //on affiche un écran de la taille souhaitée
-    SDL_WM_SetCaption("PST v0.0", NULL);   //titre de la fenêtre
+    SDL_WM_SetCaption("PST v0.1.1", NULL);   //titre de la fenêtre
     SDL_EnableKeyRepeat(15, 50); //répétition des touches (millisecondes)
     //initialisation des maps
     Case **Map=createMap(mapPath); //On crée un tableau  de cases aux dimensions correspondantes au nombre de cases de la map
@@ -36,20 +38,21 @@ int main ( int argc, char** argv ){
     perso.position.x=FENETRE_W/2;
     perso.position.y=FENETRE_H/2;
     // initialisation pokemon et stats
-    poke1.id = 2;
-    poke1.niv = 20;
+    poke1.id = 3;
+    poke1.niv = 30;
     poke1.exp = (poke1.niv)*(poke1.niv)*(poke1.niv);
     printf("%d\n",poke1.exp);
     poke2.id = 2;
     poke2.niv = 20;
     calcul_stat(&poke2);
     calcul_stat(&poke1);
-
+    int attaques[4]={5,12,3,6};
+    charger_att((poke1.attaque), attaques);
     //la boucle suivante constitue le menu
     int continuer = 1;
     int Menu=0;
     SDL_Event event; //on crée un evenement
-
+    //intro_video(ecran);
     while (continuer){
         Menu = menu(ecran);
         switch(Menu){

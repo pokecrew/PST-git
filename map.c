@@ -7,7 +7,7 @@ Case **createMap(char mapPath[]){
   for(int i=0; i<100; i++){
     Map[i]= malloc(100*sizeof(Case));
   }
-  printf(GREEN"[createMap]:"RESET"Création Map ok \n");
+//  printf(GREEN"[createMap]:"RESET"Création Map ok \n");
   return Map;
 }
 
@@ -212,10 +212,10 @@ int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte){
     mapPath[9]='j';
     //printf(GREEN"[chargerObjets]:"RESET"%s\n", mapPath);
     mapFile = fopen(mapPath, "r"); //ouverture du fichier mapPath en lecture seule
-    char chaine[30] =""; //chaine qui contiendra la ligne lue par fgets
+    char chaine[40] =""; //chaine qui contiendra la ligne lue par fgets
 
     if (mapFile != NULL){
-        while (fgets(chaine, 30, mapFile) != NULL){ //tant qu'on est pas arrivé à la dernière ligne
+        while (fgets(chaine, 40, mapFile) != NULL){ //tant qu'on est pas arrivé à la dernière ligne
                 cmp = strcmp(chaine,"##########\n");
                 if(cmp != 0){
                   switch (objet_type) {
@@ -224,6 +224,12 @@ int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte){
                     break;
                     case 2: //changement map
                         ajouterElementFilePorte(filePorte,chaine);
+                    break;
+                    case 3: //nom de la carte à afficher
+                        chargerNomCarte(chaine);
+                    break;
+                    case 4://musique à charger
+                        chargerMusicCarte(chaine);
                     break;
                   }
                 }
@@ -339,8 +345,11 @@ int chargerTypeEvenement(Decors element){
   else if(element.numIMG == 8019){//bord eau avec eau au dessous
     return 15;
   }
-  else if(element.numIMG == 8020){//bord eau avec eau au dessous
-    return 16;
+  else if(element.numIMG == 8020){//heal
+     return 16;
+  }
+  else if(element.numIMG >= 8021 && element.numIMG <= 8029){//Objets texte
+     return 17;
   }
   else{
     return 0;
@@ -406,6 +415,7 @@ Decors chargerCaracteristiquesDecors(char *chaine){
     //récupération de sa position (en cases)
     decor.pos_x = ((chaine[8]-48)*10)+(chaine[9]-48);
     decor.pos_y = ((chaine[11]-48)*10)+(chaine[12]-48);
+    decor.pos_z = (chaine[14]-48);
       //printf(", ses coordonnées sont (%d;%d) \n", decor.pos_x, decor.pos_y);
 
     //Calcul de sa position en pixel
@@ -414,13 +424,13 @@ Decors chargerCaracteristiquesDecors(char *chaine){
       //printf(", ses coordonnées en pixels sont (%d;%d) \n", decor.position.x, decor.position.y);
 
     //récupération de ses dimensions (en cases)
-    decor.dim_x = ((chaine[15]-48)*10)+(chaine[16]-48);
-    decor.dim_y = ((chaine[18]-48)*10)+(chaine[19]-48);
+    decor.dim_x = ((chaine[17]-48)*10)+(chaine[18]-48);
+    decor.dim_y = ((chaine[20]-48)*10)+(chaine[21]-48);
       //printf(", ses dimensions sont (%d;%d) \n", decor.dim_x, decor.dim_y);
 
     //récupération de ses dimensions (en cases)
-    decor.repeat_x = ((chaine[22]-48)*10)+(chaine[23]-48);
-    decor.repeat_y = ((chaine[25]-48)*10)+(chaine[26]-48);
+    decor.repeat_x = ((chaine[24]-48)*10)+(chaine[25]-48);
+    decor.repeat_y = ((chaine[27]-48)*10)+(chaine[28]-48);
   //      printf(", sa répétition se fera %d fois sur les x et %d fois sur les y \n", decor.repeat_x, decor.repeat_y);
 
 
@@ -526,7 +536,7 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran, Perso perso, int curre
           position.x = actuel->position.x+i*(repeat_x*TAILLE_SPRITE);
           for(int j=0; j<(actuel->repeat_y); j++){
               position.y = actuel->position.y+j*(repeat_y*TAILLE_SPRITE);
-              if(i == 0 && j == 0 && affichage_Perso == 0 && position.y >= perso.position.y){// && (position.x >= perso.position.x)){
+              if(i == 0 && j == 0 && affichage_Perso == 0 && position.y >= perso.position.y && actuel->pos_z >= 5){// && (position.x >= perso.position.x)){
                 SDL_BlitSurface(perso.Perso_Sprites[currentSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
                 affichage_Perso = 1;
               }
@@ -537,7 +547,7 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran, Perso perso, int curre
       }
     }
     else{
-      if(affichage_Perso == 0 && position.y >= perso.position.y){// && (position.x >= perso.position.x)){
+      if(affichage_Perso == 0 && position.y >= perso.position.y && actuel->pos_z >= 5){// && (position.x >= perso.position.x)){
         SDL_BlitSurface(perso.Perso_Sprites[currentSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
       //  printf(GREEN"[afficherDecors]:"RESET"S :perso : (%d;%d) \n", perso.position.x, perso.position.y);
         affichage_Perso = 1;
@@ -658,6 +668,7 @@ void afficheCollisions(Case ** Map, SDL_Surface *ecran){
 //fonction qui permet de changer de carte
 int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position){
   int mapPrec = numMap; //stocke la map précédente
+  musicMapPrec = musicMap;
   mapPath[4]= (numeroMap/10)+48;
   mapPath[5]= numeroMap%10+48;
   //printf("\n"BLUE"[changeMap]:"RESET"x,y :%d,%d\n",perso_position->x,perso_position->y);
@@ -669,7 +680,7 @@ int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *fil
 //  printf(GREEN"[changeMap]:"RESET"Dimensions Map OK\n");
   chargerObjets(mapPath, fileDecors, filePorte);//on charge les décors
   if(numMap == 2 || (numMap >= 9 && numMap <=11)){ //si on doit charger une map réutilisable (Centre Pkmn, maison, etc...)
-    printf(GREEN"[changeMap]:"RESET"MapCommune\n");
+  //  printf(GREEN"[changeMap]:"RESET"MapCommune\n");
     if(mapPrec != 1 ){
       numMapPrec = mapPrec;
     }
@@ -684,6 +695,9 @@ int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *fil
   centrerMap(Map,fileDecors,filePorte, perso_position);
   //printf(GREEN"[changeMap]:"RESET"centrage OK\n");
   //printf(GREEN"[changeMap]:"RESET"Load ok \n");
+  //Partie Musique
+
+  changerSonCarte();
 }
 //fonction qui initialise la file de Décors
 FilePorte *initialiserFilePorte(){
@@ -825,7 +839,7 @@ int verifChangementMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte
         //printf(GREEN"[verifChangementMap]:"RESET"\ndimensions porte : (%d,%d)", actuel->dim_x, actuel->dim_y);
         //printf(GREEN"[verifChangementMap]:"RESET"\nperso_position = (%d;%d)", perso_position->x, perso_position->y);
         if(numMap > 2){
-          printf(GREEN"[verifChangementMap]:"RESET"\nChangement de perso_position_old lors du passage de la map n°%d à %d\n",numMap,actuel->map);
+          //printf(GREEN"[verifChangementMap]:"RESET"\nChangement de perso_position_old lors du passage de la map n°%d à %d\n",numMap,actuel->map);
           perso_position_old.x = perso_position->x - Map[0][0].position.x;
           perso_position_old.y = perso_position->y - Map[0][0].position.y;
         }
@@ -1147,4 +1161,12 @@ void ajouterPorteMapCommune(Case origine, FilePorte *filePorte){
       filePorte->premier = nouveau;
   }
 //  printf(GREEN"[ajouterPorteMapCommune]:"RESET"Fin\n");
+}
+void chargerNomCarte(char *chaine){
+  for(int i=0; i<40; i++){
+    nomMap[i] = chaine[i];
+  }
+}
+void chargerMusicCarte(char *chaine){
+  musicMap = (chaine[0] - '0')*100 + (chaine[1] - '0')*10 + (chaine[2] - '0');
 }
