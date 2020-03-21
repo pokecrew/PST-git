@@ -13,7 +13,7 @@
 #include "game.c"
 #include "combat.c"
 #include "son.c"
-
+#include "intro.c"
 
 int main ( int argc, char** argv ){
     //initialisation des variables
@@ -46,12 +46,13 @@ int main ( int argc, char** argv ){
     poke2.niv = 20;
     calcul_stat(&poke2);
     calcul_stat(&poke1);
-
+    int attaques[4]={5,12,3,6};
+    charger_att((poke1.attaque), attaques);
     //la boucle suivante constitue le menu
     int continuer = 1;
     int Menu=0;
     SDL_Event event; //on crée un evenement
-
+    //intro_video(ecran);
     while (continuer){
         Menu = menu(ecran);
         switch(Menu){
