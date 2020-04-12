@@ -98,5 +98,6 @@ void lancementCombat(SDL_Surface *ecran);
 //
 void chargerNomCarte(char *chaine);
 void chargerMusicCarte(char *chaine);
+void Init_Mat_Dialogue(char *chaine, int i);
 
 #endif // MAP_H_INCLUDED

@@ -43,10 +43,16 @@ void chargerSpritesPerso(int numSpritePerso, SDL_Surface **Perso_Sprites)
   }
 }
 
-void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte)
+void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, char Mat_Dialogue[3][100])
 {
+  SDL_Surface *dialogue = NULL, *dialogue2 = NULL, *dialogue3 = NULL;
+  SDL_Rect position_test, position_dialogue;
+  TTF_Font *police_dialogue = NULL;
   SDL_Event event;
+  SDL_Color noir = {0, 0, 0};
   int continuer = 1;
+  int bloquage = 1;
+  int dialogue_possible = 0;
   int iSpriteH = 1;
   int iSpriteD = 1;
   int iSpriteB = 1;
@@ -60,6 +66,17 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
   perso.x=(perso.position.x-(perso.position.x%TAILLE_SPRITE))/TAILLE_SPRITE;
   perso.y=(perso.position.y-(perso.position.y%TAILLE_SPRITE))/TAILLE_SPRITE;
   //  printf(GREEN"[Jeu]:"RESET"%d\t%d\n", perso.x, perso.y);
+
+  position_test.x = TAILLE_SPRITE;
+  position_test.y = 19*TAILLE_SPRITE;
+
+  position_dialogue.x = position_test.x + 2*TAILLE_SPRITE;
+  position_dialogue.y = position_test.y + 2*TAILLE_SPRITE;
+
+  police_dialogue = TTF_OpenFont("bulle_dialogue_police.ttf", 25);
+  dialogue = TTF_RenderText_Blended(police_dialogue, Mat_Dialogue[0], noir);
+  dialogue2 = TTF_RenderText_Blended(police_dialogue,  Mat_Dialogue[1], noir);
+  dialogue3 = TTF_RenderText_Blended(police_dialogue,  Mat_Dialogue[2], noir);
 
   while (continuer)
   {
@@ -92,6 +109,7 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
               break;
 
             case SDLK_UP: // Flèche haut
+              dialogue_possible = 0;
               canmove = autoriserDeplacement(Map, HAUT, perso, ecran);
               current=3;
               if(canmove==1)
@@ -99,9 +117,14 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                 iSpriteH=(iSpriteH+1)%3;
                 deplacement(Map,&perso,fileDecors,filePorte,HAUT);
               }
+              else if(canmove == 2)
+              {
+                dialogue_possible = 1;
+              }
               break;
 
             case SDLK_DOWN: // Flèche bas
+              dialogue_possible = 0;
               canmove = autoriserDeplacement(Map, BAS, perso, ecran);
               current=0;
               if(canmove==1)
@@ -109,9 +132,14 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                 iSpriteB=(iSpriteB+1)%3;
                 deplacement(Map,&perso,fileDecors,filePorte,BAS);
               }
+              else if(canmove == 2)
+              {
+                dialogue_possible = 1;
+              }
               break;
 
             case SDLK_RIGHT: // Flèche droite
+              dialogue_possible = 0;
               canmove = autoriserDeplacement(Map, DROITE, perso, ecran);
               current=1;
               if(canmove==1)
@@ -119,9 +147,14 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                 iSpriteD=(iSpriteD+1)%3;
                 deplacement(Map,&perso,fileDecors,filePorte,DROITE);
               }
+              else if(canmove == 2)
+              {
+                dialogue_possible = 1;
+              }
               break;
 
             case SDLK_LEFT: // Flèche gauche
+              dialogue_possible = 0;
               canmove = autoriserDeplacement(Map, GAUCHE, perso, ecran);
               current=2;
               if(canmove==1)
@@ -129,7 +162,42 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                 iSpriteG=(iSpriteG+1)%3;
                 deplacement(Map,&perso,fileDecors,filePorte,GAUCHE);
               }
+              else if(canmove == 2)
+              {
+                dialogue_possible = 1;
+              }
               break;
+
+              case SDLK_RETURN:
+              if(dialogue_possible == 1)
+              {
+                SDL_BlitSurface(Map_Sprites[9001], NULL, ecran, &position_test);
+                SDL_BlitSurface(dialogue, NULL, ecran, &position_dialogue);
+                SDL_Flip(ecran);
+                while(bloquage)
+                {
+                SDL_WaitEvent(&event);
+                  switch(event.type)
+                  {
+                  case SDL_KEYDOWN:
+                    refresh = 1; //on dit à l'ordinateur de rafraichir l'affichage
+                    switch(event.key.keysym.sym)
+                    {
+                      case SDLK_RETURN:
+                        bloquage = 0;
+                        break;
+                    }
+                    break;
+                  }
+                }
+                bloquage = 1;
+              }
+              else
+              {
+                dialogue_possible = 0;
+              }
+              break;
+
             default:
               refresh = 0;
               break;
@@ -223,153 +291,154 @@ int autoriserDeplacement(Case ** Map, Direction direction, Perso perso, SDL_Surf
   switch(direction)
   {
     case GAUCHE:
-    if((perso.position.x - Map[0][0].position.x)%TAILLE_SPRITE == 0)
-    {
-      return 1;
-    }
-    else
-    {
-      if((perso.position.y - Map[0][0].position.y)%TAILLE_SPRITE == 0)
+      if((perso.position.x - Map[0][0].position.x)%TAILLE_SPRITE == 0)
       {
-        if((Map[y+1][x].type == 1) || x == 0)
-        { //si la case est un mur
-          return 0;
-        }
-        else if((Map[y+1][x].type >= 2))
-        {//si la case est un évènement (haute herbes)
-          //lancementCombat(ecran);
-          return lancerEvenement(Map, y+1, x, GAUCHE, perso, ecran);
-        }
         return 1;
-
       }
       else
-      {//perso.position.y%TAILLE_SPRITE != 0
-        if((Map[y+1][x].type == 1) || (Map[y+2][x].type == 1) || x == 0)
-        { //si une des deux cases est un mur
-          return 0;
+      {
+        if((perso.position.y - Map[0][0].position.y)%TAILLE_SPRITE == 0)
+        {
+          if((Map[y+1][x].type == 1) || x == 0)
+          { //si la case est un mur
+            return 0;
+          }
+          else if((Map[y+1][x].type >= 2))
+          {//si la case est un évènement (haute herbes)
+            //lancementCombat(ecran);
+            return lancerEvenement(Map, y+1, x, GAUCHE, perso, ecran);
+          }
+          return 1;
+
         }
-        else if((Map[y+1][x].type >= 2) || (Map[y+2][x].type >= 2))
-        {//si une des deux cases est un évènement(hautes herbes)
-          //appel fonction camille
-          //lancementCombat(ecran);
-          return  lancerEvenement(Map, y+1, x, GAUCHE, perso, ecran);
-          return  lancerEvenement(Map, y+2, x, GAUCHE, perso, ecran);
+        else
+        {//perso.position.y%TAILLE_SPRITE != 0
+          if((Map[y+1][x].type == 1) || (Map[y+2][x].type == 1) || x == 0)
+          { //si une des deux cases est un mur
+            return 0;
+          }
+          else if((Map[y+1][x].type >= 2) || (Map[y+2][x].type >= 2))
+          {//si une des deux cases est un évènement(hautes herbes)
+            //appel fonction camille
+            //lancementCombat(ecran);
+            return  lancerEvenement(Map, y+1, x, GAUCHE, perso, ecran);
+            return  lancerEvenement(Map, y+2, x, GAUCHE, perso, ecran);
+          }
+          return 1;
         }
-        return 1;
       }
-    }
-    break;
+      break;
 
     case DROITE:
-    if((perso.position.x - Map[0][0].position.x)%TAILLE_SPRITE == 0)
-    {
-      return 1;
-    }
-    else
-    {
-      if((perso.position.y - Map[0][0].position.y)%TAILLE_SPRITE == 0)
-      {
-        if((Map[y+1][x+2].type == 1)|| x == (NBCOL-2))
-        { //si la case est un mur
-          return 0;
-        }
-        if((Map[y+1][x+2].type >= 2))
-        { //si la case est un évènement (hautes herbes)
-          //lancementCombat(ecran);
-          return lancerEvenement(Map, y+1, x+2, GAUCHE, perso, ecran);
-        }
-        return 1;
-      }
-      else
-      {//perso.position.y%TAILLE_SPRITE != 0
-        if((Map[y+1][x+2].type == 1) || (Map[y+2][x+2].type == 1)|| x == (NBCOL-2))
-        {
-          return 0;
-        }
-        else if((Map[y+1][x+2].type >= 2) || (Map[y+2][x+2].type >= 2))
-        {
-          //lancementCombat(ecran);
-          return lancerEvenement(Map, y+1, x+2, DROITE, perso, ecran);
-          return lancerEvenement(Map, y+2, x+2, DROITE, perso, ecran);
-        }
-        return 1;
-      }
-    }
-    break;
-    case HAUT:
-    if((perso.position.y - Map[0][0].position.y)%TAILLE_SPRITE != 0)
-    {
-      return 1;
-    }
-    else
-    {
       if((perso.position.x - Map[0][0].position.x)%TAILLE_SPRITE == 0)
       {
-        if((Map[y][x].type == 1) || (Map[y][x+1].type == 1) || y==0)
-        {
-          return 0;
-        }
-        else if((Map[y][x].type >= 2) || (Map[y][x+1].type >= 2))
-        {
-          //lancementCombat(ecran);
-          return lancerEvenement(Map, y, x, HAUT, perso, ecran);
-          return lancerEvenement(Map, y, x+1, HAUT, perso, ecran);
-        }
         return 1;
       }
       else
-      {//perso.position.x%TAILLE_SPRITE == 0
-        if(Map[y][x+1].type == 1 || y == 0)
+      {
+        if((perso.position.y - Map[0][0].position.y)%TAILLE_SPRITE == 0)
         {
-          return 0;
+          if((Map[y+1][x+2].type == 1)|| x == (NBCOL-2))
+          { //si la case est un mur
+            return 0;
+          }
+          if((Map[y+1][x+2].type >= 2))
+          { //si la case est un évènement (hautes herbes)
+            //lancementCombat(ecran);
+            return lancerEvenement(Map, y+1, x+2, GAUCHE, perso, ecran);
+          }
+          return 1;
         }
-        else if(Map[y][x+1].type >= 2)
-        {
-          //lancementCombat(ecran);
-          return lancerEvenement(Map, y, x+1, HAUT, perso, ecran);
+        else
+        {//perso.position.y%TAILLE_SPRITE != 0
+          if((Map[y+1][x+2].type == 1) || (Map[y+2][x+2].type == 1)|| x == (NBCOL-2))
+          {
+            return 0;
+          }
+          else if((Map[y+1][x+2].type >= 2) || (Map[y+2][x+2].type >= 2))
+          {
+            //lancementCombat(ecran);
+            return lancerEvenement(Map, y+1, x+2, DROITE, perso, ecran);
+            return lancerEvenement(Map, y+2, x+2, DROITE, perso, ecran);
+          }
+          return 1;
         }
+      }
+      break;
+
+    case HAUT:
+      if((perso.position.y - Map[0][0].position.y)%TAILLE_SPRITE != 0)
+      {
         return 1;
       }
-    }
-    break;
+      else
+      {
+        if((perso.position.x - Map[0][0].position.x)%TAILLE_SPRITE == 0)
+        {
+          if((Map[y][x].type == 1) || (Map[y][x+1].type == 1) || y==0)
+          {
+            return 0;
+          }
+          else if((Map[y][x].type >= 2) || (Map[y][x+1].type >= 2))
+          {
+            //lancementCombat(ecran);
+            return lancerEvenement(Map, y, x, HAUT, perso, ecran);
+            return lancerEvenement(Map, y, x+1, HAUT, perso, ecran);
+          }
+          return 1;
+        }
+        else
+        {//perso.position.x%TAILLE_SPRITE == 0
+          if(Map[y][x+1].type == 1 || y == 0)
+          {
+            return 0;
+          }
+          else if(Map[y][x+1].type >= 2)
+          {
+            //lancementCombat(ecran);
+            return lancerEvenement(Map, y, x+1, HAUT, perso, ecran);
+          }
+          return 1;
+        }
+      }
+      break;
 
     case BAS:
-    if((perso.position.y - Map[0][0].position.y)%TAILLE_SPRITE != 0)
-    {
-      return 1;
-    }
-    else
-    {
-      if((perso.position.x - Map[0][0].position.x)%TAILLE_SPRITE == 0)
+      if((perso.position.y - Map[0][0].position.y)%TAILLE_SPRITE != 0)
       {
-        if((Map[y+2][x].type == 1) || (Map[y+2][x+1].type == 1) || y == (NBLIN-2))
-        {
-          return 0;
-        }
-        else if((Map[y+2][x].type >= 2) || (Map[y+2][x+1].type >= 2))
-        {
-          //lancementCombat(ecran);
-          return lancerEvenement(Map, y+2, x, BAS, perso, ecran);
-          return lancerEvenement(Map, y+2, x+1, BAS, perso, ecran);
-        }
         return 1;
       }
       else
-      {//perso.position.y%TAILLE_SPRITE != 0
-        if(Map[y+2][x+1].type == 1 || y == (NBLIN-2))
+      {
+        if((perso.position.x - Map[0][0].position.x)%TAILLE_SPRITE == 0)
         {
-          return 0;
+          if((Map[y+2][x].type == 1) || (Map[y+2][x+1].type == 1) || y == (NBLIN-2))
+          {
+            return 0;
+          }
+          else if((Map[y+2][x].type >= 2) || (Map[y+2][x+1].type >= 2))
+          {
+            //lancementCombat(ecran);
+            return lancerEvenement(Map, y+2, x, BAS, perso, ecran);
+            return lancerEvenement(Map, y+2, x+1, BAS, perso, ecran);
+          }
+          return 1;
         }
-        else if(Map[y+2][x+1].type >= 2)
-        {
-          //lancementCombat(ecran);
-          return lancerEvenement(Map, y+2, x+1, BAS, perso, ecran);
+        else
+        {//perso.position.y%TAILLE_SPRITE != 0
+          if(Map[y+2][x+1].type == 1 || y == (NBLIN-2))
+          {
+            return 0;
+          }
+          else if(Map[y+2][x+1].type >= 2)
+          {
+            //lancementCombat(ecran);
+            return lancerEvenement(Map, y+2, x+1, BAS, perso, ecran);
+          }
+          return 1;
         }
-        return 1;
       }
-    }
-    break;
+      break;
   }
 }
 

@@ -268,16 +268,17 @@ int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte)
   FILE* mapFile = NULL; //pointeur vers le fichier
   int objet_type = 1;
   int cmp = -1;
+  int i = 0;
   //on charge l'extension pour lire le fichier objet
   mapPath[7]='o';
   mapPath[8]='b';
   mapPath[9]='j';
   //printf(GREEN"[chargerObjets]:"RESET"%s\n", mapPath);
   mapFile = fopen(mapPath, "r"); //ouverture du fichier mapPath en lecture seule
-  char chaine[41] =""; //chaine qui contiendra la ligne lue par fgets
+  char chaine[100] =""; //chaine qui contiendra la ligne lue par fgets
   if(mapFile != NULL)
   {
-    while(fgets(chaine, 41, mapFile) != NULL)
+    while(fgets(chaine, 100, mapFile) != NULL)
     { //tant qu'on est pas arrivé à la dernière ligne
     cmp = strcmp(chaine,"##########\n");
     if(cmp != 0)
@@ -285,20 +286,25 @@ int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte)
       switch (objet_type)
       {
         case 1 : //décors
-        ajouterElementFileDecors(fileDecors,chaine);
-        break;
+          ajouterElementFileDecors(fileDecors,chaine);
+          break;
 
         case 2: //changement map
-        ajouterElementFilePorte(filePorte,chaine);
-        break;
+          ajouterElementFilePorte(filePorte,chaine);
+          break;
 
         case 3: //nom de la carte à afficher
-        chargerNomCarte(chaine);
-        break;
+          chargerNomCarte(chaine);
+          break;
 
         case 4://musique à charger
-        chargerMusicCarte(chaine);
-        break;
+          chargerMusicCarte(chaine);
+          break;
+
+        case 5://dialogue PNJ
+          Init_Mat_Dialogue(chaine,i);
+          i++;
+          break;
 
       }
     }
@@ -358,78 +364,79 @@ Decors chargerCaracteristiquesDecors(char *chaine)
   //Traitement en fonction du type d'objet
   if(strcmp(objetType, "sol") == 0)
   { // Si il s'agit d'un sol
-  decor.type = SOL;
-  decor.numIMG = 0000;
-  //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un sol");
-}
-else if(strcmp(objetType, "mur") == 0)
-{ // Si il s'agit d'un arbre
-decor.type = MUR; //on affecte le bon type à l'objet
-decor.numIMG = 1000; //on affecte le bon rang d'image à l'objet
-//printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un arbre");
-}
-else if(strcmp(objetType, "in1") == 0)
-{ // Si il s'agit d'un arbre
-decor.type = INTERIEUR1; //on affecte le bon type à l'objet
-decor.numIMG = 2000; //on affecte le bon rang d'image à l'objet
-typeSprite = 12; //on passe à la grande taille de sprites
-//printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un arbre");
-}
-else if(strcmp(objetType, "arb") == 0)
-{ // Si il s'agit d'un arbre
-decor.type = ARBRE; //on affecte le bon type à l'objet
-decor.numIMG = 5000; //on affecte le bon rang d'image à l'objet
-//printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un arbre");
-}
-else if(strcmp(objetType, "bat") == 0)
-{ // Si il s'agit d'un batiment
-decor.type = BATIMENT;
-decor.numIMG = 6000;
-//printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un batiment");
-}
-else if(strcmp(objetType, "aut") == 0)
-{ // Si il s'agit d'une décoration "autre"
-decor.type = AUTRE;
-decor.numIMG = 7000;
-//printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est de la classe autre");
-}
-else if(strcmp(objetType, "eve") == 0)
-{ // Si il s'agit d'un évènement
-decor.type = EVENEMENT;
-decor.numIMG = 8000;
-//printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un évènement");
-}
-else
-{
-  decor.type = PNJ;
-  decor.numIMG = 9000;
-  //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"Le type d'objet est un pnj");
-}
-//on recupère les chiffre qui suivent le type d'objet et on les stock dans numIMG
-decor.numIMG += ((chaine[3]-48)*100)+((chaine[4]-48)*10)+(chaine[5]-48);
-//printf(" et l'image correspondante est %d.png \n", decor.numIMG);
+    decor.type = SOL;
+    decor.numIMG = 0000;
+    //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un sol");
+  }
+  else if(strcmp(objetType, "mur") == 0)
+  { // Si il s'agit d'un arbre
+    decor.type = MUR; //on affecte le bon type à l'objet
+    decor.numIMG = 1000; //on affecte le bon rang d'image à l'objet
+    //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un arbre");
+  }
+  else if(strcmp(objetType, "in1") == 0)
+  { // Si il s'agit d'un arbre
+    decor.type = INTERIEUR1; //on affecte le bon type à l'objet
+    decor.numIMG = 2000; //on affecte le bon rang d'image à l'objet
+    typeSprite = 12; //on passe à la grande taille de sprites
+    //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un arbre");
+  }
+  else if(strcmp(objetType, "arb") == 0)
+  { // Si il s'agit d'un arbre
+    decor.type = ARBRE; //on affecte le bon type à l'objet
+    decor.numIMG = 5000; //on affecte le bon rang d'image à l'objet
+    //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un arbre");
+  }
+  else if(strcmp(objetType, "bat") == 0)
+  { // Si il s'agit d'un batiment
+    decor.type = BATIMENT;
+    decor.numIMG = 6000;
+    //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un batiment");
+  }
+  else if(strcmp(objetType, "aut") == 0)
+  { // Si il s'agit d'une décoration "autre"
+    decor.type = AUTRE;
+    decor.numIMG = 7000;
+    //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est de la classe autre");
+  }
+  else if(strcmp(objetType, "eve") == 0)
+  { // Si il s'agit d'un évènement
+    decor.type = EVENEMENT;
+    decor.numIMG = 8000;
+    //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"L'objet est un évènement");
+  }
+  else if(strcmp(objetType, "pnj") == 0)
+  { // Si il s'agit d'un pnj
+    decor.type = PNJ;
+    decor.numIMG = 9000;
+    //printf(GREEN"[chargerCaracteristiquesDecors]:"RESET"Le type d'objet est un pnj");
+  }
 
-//récupération de sa position (en cases)
-decor.pos_x = ((chaine[8]-48)*10)+(chaine[9]-48);
-decor.pos_y = ((chaine[11]-48)*10)+(chaine[12]-48);
-decor.pos_z = (chaine[14]-48);
-//printf(", ses coordonnées sont (%d;%d) \n", decor.pos_x, decor.pos_y);
+  //on recupère les chiffre qui suivent le type d'objet et on les stock dans numIMG
+  decor.numIMG += ((chaine[3]-48)*100)+((chaine[4]-48)*10)+(chaine[5]-48);
+  //printf("et l'image correspondante est %d.png \n", decor.numIMG);
 
-//Calcul de sa position en pixel
-decor.position.x = decor.pos_x*TAILLE_SPRITE;
-decor.position.y = decor.pos_y*TAILLE_SPRITE;
-//printf(", ses coordonnées en pixels sont (%d;%d) \n", decor.position.x, decor.position.y);
+  //récupération de sa position (en cases)
+  decor.pos_x = ((chaine[8]-48)*10)+(chaine[9]-48);
+  decor.pos_y = ((chaine[11]-48)*10)+(chaine[12]-48);
+  decor.pos_z = (chaine[14]-48);
+  //printf(", ses coordonnées sont (%d;%d) \n", decor.pos_x, decor.pos_y);
 
-//récupération de ses dimensions (en cases)
-decor.dim_x = ((chaine[17]-48)*10)+(chaine[18]-48);
-decor.dim_y = ((chaine[20]-48)*10)+(chaine[21]-48);
-//printf(", ses dimensions sont (%d;%d) \n", decor.dim_x, decor.dim_y);
+  //Calcul de sa position en pixel
+  decor.position.x = decor.pos_x*TAILLE_SPRITE;
+  decor.position.y = decor.pos_y*TAILLE_SPRITE;
+  //printf(", ses coordonnées en pixels sont (%d;%d) \n", decor.position.x, decor.position.y);
 
-//récupération de ses dimensions (en cases)
-decor.repeat_x = ((chaine[24]-48)*10)+(chaine[25]-48);
-decor.repeat_y = ((chaine[27]-48)*10)+(chaine[28]-48);
-//printf(", sa répétition se fera %d fois sur les x et %d fois sur les y \n", decor.repeat_x, decor.repeat_y);
-return decor;
+  //récupération de ses dimensions (en cases)
+  decor.dim_x = ((chaine[17]-48)*10)+(chaine[18]-48);
+  decor.dim_y = ((chaine[20]-48)*10)+(chaine[21]-48);
+  //printf(", ses dimensions sont (%d;%d) \n", decor.dim_x, decor.dim_y);
+
+  //récupération de ses dimensions (en cases)
+  decor.repeat_x = ((chaine[24]-48)*10)+(chaine[25]-48);
+  decor.repeat_y = ((chaine[27]-48)*10)+(chaine[28]-48);
+  //printf(", sa répétition se fera %d fois sur les x et %d fois sur les y \n", decor.repeat_x, decor.repeat_y);
+  return decor;
 }
 
 //Fonction qui rajoute un élément à la file de portes (à la fin)
@@ -499,6 +506,18 @@ void chargerNomCarte(char *chaine)
 void chargerMusicCarte(char *chaine)
 {
   musicMap = (chaine[0] - '0')*100 + (chaine[1] - '0')*10 + (chaine[2] - '0');
+}
+
+void Init_Mat_Dialogue(char *chaine, int i)
+{
+  char Mat_Dialogue[3][100];
+  char l;
+  int j = 0;
+  while((l = chaine[j]) != '\n')
+  {
+    Mat_Dialogue[i][j] = l;
+    j++;
+  }
 }
 
 void ajouterPorteMapCommune(Case origine, FilePorte *filePorte)
@@ -668,12 +687,6 @@ void chargerCollisionsDecors(FileDecors *file, Case ** Map)
         init_y+=2;
         break;
 
-      case PNJ:
-        dim_y--;
-        //dim_x--;
-        init_y+=3;
-        break;
-
       case EVENEMENT :
         typeCollisions = chargerTypeEvenement(*actuel);
         break;
@@ -696,12 +709,7 @@ void chargerCollisionsDecors(FileDecors *file, Case ** Map)
         case BATIMENT:
           repeat_x++;
           break;
-/*
-        case PNJ:
-          repeat_x--;
-          repeat_y-=2;
-          break;
-*/
+
         default:
           break;
 
@@ -804,6 +812,10 @@ int chargerTypeEvenement(Decors element)
   {//Objets texte
     return 17;
   }
+  else if(element.numIMG == 8998 || element.numIMG == 8997)
+  {//PNJ
+    return 18;
+  }
   else
   {
     return 0;
@@ -836,242 +848,242 @@ void centrerMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_R
     //Partie décors
     if(fileDecors->premier != NULL)
     { // La file n'est pas vide
-    // On se positionne à la fin de la file
-    Decors *elementActuel = fileDecors->premier;
-    while(elementActuel != NULL)
-    {
-      elementActuel->pos_x += x/TAILLE_SPRITE;
-      elementActuel->position.x += x;
-      elementActuel = elementActuel->suivant;
+      // On se positionne à la fin de la file
+      Decors *elementActuel = fileDecors->premier;
+      while(elementActuel != NULL)
+      {
+        elementActuel->pos_x += x/TAILLE_SPRITE;
+        elementActuel->position.x += x;
+        elementActuel = elementActuel->suivant;
+      }
     }
-  }
-  //partie porte
-  if(filePorte->premier != NULL)
-  { // La file n'est pas vide
-  // On se positionne à la fin de la file
-  Porte *element = filePorte->premier;
-  while (element != NULL)
-  {
-    element->pos_x += x/TAILLE_SPRITE;
-    element->position.x += x;
-    element = element->suivant;
-  }
-}
-perso_position->x += x;
-}
-else
-{
-  //on centre d'abord la carte sur le joueur
-  x =  FENETRE_W/2 - perso_position->x;
-  //centrage vertical
-  //Déplacement du fond
-  for(int i=0;i<NBLIN;i++)
-  {
-    for(int j=0;j<NBCOL;j++)
-    {
-      Map[i][j].position.x += x;
-      Map[i][j].x += x/TAILLE_SPRITE;
+    //partie porte
+    if(filePorte->premier != NULL)
+    { // La file n'est pas vide
+      // On se positionne à la fin de la file
+      Porte *element = filePorte->premier;
+      while (element != NULL)
+      {
+        element->pos_x += x/TAILLE_SPRITE;
+        element->position.x += x;
+        element = element->suivant;
+      }
     }
+    perso_position->x += x;
   }
-  //Partie décors
-  if(fileDecors->premier != NULL)
-  { // La file n'est pas vide
-  // On se positionne à la fin de la file
-  Decors *elementActuel = fileDecors->premier;
-  while(elementActuel != NULL)
+  else
   {
-    elementActuel->pos_x += x/TAILLE_SPRITE;
-    elementActuel->position.x += x;
-    elementActuel = elementActuel->suivant;
-  }
-}
-//partie porte
-if(filePorte->premier != NULL)
-{ // La file n'est pas vide
-// On se positionne à la fin de la file
-Porte *element = filePorte->premier;
-while(element != NULL)
-{
-  element->pos_x += x/TAILLE_SPRITE;
-  element->position.x += x;
-  element = element->suivant;
-}
-}
-perso_position->x = FENETRE_W/2;
+    //on centre d'abord la carte sur le joueur
+    x =  FENETRE_W/2 - perso_position->x;
+    //centrage vertical
+    //Déplacement du fond
+    for(int i=0;i<NBLIN;i++)
+    {
+      for(int j=0;j<NBCOL;j++)
+      {
+        Map[i][j].position.x += x;
+        Map[i][j].x += x/TAILLE_SPRITE;
+      }
+    }
+    //Partie décors
+    if(fileDecors->premier != NULL)
+    { // La file n'est pas vide
+      // On se positionne à la fin de la file
+      Decors *elementActuel = fileDecors->premier;
+      while(elementActuel != NULL)
+      {
+        elementActuel->pos_x += x/TAILLE_SPRITE;
+        elementActuel->position.x += x;
+        elementActuel = elementActuel->suivant;
+      }
+    }
+    //partie porte
+    if(filePorte->premier != NULL)
+    { // La file n'est pas vide
+      // On se positionne à la fin de la file
+      Porte *element = filePorte->premier;
+      while(element != NULL)
+      {
+        element->pos_x += x/TAILLE_SPRITE;
+        element->position.x += x;
+        element = element->suivant;
+      }
+    }
+    perso_position->x = FENETRE_W/2;
 
-//On colle les bords
-if(Map[0][0].position.x > 0)
-{
-  x = 0 - Map[0][0].position.x;
-}
-else if((Map[0][NBCOL-1].position.x + TAILLE_SPRITE) < FENETRE_W)
-{
-  x = FENETRE_W - Map[0][NBCOL-1].position.x + TAILLE_SPRITE;
-}
-//Déplacement du fond
-for(int i=0;i<NBLIN;i++)
-{
-  for(int j=0;j<NBCOL;j++)
-  {
-    Map[i][j].position.x += x;
-    Map[i][j].x += x/TAILLE_SPRITE;
-  }
-}
-//Partie décors
-if(fileDecors->premier != NULL)
-{ // La file n'est pas vide
-// On se positionne à la fin de la file
-Decors *elementActuel = fileDecors->premier;
-while(elementActuel != NULL)
-{
-  elementActuel->pos_x += x/TAILLE_SPRITE;
-  elementActuel->position.x += x;
-  elementActuel = elementActuel->suivant;
-}
-}
-//partie porte
-if(filePorte->premier != NULL)
-{ // La file n'est pas vide
-// On se positionne à la fin de la file
-Porte *element = filePorte->premier;
-while(element != NULL)
-{
-  element->pos_x += x/TAILLE_SPRITE;
-  element->position.x += x;
-  element = element->suivant;
-}
-}
-perso_position->x += x;
-}
-//Centrage vertical
-if(hauteurMap < FENETRE_H)
-{
-  y = (FENETRE_H - hauteurMap)/2;
-  //centrage vertical
-  //Déplacement du fond
-  for(int i=0;i<NBLIN;i++)
-  {
-    for(int j=0;j<NBCOL;j++)
+    //On colle les bords
+    if(Map[0][0].position.x > 0)
     {
-      Map[i][j].position.y += y;
-      Map[i][j].y += y/TAILLE_SPRITE;
+      x = 0 - Map[0][0].position.x;
     }
-  }
-  //Partie décors
-  if(fileDecors->premier != NULL)
-  { // La file n'est pas vide
-  // On se positionne à la fin de la file
-  Decors *elementActuel = fileDecors->premier;
-  while(elementActuel != NULL)
-  {
-    elementActuel->pos_y += y/TAILLE_SPRITE;
-    elementActuel->position.y += y;
-    elementActuel = elementActuel->suivant;
-  }
-}
-//partie porte
-if(filePorte->premier != NULL)
-{ // La file n'est pas vide
-// On se positionne à la fin de la file
-Porte *element = filePorte->premier;
-while(element != NULL)
-{
-  element->pos_y += y/TAILLE_SPRITE;
-  element->position.y += y;
-  element = element->suivant;
-}
-}
-perso_position->y += y;
-}
-else
-{
-  //printf(GREEN"[centrerMap]:"RESET"Fenetre plus haute\n");
-  //on centre d'abord la carte sur le joueur
-  y =  FENETRE_H/2 - perso_position->y;
-  //centrage vertical
-  //Déplacement du fond
-  for(int i=0;i<NBLIN;i++)
-  {
-    for(int j=0;j<NBCOL;j++)
+    else if((Map[0][NBCOL-1].position.x + TAILLE_SPRITE) < FENETRE_W)
     {
-      Map[i][j].position.y += y;
-      Map[i][j].y += y/TAILLE_SPRITE;
+      x = FENETRE_W - Map[0][NBCOL-1].position.x + TAILLE_SPRITE;
     }
+    //Déplacement du fond
+    for(int i=0;i<NBLIN;i++)
+    {
+      for(int j=0;j<NBCOL;j++)
+      {
+        Map[i][j].position.x += x;
+        Map[i][j].x += x/TAILLE_SPRITE;
+      }
+    }
+    //Partie décors
+    if(fileDecors->premier != NULL)
+    { // La file n'est pas vide
+      // On se positionne à la fin de la file
+      Decors *elementActuel = fileDecors->premier;
+      while(elementActuel != NULL)
+      {
+        elementActuel->pos_x += x/TAILLE_SPRITE;
+        elementActuel->position.x += x;
+        elementActuel = elementActuel->suivant;
+      }
+    }
+    //partie porte
+    if(filePorte->premier != NULL)
+    { // La file n'est pas vide
+      // On se positionne à la fin de la file
+      Porte *element = filePorte->premier;
+      while(element != NULL)
+      {
+        element->pos_x += x/TAILLE_SPRITE;
+        element->position.x += x;
+        element = element->suivant;
+      }
+    }
+    perso_position->x += x;
   }
-  //Partie décors
-  if(fileDecors->premier != NULL)
-  { // La file n'est pas vide
-  // On se positionne à la fin de la file
-  Decors *elementActuel = fileDecors->premier;
-  while(elementActuel != NULL)
+  //Centrage vertical
+  if(hauteurMap < FENETRE_H)
   {
-    elementActuel->pos_y += y/TAILLE_SPRITE;
-    elementActuel->position.y += y;
-    elementActuel = elementActuel->suivant;
+    y = (FENETRE_H - hauteurMap)/2;
+    //centrage vertical
+    //Déplacement du fond
+    for(int i=0;i<NBLIN;i++)
+    {
+      for(int j=0;j<NBCOL;j++)
+      {
+        Map[i][j].position.y += y;
+        Map[i][j].y += y/TAILLE_SPRITE;
+      }
+    }
+    //Partie décors
+    if(fileDecors->premier != NULL)
+    { // La file n'est pas vide
+      // On se positionne à la fin de la file
+      Decors *elementActuel = fileDecors->premier;
+      while(elementActuel != NULL)
+      {
+        elementActuel->pos_y += y/TAILLE_SPRITE;
+        elementActuel->position.y += y;
+        elementActuel = elementActuel->suivant;
+      }
+    }
+    //partie porte
+    if(filePorte->premier != NULL)
+    { // La file n'est pas vide
+      // On se positionne à la fin de la file
+      Porte *element = filePorte->premier;
+      while(element != NULL)
+      {
+        element->pos_y += y/TAILLE_SPRITE;
+        element->position.y += y;
+        element = element->suivant;
+      }
+    }
+    perso_position->y += y;
   }
-}
-//partie porte
-if(filePorte->premier != NULL)
-{ // La file n'est pas vide
-// On se positionne à la fin de la file
-Porte *element = filePorte->premier;
-while(element != NULL)
-{
-  element->pos_y += y/TAILLE_SPRITE;
-  element->position.y += y;
-  element = element->suivant;
-}
-}
-perso_position->y = FENETRE_H/2 ;
+  else
+  {
+    //printf(GREEN"[centrerMap]:"RESET"Fenetre plus haute\n");
+    //on centre d'abord la carte sur le joueur
+    y =  FENETRE_H/2 - perso_position->y;
+    //centrage vertical
+    //Déplacement du fond
+    for(int i=0;i<NBLIN;i++)
+    {
+      for(int j=0;j<NBCOL;j++)
+      {
+        Map[i][j].position.y += y;
+        Map[i][j].y += y/TAILLE_SPRITE;
+      }
+    }
+    //Partie décors
+    if(fileDecors->premier != NULL)
+    { // La file n'est pas vide
+      // On se positionne à la fin de la file
+      Decors *elementActuel = fileDecors->premier;
+      while(elementActuel != NULL)
+      {
+        elementActuel->pos_y += y/TAILLE_SPRITE;
+        elementActuel->position.y += y;
+        elementActuel = elementActuel->suivant;
+      }
+    }
+    //partie porte
+    if(filePorte->premier != NULL)
+    { // La file n'est pas vide
+      // On se positionne à la fin de la file
+      Porte *element = filePorte->premier;
+      while(element != NULL)
+      {
+        element->pos_y += y/TAILLE_SPRITE;
+        element->position.y += y;
+        element = element->suivant;
+      }
+    }
+    perso_position->y = FENETRE_H/2 ;
 
-//On colle les bords
-if(Map[0][0].position.y > 0)
-{
-  y = 0 - Map[0][0].position.y;
-}
-else if((Map[NBLIN-1][0].position.y + TAILLE_SPRITE) < FENETRE_H)
-{
-  y = FENETRE_H - Map[NBLIN-1][0].position.y + TAILLE_SPRITE;
-}
-else
-{
-  y=0;
-}
-//Déplacement du fond
-for(int i=0;i<NBLIN;i++)
-{
-  for(int j=0;j<NBCOL;j++)
-  {
-    Map[i][j].position.y += y;
-    Map[i][j].y += y/TAILLE_SPRITE;
+    //On colle les bords
+    if(Map[0][0].position.y > 0)
+    {
+      y = 0 - Map[0][0].position.y;
+    }
+    else if((Map[NBLIN-1][0].position.y + TAILLE_SPRITE) < FENETRE_H)
+    {
+      y = FENETRE_H - Map[NBLIN-1][0].position.y + TAILLE_SPRITE;
+    }
+    else
+    {
+      y=0;
+    }
+    //Déplacement du fond
+    for(int i=0;i<NBLIN;i++)
+    {
+      for(int j=0;j<NBCOL;j++)
+      {
+        Map[i][j].position.y += y;
+        Map[i][j].y += y/TAILLE_SPRITE;
+      }
+    }
+    //Partie décors
+    if(fileDecors->premier != NULL)
+    { // La file n'est pas vide
+      // On se positionne à la fin de la file
+      Decors *elementActuel = fileDecors->premier;
+      while(elementActuel != NULL)
+      {
+        elementActuel->pos_y += y/TAILLE_SPRITE;
+        elementActuel->position.y += y;
+        elementActuel = elementActuel->suivant;
+      }
+    }
+    //partie porte
+    if(filePorte->premier != NULL)
+    { // La file n'est pas vide
+      // On se positionne à la fin de la file
+      Porte *element = filePorte->premier;
+      while(element != NULL)
+      {
+        element->pos_y += y/TAILLE_SPRITE;
+        element->position.y += y;
+        element = element->suivant;
+      }
+    }
+    perso_position->y += y;
   }
-}
-//Partie décors
-if(fileDecors->premier != NULL)
-{ // La file n'est pas vide
-// On se positionne à la fin de la file
-Decors *elementActuel = fileDecors->premier;
-while(elementActuel != NULL)
-{
-  elementActuel->pos_y += y/TAILLE_SPRITE;
-  elementActuel->position.y += y;
-  elementActuel = elementActuel->suivant;
-}
-}
-//partie porte
-if(filePorte->premier != NULL)
-{ // La file n'est pas vide
-// On se positionne à la fin de la file
-Porte *element = filePorte->premier;
-while(element != NULL)
-{
-  element->pos_y += y/TAILLE_SPRITE;
-  element->position.y += y;
-  element = element->suivant;
-}
-}
-perso_position->y += y;
-}
 }
 
 int verifChangementMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position)
@@ -1158,16 +1170,16 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran, Perso perso, int curre
       switch (actuel->type)
       {
         case ARBRE:
-        repeat_x--;
-        repeat_y-=2;
-        break;
+          repeat_x--;
+          repeat_y-=2;
+          break;
 
         case BATIMENT:
-        repeat_x++;
-        break;
+          repeat_x++;
+          break;
 
         default:
-        break;
+          break;
       }
       for(int i=0; i<(actuel->repeat_x); i++)
       {

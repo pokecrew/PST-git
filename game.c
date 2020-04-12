@@ -254,6 +254,10 @@ int lancerEvenement(Case **Map,int i, int j, Direction direction, Perso perso, S
       return 0;
       break;
 
+    case 18: //PNJ
+      return 2;
+      break;
+
     default:
       return 1;
       break;
