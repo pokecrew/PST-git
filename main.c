@@ -49,6 +49,7 @@ int main(int argc, char** argv)
   //la boucle suivante constitue le menu
   int continuer = 1;
   int Menu=0;
+  char Mat_Dialogue[3][100];
   SDL_Event event; //on crée un evenement
 
   while (continuer)
@@ -74,7 +75,7 @@ int main(int argc, char** argv)
 
       case 3: //Thomas(Jeu)
         //chargement
-        changeMap(numMap, Map, fileDecors, filePorte, &perso.position);
+        changeMap(numMap, Map, fileDecors, filePorte, &perso.position, Mat_Dialogue);
         //afficherFileDecorsTerm(fileDecors);
         jeu(perso,ecran , Map, fileDecors, filePorte, Mat_Dialogue);
 

@@ -46,7 +46,7 @@ void chargerSpritesPerso(int numSpritePerso, SDL_Surface **Perso_Sprites)
 void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, char Mat_Dialogue[3][100])
 {
   SDL_Surface *dialogue = NULL, *dialogue2 = NULL, *dialogue3 = NULL;
-  SDL_Rect position_test, position_dialogue;
+  SDL_Rect position_bulle, position_dialogue;
   TTF_Font *police_dialogue = NULL;
   SDL_Event event;
   SDL_Color noir = {0, 0, 0};
@@ -67,11 +67,13 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
   perso.y=(perso.position.y-(perso.position.y%TAILLE_SPRITE))/TAILLE_SPRITE;
   //  printf(GREEN"[Jeu]:"RESET"%d\t%d\n", perso.x, perso.y);
 
-  position_test.x = TAILLE_SPRITE;
-  position_test.y = 19*TAILLE_SPRITE;
+  int enchainement = 0;
 
-  position_dialogue.x = position_test.x + 2*TAILLE_SPRITE;
-  position_dialogue.y = position_test.y + 2*TAILLE_SPRITE;
+  position_bulle.x = TAILLE_SPRITE;
+  position_bulle.y = 19*TAILLE_SPRITE;
+
+  position_dialogue.x = position_bulle.x + 5*TAILLE_SPRITE;
+  position_dialogue.y = position_bulle.y + 3*TAILLE_SPRITE;
 
   police_dialogue = TTF_OpenFont("bulle_dialogue_police.ttf", 25);
   dialogue = TTF_RenderText_Blended(police_dialogue, Mat_Dialogue[0], noir);
@@ -84,7 +86,7 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
     if(refresh == 1)
     { //  si on a besoin de raifraichir l'affichage
       //  verification du changement de la map
-      verifChangementMap(Map,fileDecors,filePorte, &perso.position);
+      verifChangementMap(Map,fileDecors,filePorte, &perso.position, Mat_Dialogue);
       displayMap(Map, ecran , perso); //on affiche les sols
       afficherDecors(fileDecors, ecran, perso, numSprite+typeSprite); //puis les decors(+typeSprite)
       //afficheCollisions(Map, ecran); //fonction de developpement qui applique un filtre rouge aux zones considérées comme des murs
@@ -168,11 +170,31 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
               }
               break;
 
-              case SDLK_RETURN:
+            case SDLK_RETURN:
               if(dialogue_possible == 1)
               {
-                SDL_BlitSurface(Map_Sprites[9001], NULL, ecran, &position_test);
-                SDL_BlitSurface(dialogue, NULL, ecran, &position_dialogue);
+
+                int x = perso.position.x- Map[0][0].position.x;
+                x = (x - (x%TAILLE_SPRITE))/TAILLE_SPRITE;
+                int y = perso.position.y-Map[0][0].position.y;
+                y = (y - (y%TAILLE_SPRITE))/TAILLE_SPRITE;
+                printf("x = %d\n", x);
+                printf("y = %d\n", y);
+                SDL_BlitSurface(Map_Sprites[9001], NULL, ecran, &position_bulle);
+                if(((y <= 24) && (y >= 22)) || ((x <= 26) && (x >= 23)))
+                {
+                  printf("erere\n");
+                  enchainement = 1;
+                  SDL_BlitSurface(dialogue2, NULL, ecran, &position_dialogue);
+                }
+                else if(enchainement == 0)
+                {
+                  SDL_BlitSurface(dialogue, NULL, ecran, &position_dialogue);
+                }
+                else if(enchainement == 1)
+                {
+                  SDL_BlitSurface(dialogue3, NULL, ecran, &position_dialogue);
+                }
                 SDL_Flip(ecran);
                 while(bloquage)
                 {
@@ -217,7 +239,7 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
               {
                 numMap = 9;
               }
-              changeMap(numMap, Map, fileDecors, filePorte, &perso.position);
+              changeMap(numMap, Map, fileDecors, filePorte, &perso.position, Mat_Dialogue);
               refresh = 1;
               break;
 

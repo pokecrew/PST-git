@@ -167,7 +167,7 @@ void chargerSpritesMap()
 }
 
 //fonction qui permet de changer de carte
-int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position)
+int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position, char Mat_Dialogue[3][100])
 {
   int mapPrec = numMap; //stocke la map précédente
   musicMapPrec = musicMap;
@@ -180,7 +180,7 @@ int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *fil
   //  printf(GREEN"[changeMap]:"RESET"vider objets OK\n");
   changerDimensionsMap(mapPath,Map);
   //  printf(GREEN"[changeMap]:"RESET"Dimensions Map OK\n");
-  chargerObjets(mapPath, fileDecors, filePorte);//on charge les décors
+  chargerObjets(mapPath, fileDecors, filePorte, Mat_Dialogue);//on charge les décors
   if(numMap == 2 || (numMap >= 9 && numMap <=11))
   { //si on doit charger une map réutilisable (Centre Pkmn, maison, etc...)
     //  printf(GREEN"[changeMap]:"RESET"MapCommune\n");
@@ -263,7 +263,7 @@ void changerDimensionsMap(char mapPath[],Case **Map)
 }
 
 //fonction qui charge les éléments un à un dans la file
-int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte)
+int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte, char Mat_Dialogue[3][100])
 {
   FILE* mapFile = NULL; //pointeur vers le fichier
   int objet_type = 1;
@@ -302,7 +302,7 @@ int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte)
           break;
 
         case 5://dialogue PNJ
-          Init_Mat_Dialogue(chaine,i);
+          Init_Mat_Dialogue(chaine,i,Mat_Dialogue);
           i++;
           break;
 
@@ -508,14 +508,12 @@ void chargerMusicCarte(char *chaine)
   musicMap = (chaine[0] - '0')*100 + (chaine[1] - '0')*10 + (chaine[2] - '0');
 }
 
-void Init_Mat_Dialogue(char *chaine, int i)
+void Init_Mat_Dialogue(char *chaine, int i, char Mat_Dialogue[3][100])
 {
-  char Mat_Dialogue[3][100];
-  char l;
   int j = 0;
-  while((l = chaine[j]) != '\n')
+  while(chaine[j] != '\n')
   {
-    Mat_Dialogue[i][j] = l;
+    Mat_Dialogue[i][j] = chaine[j];
     j++;
   }
 }
@@ -1086,7 +1084,7 @@ void centrerMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_R
   }
 }
 
-int verifChangementMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position)
+int verifChangementMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position, char Mat_Dialogue[3][100])
 {
   if(fileDecors == NULL)
   {
@@ -1106,7 +1104,7 @@ int verifChangementMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte
         perso_position_old.y = perso_position->y - Map[0][0].position.y;
       }
       *perso_position = actuel->pos_perso;
-      changeMap(actuel->map, Map, fileDecors, filePorte, perso_position);
+      changeMap(actuel->map, Map, fileDecors, filePorte, perso_position, Mat_Dialogue);
       return 1;
     }
     //printf(GREEN"[verifChangementMap]:"RESET"position porte : (%d,%d)\n", actuel->position.x, actuel->position.y);
