@@ -61,7 +61,7 @@ typedef struct Perso Perso;
 
 //Structure des objets Perso
 struct Perso{
-    int x;        //position sur les x (coin supérieur gauche) (nombre de case)
+    int x;        //position sur les x (coin supérieur gauche)(nombre de case)
     int y;        //position sur les y (coin supérieur gauche)(nombre de case)
     int numSprite; //numéro sprite
     SDL_Rect position; //positions de la surface
