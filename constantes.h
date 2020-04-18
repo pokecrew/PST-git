@@ -41,6 +41,13 @@ enum adversaire_combat
 {
     SAUVAGE,DRESSEUR
 };
+
+typedef enum Type Type;
+enum Type
+{
+    COMBAT, EAU, ELEC, NORMAL, FEU, GLACE, INSECTE, PLANTE, POISON, PSY, ROCHE, GROUND, SPECTRE, VOL
+};
+
 //Sont déclarées dans ce fichier les constantes et les variables globales au programme
 
 int TAILLE_SPRITE = 24; //variable taille affichage
@@ -52,7 +59,7 @@ int FENETRE_W=1280;
 int FENETRE_H=720;
 typedef struct Perso Perso;
 
-//Structure des objets Case
+//Structure des objets Perso
 struct Perso{
     int x;        //position sur les x (coin supérieur gauche)(nombre de case)
     int y;        //position sur les y (coin supérieur gauche)(nombre de case)
@@ -60,6 +67,20 @@ struct Perso{
     SDL_Rect position; //positions de la surface
     SDL_Surface *Perso_Sprites[24];//Tableau des sprites du personnage
 };
+
+typedef struct Att Att;
+
+struct Att{
+  int id;
+  char nom[40];
+  Type type;
+  int classe; //0 = Physique, 1 = Spéciale
+  int puissance;
+  int precision;
+  int pp_max;
+  int pp;
+};
+
 
 typedef struct Poke Poke;
 
@@ -72,7 +93,9 @@ struct Poke{
   int att;
   int vit;
   int id;
+  Att  attaque[4];
 };
+
 
 
 //variables globales

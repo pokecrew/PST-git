@@ -90,7 +90,7 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
       displayMap(Map, ecran , perso); //on affiche les sols
       afficherDecors(fileDecors, ecran, perso, numSprite+typeSprite); //puis les decors(+typeSprite)
       //afficheCollisions(Map, ecran); //fonction de developpement qui applique un filtre rouge aux zones considérées comme des murs
-      afficherFilePorteSDL(filePorte,ecran); //fonction de developpement qui applique un filtre bleu aux zones considérées comme des portes
+      //afficherFilePorteSDL(filePorte,ecran); //fonction de developpement qui applique un filtre bleu aux zones considérées comme des portes
       SDL_Flip(ecran); // Mise à jour de l'écran
       refresh = 0;
     }
@@ -178,12 +178,12 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                 x = (x - (x%TAILLE_SPRITE))/TAILLE_SPRITE;
                 int y = perso.position.y-Map[0][0].position.y;
                 y = (y - (y%TAILLE_SPRITE))/TAILLE_SPRITE;
-                printf("x = %d\n", x);
-                printf("y = %d\n", y);
+                //printf("x = %d\n", x);
+                //printf("y = %d\n", y);
                 SDL_BlitSurface(Map_Sprites[9001], NULL, ecran, &position_bulle);
                 if(((y <= 24) && (y >= 22)) || ((x <= 26) && (x >= 23)))
                 {
-                  printf("erere\n");
+                  //printf("erere\n");
                   enchainement = 1;
                   SDL_BlitSurface(dialogue2, NULL, ecran, &position_dialogue);
                 }
