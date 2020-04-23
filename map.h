@@ -28,6 +28,7 @@ struct Decors{
     int dim_y;        //dimension en longueur (nombre de case)
     int pos_x;        //position sur l'axe des x (nombre de case)
     int pos_y;        //position sur l'axe des y (nombre de case)
+    int pos_z;
     int repeat_x;     //nombre de répétitions de l'objet sur les x
     int repeat_y;     //nombre de répétitions de l'objet sur les y
     Decors_type type;   //type de décors (arbre, batiment, etc)
@@ -61,12 +62,13 @@ struct FilePorte
     Porte *premier; //adresse du premier décors de la file
 };
 //Map
+
 Case **createMap(char mapPath[]);
 int loadMap(char mapPath[], Case **Map);
 void chargerSpritesMap();
 void displayMap(Case **Map, SDL_Surface *ecran, Perso perso);
 void effacerEcran(SDL_Surface *noir, SDL_Surface *ecran);
-int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte);//fonction qui charge les  objets décors, portes, un à un dans leurs files
+int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte, char Mat_Dialogue[3][100]);//fonction qui charge les  objets décors, portes, un à un dans leurs files
 void deplacerObjets(FileDecors *fileDecors, FilePorte *filePorte, Direction direction);//déplace les objets en même temps que la carte
 int chargerTypeEvenement(Decors element);
 void viderMap(Case **Map);
@@ -80,17 +82,22 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran, Perso perso, int curre
 void chargerCollisionsDecors(FileDecors *file, Case ** Map);//fonction qui charge les collisions des décors
 void afficheCollisions(Case **Map, SDL_Surface *ecran); //Fonction de développement qui surligne en rouge les cases infranchissables
 //Changement Map
-int changeMap(int numMap, Case **Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position);//fonction qui permet de changer de carte
+int changeMap(int numMap, Case **Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position, char Mat_Dialogue[3][100]);//fonction qui permet de changer de carte
 FilePorte *initialiserFilePorte();
 void ajouterElementFilePorte(FilePorte *file, char *chaine);
 int viderFilePorte(FilePorte *file);
 Porte chargerCaracteristiquesPortes(char *chaine);
 void afficherFilePorteTerm(FilePorte *file); //Fonction qui affiche dans le terminal les éléments de la file des porte
-void afficherFilePorteSDL(FilePorte *file, SDL_Surface *ecran);//Fonction qui affiche en rouge les portes de la map
-int verifChangementMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position);
+void afficherFilePorteSDL(FilePorte *file, SDL_Surface *ecran); //Fonction qui affiche en rouge les portes de la map
+int verifChangementMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position, char Mat_Dialogue[3][100]);
 void centrerMap(Case **Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position);
 void changerDimensionsMap(char mapPath[], Case **Map);
 void ajouterPorteMapCommune(Case origine, FilePorte *filePorte);
-//Lancement combat
+// Lancement combat
 void lancementCombat(SDL_Surface *ecran);
+//
+void chargerNomCarte(char *chaine);
+void chargerMusicCarte(char *chaine);
+void Init_Mat_Dialogue(char *chaine, int i, char Mat_Dialogue[3][100]);
+
 #endif // MAP_H_INCLUDED
