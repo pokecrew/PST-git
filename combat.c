@@ -302,7 +302,7 @@ void poke_nom(Poke pokemon[20])
   strcat(pokemon[15].nom,"RONDOUDOU");
 }
 
-void poke_alea(SDL_Surface *ecran, SDL_Surface *poke[16], Poke pokemon[20])
+void poke_alea(SDL_Surface *ecran, SDL_Surface *poke[50], Poke pokemon[20])
 {
 	SDL_Rect pos_poke, pos_nom;
 	SDL_Color couleurNoire = {0, 0, 0};
@@ -327,24 +327,56 @@ void poke_alea(SDL_Surface *ecran, SDL_Surface *poke[16], Poke pokemon[20])
 	TTF_CloseFont(police);
 }
 
-void sauvage(SDL_Surface *poke[16])
+void sauvage(SDL_Surface *poke[50])
 {
-  poke[0] = IMG_Load("sprites/poke/1.png");
-  poke[1] = IMG_Load("sprites/poke/4.png");
-  poke[2] = IMG_Load("sprites/poke/7.png");
-  poke[3] = IMG_Load("sprites/poke/10.png");
-  poke[4] = IMG_Load("sprites/poke/13.png");
-  poke[5] = IMG_Load("sprites/poke/16.png");
-  poke[6] = IMG_Load("sprites/poke/19.png");
-  poke[7] = IMG_Load("sprites/poke/21.png");
-  poke[8] = IMG_Load("sprites/poke/23.png");
-  poke[9] = IMG_Load("sprites/poke/25.png");
-  poke[10] = IMG_Load("sprites/poke/27.png");
-  poke[11] = IMG_Load("sprites/poke/29.png");
-  poke[12] = IMG_Load("sprites/poke/32.png");
-  poke[13] = IMG_Load("sprites/poke/35.png");
-  poke[14] = IMG_Load("sprites/poke/37.png");
-  poke[15] = IMG_Load("sprites/poke/39.png");
+  poke[0] = IMG_Load("sprites/poke/01.png");
+  poke[1] = IMG_Load("sprites/poke/02.png");
+  poke[2] = IMG_Load("sprites/poke/03.png");
+  poke[3] = IMG_Load("sprites/poke/04.png");
+  poke[4] = IMG_Load("sprites/poke/05.png");
+  poke[5] = IMG_Load("sprites/poke/06.png");
+  poke[6] = IMG_Load("sprites/poke/07.png");
+  poke[7] = IMG_Load("sprites/poke/08.png");
+  poke[8] = IMG_Load("sprites/poke/09.png");
+  poke[9] = IMG_Load("sprites/poke/10.png");
+  poke[10] = IMG_Load("sprites/poke/11.png");
+  poke[11] = IMG_Load("sprites/poke/12.png");
+  poke[12] = IMG_Load("sprites/poke/13.png");
+  poke[13] = IMG_Load("sprites/poke/14.png");
+  poke[14] = IMG_Load("sprites/poke/15.png");
+  poke[15] = IMG_Load("sprites/poke/16.png");
+	poke[16] = IMG_Load("sprites/poke/17.png");
+  poke[17] = IMG_Load("sprites/poke/18.png");
+  poke[18] = IMG_Load("sprites/poke/19.png");
+  poke[19] = IMG_Load("sprites/poke/20.png");
+  poke[20] = IMG_Load("sprites/poke/21.png");
+  poke[21] = IMG_Load("sprites/poke/22.png");
+  poke[22] = IMG_Load("sprites/poke/23.png");
+  poke[23] = IMG_Load("sprites/poke/24.png");
+  poke[24] = IMG_Load("sprites/poke/25.png");
+  poke[25] = IMG_Load("sprites/poke/26.png");
+  poke[26] = IMG_Load("sprites/poke/27.png");
+  poke[27] = IMG_Load("sprites/poke/28.png");
+  poke[28] = IMG_Load("sprites/poke/29.png");
+  poke[29] = IMG_Load("sprites/poke/30.png");
+  poke[30] = IMG_Load("sprites/poke/31.png");
+  poke[31] = IMG_Load("sprites/poke/32.png");
+	poke[32] = IMG_Load("sprites/poke/33.png");
+  poke[33] = IMG_Load("sprites/poke/34.png");
+  poke[34] = IMG_Load("sprites/poke/35.png");
+  poke[35] = IMG_Load("sprites/poke/36.png");
+  poke[36] = IMG_Load("sprites/poke/37.png");
+  poke[37] = IMG_Load("sprites/poke/38.png");
+  poke[38] = IMG_Load("sprites/poke/39.png");
+  poke[39] = IMG_Load("sprites/poke/40.png");
+  poke[40] = IMG_Load("sprites/poke/41.png");
+  poke[41] = IMG_Load("sprites/poke/42.png");
+  poke[42] = IMG_Load("sprites/poke/43.png");
+  poke[43] = IMG_Load("sprites/poke/44.png");
+  poke[44] = IMG_Load("sprites/poke/45.png");
+  poke[45] = IMG_Load("sprites/poke/46.png");
+  poke[46] = IMG_Load("sprites/poke/47.png");
+  poke[47] = IMG_Load("sprites/poke/48.png");
 }
 
 void changer_poke(SDL_Surface *ecran)
@@ -391,9 +423,9 @@ void changer_poke(SDL_Surface *ecran)
 	pos_plateau.x = 248;
 	pos_plateau.y = 376;
 
-	mini_poke[0] = IMG_Load("sprites/minipoke_5G/1.png");
-	mini_poke[1] = IMG_Load("sprites/minipoke_5G/4.png");
-	mini_poke[2] = IMG_Load("sprites/minipoke_5G/7.png");
+	mini_poke[0] = IMG_Load("sprites/minipoke_5G/01.png");
+	mini_poke[1] = IMG_Load("sprites/minipoke_5G/04.png");
+	mini_poke[2] = IMG_Load("sprites/minipoke_5G/07.png");
 	mini_poke[3] = IMG_Load("sprites/minipoke_5G/10.png");
 	mini_poke[4] = IMG_Load("sprites/minipoke_5G/13.png");
 	mini_poke[5] = IMG_Load("sprites/minipoke_5G/16.png");
