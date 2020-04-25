@@ -1,6 +1,7 @@
 #ifndef DEF_COMBAT
 #define DEF_COMBAT
 
+void affichage_combat(SDL_Surface *ecran);
 void combat(SDL_Surface *ecran);
 void poke_nom(Poke pokemon[20]);
 void sauvage(SDL_Surface *poke[16]);
