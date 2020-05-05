@@ -1,218 +1,250 @@
 #include "include.h"//inclusion des .h nécessaires regroupés dans le fichier include.h
 
-int menu(SDL_Surface *ecran){ //menu d'accueil du jeu
-    TTF_Font *police = NULL, *police2 =NULL; //polices propres au menu
-    police = TTF_OpenFont("fonts/LemonJuice.otf", 55); //on charge les polices
-    police2 = TTF_OpenFont("fonts/angel_bilsh/AngeLBilsh-Demo.ttf", 37);
-    SDL_Surface  *menu = NULL, *titre = NULL, *option1 = NULL, *option2 = NULL, *option3 =NULL, *quitter = NULL, *parametre = NULL; //surfaces servant pour l'ecran d'accueil
-    SDL_Surface  *option1_j = NULL, *option2_j = NULL, *option3_j =NULL, *quitter_j = NULL, *parametre_j = NULL; //surfaces servant pour l'ecran d'accueil(couleur jaune)
-    SDL_Rect positionMenu; //positions du menu
-    SDL_Rect positionTitre; //position du titre
-    SDL_Rect positionOption1; //positions de l'option 1
-    SDL_Rect positionOption2; //positions de l'option 2
-    SDL_Rect positionOption3; //positions de l'option 3
-    SDL_Rect positionQuitter; //positions de quitter
-    SDL_Rect positionParametre; //positions de quitter
-    SDL_Event event; //on crée un evenement
-    int continuer = 1;
-    int widthOption = 220;
-    int heightOption = 50;
-    short int option1_status = 0, option2_status = 0, option3_status=0, quitter_status=0, parametre_status=0;
-    menu = IMG_Load("Ressources/menu11.jpg"); //image de fond de l'écran d'accueil
-    titre = TTF_RenderText_Blended(police, "", couleurTitre);
-    option1 = TTF_RenderText_Blended(police, "Alexis - Sarah", couleurTitre);
-    option2 = TTF_RenderText_Blended(police, "Camille - Theo", couleurTitre);
-    option3 = TTF_RenderText_Blended(police, "Thomas", couleurTitre);
-    parametre = TTF_RenderText_Blended(police, "Options", couleurTitre);
-    quitter = TTF_RenderText_Blended(police, "Quitter", couleurTitre);
-    option1_j = TTF_RenderText_Blended(police, "Alexis - Sarah", couleurJaune);
-    option2_j = TTF_RenderText_Blended(police, "Camille - Theo", couleurJaune);
-    option3_j = TTF_RenderText_Blended(police, "Thomas", couleurJaune);
-    parametre_j = TTF_RenderText_Blended(police, "Options", couleurJaune);
-    quitter_j = TTF_RenderText_Blended(police, "Quitter", couleurJaune);
-    positionMenu.x = 0; //on centre l'image
-    positionMenu.y = 0;
-    positionTitre.x = 830;
-    positionTitre.y = 70;
-    positionOption1.x = 100;//on centre l'image
-    positionOption1.y = 580;
-    positionOption2.x = 350; //on centre l'image
-    positionOption2.y = 580;
-    positionOption3.x = 600; //on centre l'image
-    positionOption3.y = 580;
-    positionParametre.x = 800;
-    positionParametre.y = 580;
-    positionQuitter.x = 1000;
-    positionQuitter.y = 580;
-    int choix = 0;
+//menu d'accueil du jeu
+int menu(SDL_Surface *ecran)
+{
+  TTF_Font *police = NULL, *police2 =NULL; //polices propres au menu
+  police = TTF_OpenFont("fonts/LemonJuice.otf", 55); //on charge les polices
+  police2 = TTF_OpenFont("fonts/angel_bilsh/AngeLBilsh-Demo.ttf", 37);
+  SDL_Surface  *menu = NULL, *titre = NULL, *option1 = NULL, *option2 = NULL, *option3 =NULL, *quitter = NULL, *parametre = NULL; //surfaces servant pour l'ecran d'accueil
+  SDL_Surface  *option1_j = NULL, *option2_j = NULL, *option3_j =NULL, *quitter_j = NULL, *parametre_j = NULL; //surfaces servant pour l'ecran d'accueil(couleur jaune)
+  SDL_Rect positionMenu; //positions du menu
+  SDL_Rect positionTitre; //position du titre
+  SDL_Rect positionOption1; //positions de l'option 1
+  SDL_Rect positionOption2; //positions de l'option 2
+  SDL_Rect positionOption3; //positions de l'option 3
+  SDL_Rect positionQuitter; //positions de quitter
+  SDL_Rect positionParametre; //positions de quitter
+  SDL_Event event; //on crée un evenement
+  int continuer = 1;
+  int widthOption = 220;
+  int heightOption = 50;
+  short int option1_status = 0, option2_status = 0, option3_status=0, quitter_status=0, parametre_status=0;
+  menu = IMG_Load("Ressources/menu11.jpg"); //image de fond de l'écran d'accueil
+  titre = TTF_RenderText_Blended(police, "", couleurTitre);
+  option1 = TTF_RenderText_Blended(police, "Alexis - Sarah", couleurTitre);
+  option2 = TTF_RenderText_Blended(police, "Camille - Theo", couleurTitre);
+  option3 = TTF_RenderText_Blended(police, "Thomas", couleurTitre);
+  parametre = TTF_RenderText_Blended(police, "Options", couleurTitre);
+  quitter = TTF_RenderText_Blended(police, "Quitter", couleurTitre);
+  option1_j = TTF_RenderText_Blended(police, "Alexis - Sarah", couleurJaune);
+  option2_j = TTF_RenderText_Blended(police, "Camille - Theo", couleurJaune);
+  option3_j = TTF_RenderText_Blended(police, "Thomas", couleurJaune);
+  parametre_j = TTF_RenderText_Blended(police, "Options", couleurJaune);
+  quitter_j = TTF_RenderText_Blended(police, "Quitter", couleurJaune);
+  positionMenu.x = 0; //on centre l'image
+  positionMenu.y = 0;
+  positionTitre.x = 830;
+  positionTitre.y = 70;
+  positionOption1.x = 100;//on centre l'image
+  positionOption1.y = 580;
+  positionOption2.x = 350; //on centre l'image
+  positionOption2.y = 580;
+  positionOption3.x = 600; //on centre l'image
+  positionOption3.y = 580;
+  positionParametre.x = 800;
+  positionParametre.y = 580;
+  positionQuitter.x = 1000;
+  positionQuitter.y = 580;
+  int choix = 0;
+  //la boucle suivante constitue le menu
+  while (continuer)
+  { //tant que continuer != 0 (= l'utilisateur ne veut pas quitter)
+    SDL_WaitEvent(&event); //on attends un évènement
+    switch(event.type)
+    { //on teste son type
+      case SDL_QUIT: //si c'est un clic sur la croix rouge alors on quitter
+        continuer = 0;
+        choix = -1;
+        break;
 
-    //la boucle suivante constitue le menu
-    while (continuer){ //tant que continuer != 0 (= l'utilisateur ne veut pas quitter)
-        SDL_WaitEvent(&event); //on attends un évènement
-        switch(event.type){ //on teste son type
-            case SDL_QUIT: //si c'est un clic sur la croix rouge alors on quitter
-                continuer = 0;
-                choix = -2;
+      case SDL_KEYDOWN: //si c'est un appui sur une touche
+        switch(event.key.keysym.sym)
+        {
+          case SDLK_ESCAPE: // arrêter le jeu
+            continuer = 0;
+            choix = -1;
             break;
-            case SDL_KEYDOWN: //si c'est un appui sur une touche
-                switch(event.key.keysym.sym){
-                    case SDLK_ESCAPE: // arrêter le jeu
-                        continuer = 0;
-                        choix = -2;
-                    break;
-                    case SDLK_LEFT: //si c'est la flèche du haut
-                        switch(choix){ //en fonction de l'onglet en surbrillance actuel
-                            case 0 :
-                                choix = 4;
-                                option1_status = 0; //première option en blanc
-                                quitter_status = 1; //quitter en jaune
-                            break;
-                            case 1 :
-                                choix-- ;
-                                option1_status = 1; //première option en jaune
-                                option2_status = 0; //deuxième option en blanc
-                            break;
-                            case 2:
-                                choix-- ;
-                                option3_status = 0; //troisième option en blanc
-                                option2_status = 1; //deuxième option en jaune
-                            break;
-                            case 3:
-                                choix--;
-                                parametre_status = 0; //parametre en blanc
-                                option3_status = 1; //troisième option en jaune
-                            break;
-                            case 4:
-                                choix-- ;
-                                quitter_status = 0; //quitter option en blanc
-                                parametre_status = 1; //parametre en jaune
-                            break;
 
-                        }
-                    break;
-                    case SDLK_RIGHT: //si c'est flèche du bas
-                        switch(choix){ //en fonction de l'élément en surbrillance actuelle
-                            case 0 :
-                                choix++ ;
-                                option1_status = 0;
-                                option2_status = 1; //deuxième option en jaune
-                            break;
-                            case 1 :
-                                choix++ ;
-                                option2_status = 0; //deuxième option en blanc
-                                option3_status = 1; //troisième option en jaune
-                            break;
-                            case 2:
-                                choix++ ;
-                                option3_status = 0; //troisième option en blanc
-                                parametre_status = 1; //parametre en jaune
-                            break;
-                            case 3:
-                                choix++;
-                                parametre_status = 0; //parametre en blanc
-                                quitter_status = 1; //quitter en jaune
-                            break;
-                            case 4:
-                                choix = 0;
-                                quitter_status = 0; //quitter en blanc
-                                option1_status = 1; //première option en jaune
-                            break;
-
-                        }
-                    break;
-                    case SDLK_RETURN: //si c'est un appui sur la touche Entrée, on mets à jour le choix et on sort de la boucle
-                      if(choix < 4){
-                        choix++ ;
-                      }
-                      else{choix = 0; }
-                      continuer = 0;
-                    break;
-                }
+          case SDLK_LEFT: //si c'est la flèche du haut
+            switch(choix)
+            { //en fonction de l'onglet en surbrillance actuel
+              case 0 :
+                choix = 4;
+                option1_status = 0; //première option en blanc
+                quitter_status = 1; //quitter en jaune
                 break;
-            case SDL_MOUSEMOTION: // Mouvement de la souris
-                    //on déclare tous les états des variables en blanc
-                    option1_status = 0;
-                    option2_status = 0;
-                    option3_status = 0;
-                    parametre_status = 0;
-                    quitter_status = 0;
-                    //puis on déclare en jaune celui qui est survolé par la souris
-                    if((event.motion.x >= positionOption1.x) && (event.motion.x <= positionOption1.x+widthOption) && (event.motion.y >= positionOption1.y) && (event.motion.y <= positionOption1.y+heightOption)){
-                        option1_status = 1;
-                    }
-                    else if((event.motion.x >= positionOption2.x) && (event.motion.x <= positionOption2.x+widthOption) && (event.motion.y >= positionOption2.y) && (event.motion.y <= positionOption2.y+heightOption)){
-                        option2_status = 1;
-                    }
-                    else if((event.motion.x >= positionOption3.x) && (event.motion.x <= positionOption3.x+widthOption) && (event.motion.y >= positionOption3.y) && (event.motion.y <= positionOption3.y+heightOption)){
-                        option3_status = 1;
-                    }
-                    else if((event.motion.x >= positionParametre.x) && (event.motion.x <= positionParametre.x+widthOption) && (event.motion.y >= positionParametre.y) && (event.motion.y <= positionParametre.y+heightOption)){
-                        parametre_status = 1;
-                    }
-                    else if((event.motion.x >= positionQuitter.x) && (event.motion.x <= positionQuitter.x+widthOption) && (event.motion.y >= positionQuitter.y) && (event.motion.y <= positionQuitter.y+heightOption)){
-                        quitter_status = 1;
-                    }
 
+              case 1 :
+                choix-- ;
+                option1_status = 1; //première option en jaune
+                option2_status = 0; //deuxième option en blanc
+                break;
+
+              case 2:
+                choix-- ;
+                option3_status = 0; //troisième option en blanc
+                option2_status = 1; //deuxième option en jaune
+                break;
+
+              case 3:
+                choix--;
+                parametre_status = 0; //parametre en blanc
+                option3_status = 1; //troisième option en jaune
+                break;
+
+              case 4:
+                choix-- ;
+                quitter_status = 0; //quitter option en blanc
+                parametre_status = 1; //parametre en jaune
+                break;
+
+            }
             break;
-            case SDL_MOUSEBUTTONUP: // Clic de la souris, on affecte la valeur de choix en fonction de l'endroit du clic puis on sort de la boucle
-                    if((event.motion.x >= positionOption1.x) && (event.motion.x <= positionOption1.x+widthOption) && (event.motion.y >= positionOption1.y) && (event.motion.y <= positionOption1.y+heightOption)){
-                        choix = 1;
-                        //if (soundEffectStatus == 1) playSound(3);//son lorsque la souris clique sur l'option
-                        continuer = 0;
-                    }
-                    else if((event.motion.x >= positionOption2.x) && (event.motion.x <= positionOption2.x+widthOption) && (event.motion.y >= positionOption2.y) && (event.motion.y <= positionOption2.y+heightOption)){
-                        choix = 2;
-                        //if (soundEffectStatus == 1) playSound(3);//son lorsque la souris clique sur l'option
-                        continuer = 0;
-                    }
-                    else if((event.motion.x >= positionOption3.x) && (event.motion.x <= positionOption3.x+widthOption) && (event.motion.y >= positionOption3.y) && (event.motion.y <= positionOption3.y+heightOption)){
-                        choix = 3;
-                        //if (soundEffectStatus == 1) playSound(3);//son lorsque la souris clique sur l'option
-                        continuer = 0;
-                        break;
-                    }
-                    else if((event.motion.x >= positionParametre.x) && (event.motion.x <= positionParametre.x+widthOption) && (event.motion.y >= positionParametre.y) && (event.motion.y <= positionParametre.y+heightOption)){
-                        choix = 4;
-                        //if (soundEffectStatus == 1) playSound(3);//son lorsque la souris clique sur l'option
-                        continuer = 0;
-                    }
-                    else if((event.motion.x >= positionQuitter.x) && (event.motion.x <= positionQuitter.x+widthOption) && (event.motion.y >= positionQuitter.y) && (event.motion.y <= positionQuitter.y+heightOption)){
-                        choix = 0;
-                      //  if (soundEffectStatus == 1) playSound(1);//son lorsque la souris clique sur l'option
-                        continuer = 0;
-                    }
 
+          case SDLK_RIGHT: //si c'est flèche du bas
+            switch(choix)
+            { //en fonction de l'élément en surbrillance actuelle
+              case 0 :
+                choix++;
+                option1_status = 0;
+                option2_status = 1; //deuxième option en jaune
+                break;
+
+              case 1 :
+                choix++ ;
+                option2_status = 0; //deuxième option en blanc
+                option3_status = 1; //troisième option en jaune
+                break;
+
+              case 2:
+                choix++ ;
+                option3_status = 0; //troisième option en blanc
+                parametre_status = 1; //parametre en jaune
+                break;
+
+              case 3:
+                choix++;
+                parametre_status = 0; //parametre en blanc
+                quitter_status = 1; //quitter en jaune
+                break;
+
+              case 4:
+                choix = 0;
+                quitter_status = 0; //quitter en blanc
+                option1_status = 1; //première option en jaune
+                break;
+
+            }
+            break;
+
+          case SDLK_RETURN: //si c'est un appui sur la touche Entrée, on mets à jour le choix et on sort de la boucle
+            if(choix < 4)
+            {
+              choix++ ;
+            }
+            else
+            {
+              choix = 0;
+            }
+            continuer = 0;
             break;
         }
+        break;
 
-        SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 0, 0, 0));       // Effacement de l'écran
-        //on affiche les surfaces
-        SDL_BlitSurface(menu, NULL, ecran, &positionMenu);
-        SDL_BlitSurface(titre, NULL, ecran, &positionTitre); // Blit du texte
-        (option1_status == 0) ? SDL_BlitSurface(option1, NULL, ecran, &positionOption1) : SDL_BlitSurface(option1_j, NULL, ecran, &positionOption1);
-        (option2_status == 0) ? SDL_BlitSurface(option2, NULL, ecran, &positionOption2) : SDL_BlitSurface(option2_j, NULL, ecran, &positionOption2);
-        (option3_status == 0) ? SDL_BlitSurface(option3, NULL, ecran, &positionOption3) : SDL_BlitSurface(option3_j, NULL, ecran, &positionOption3);
-        (parametre_status == 0) ? SDL_BlitSurface(parametre, NULL, ecran, &positionParametre) : SDL_BlitSurface(parametre_j, NULL, ecran, &positionParametre);
-        (quitter_status == 0) ? SDL_BlitSurface(quitter, NULL, ecran, &positionQuitter) : SDL_BlitSurface(quitter_j, NULL, ecran, &positionQuitter);
-        SDL_Flip(ecran);
+      case SDL_MOUSEMOTION: // Mouvement de la souris
+        //on déclare tous les états des variables en blanc
+        option1_status = 0;
+        option2_status = 0;
+        option3_status = 0;
+        parametre_status = 0;
+        quitter_status = 0;
+        //puis on déclare en jaune celui qui est survolé par la souris
+        if((event.motion.x >= positionOption1.x) && (event.motion.x <= positionOption1.x+widthOption) && (event.motion.y >= positionOption1.y) && (event.motion.y <= positionOption1.y+heightOption))
+        {
+          option1_status = 1;
+        }
+        else if((event.motion.x >= positionOption2.x) && (event.motion.x <= positionOption2.x+widthOption) && (event.motion.y >= positionOption2.y) && (event.motion.y <= positionOption2.y+heightOption))
+        {
+          option2_status = 1;
+        }
+        else if((event.motion.x >= positionOption3.x) && (event.motion.x <= positionOption3.x+widthOption) && (event.motion.y >= positionOption3.y) && (event.motion.y <= positionOption3.y+heightOption))
+        {
+          option3_status = 1;
+        }
+        else if((event.motion.x >= positionParametre.x) && (event.motion.x <= positionParametre.x+widthOption) && (event.motion.y >= positionParametre.y) && (event.motion.y <= positionParametre.y+heightOption))
+        {
+          parametre_status = 1;
+        }
+        else if((event.motion.x >= positionQuitter.x) && (event.motion.x <= positionQuitter.x+widthOption) && (event.motion.y >= positionQuitter.y) && (event.motion.y <= positionQuitter.y+heightOption))
+        {
+          quitter_status = 1;
+        }
+        break;
+
+      case SDL_MOUSEBUTTONUP: // Clic de la souris, on affecte la valeur de choix en fonction de l'endroit du clic puis on sort de la boucle
+        if((event.motion.x >= positionOption1.x) && (event.motion.x <= positionOption1.x+widthOption) && (event.motion.y >= positionOption1.y) && (event.motion.y <= positionOption1.y+heightOption))
+        {
+          choix = 1;
+          //if (soundEffectStatus == 1) playSound(3);//son lorsque la souris clique sur l'option
+          continuer = 0;
+        }
+        else if((event.motion.x >= positionOption2.x) && (event.motion.x <= positionOption2.x+widthOption) && (event.motion.y >= positionOption2.y) && (event.motion.y <= positionOption2.y+heightOption))
+        {
+          choix = 2;
+          //if (soundEffectStatus == 1) playSound(3);//son lorsque la souris clique sur l'option
+          continuer = 0;
+        }
+        else if((event.motion.x >= positionOption3.x) && (event.motion.x <= positionOption3.x+widthOption) && (event.motion.y >= positionOption3.y) && (event.motion.y <= positionOption3.y+heightOption))
+        {
+          choix = 3;
+          //if (soundEffectStatus == 1) playSound(3);//son lorsque la souris clique sur l'option
+          continuer = 0;
+        }
+        else if((event.motion.x >= positionParametre.x) && (event.motion.x <= positionParametre.x+widthOption) && (event.motion.y >= positionParametre.y) && (event.motion.y <= positionParametre.y+heightOption))
+        {
+          choix = 4;
+          //if (soundEffectStatus == 1) playSound(3);//son lorsque la souris clique sur l'option
+          continuer = 0;
+        }
+        else if((event.motion.x >= positionQuitter.x) && (event.motion.x <= positionQuitter.x+widthOption) && (event.motion.y >= positionQuitter.y) && (event.motion.y <= positionQuitter.y+heightOption))
+        {
+          choix = 0;
+          //  if (soundEffectStatus == 1) playSound(1);//son lorsque la souris clique sur l'option
+          continuer = 0;
+        }
+        break;
+
     }
-    //on libère les surfaces et les polices avant de retourner le choix de l'utilisateur
-    TTF_CloseFont(police); // Doit être avant TTF_Quit()
-    TTF_CloseFont(police2); // Doit être avant TTF_Quit()
-    SDL_FreeSurface(menu);
-    SDL_FreeSurface(titre);
-    SDL_FreeSurface(option1);
-    SDL_FreeSurface(option2);
-    SDL_FreeSurface(option3);
-    SDL_FreeSurface(parametre);
-    SDL_FreeSurface(quitter);
-    SDL_FreeSurface(option1_j);
-    SDL_FreeSurface(option2_j);
-    SDL_FreeSurface(option3_j);
-    SDL_FreeSurface(parametre_j);
-    SDL_FreeSurface(quitter_j);
-    return choix;
+    SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 0, 0, 0));       // Effacement de l'écran
+    //on affiche les surfaces
+    SDL_BlitSurface(menu, NULL, ecran, &positionMenu);
+    SDL_BlitSurface(titre, NULL, ecran, &positionTitre); // Blit du texte
+    (option1_status == 0) ? SDL_BlitSurface(option1, NULL, ecran, &positionOption1) : SDL_BlitSurface(option1_j, NULL, ecran, &positionOption1);
+    (option2_status == 0) ? SDL_BlitSurface(option2, NULL, ecran, &positionOption2) : SDL_BlitSurface(option2_j, NULL, ecran, &positionOption2);
+    (option3_status == 0) ? SDL_BlitSurface(option3, NULL, ecran, &positionOption3) : SDL_BlitSurface(option3_j, NULL, ecran, &positionOption3);
+    (parametre_status == 0) ? SDL_BlitSurface(parametre, NULL, ecran, &positionParametre) : SDL_BlitSurface(parametre_j, NULL, ecran, &positionParametre);
+    (quitter_status == 0) ? SDL_BlitSurface(quitter, NULL, ecran, &positionQuitter) : SDL_BlitSurface(quitter_j, NULL, ecran, &positionQuitter);
+    SDL_Flip(ecran);
+  }
+  //on libère les surfaces et les polices avant de retourner le choix de l'utilisateur
+  TTF_CloseFont(police); // Doit être avant TTF_Quit()
+  TTF_CloseFont(police2); // Doit être avant TTF_Quit()
+  SDL_FreeSurface(menu);
+  SDL_FreeSurface(titre);
+  SDL_FreeSurface(option1);
+  SDL_FreeSurface(option2);
+  SDL_FreeSurface(option3);
+  SDL_FreeSurface(parametre);
+  SDL_FreeSurface(quitter);
+  SDL_FreeSurface(option1_j);
+  SDL_FreeSurface(option2_j);
+  SDL_FreeSurface(option3_j);
+  SDL_FreeSurface(parametre_j);
+  SDL_FreeSurface(quitter_j);
+  return choix;
 }
+
 /*
 void menuOption(SDL_Surface *ecran){ //cette fonction constitue le menu des options du jeu
   SDL_Surface  *menu = NULL, *titre = NULL, *wrap = NULL, *parametre[2] = {NULL,NULL}, *credit[2] = {NULL,NULL}, *quitter[2] = {NULL,NULL}; //surface servant pour le panneau de gauche
@@ -486,8 +518,8 @@ void menuOption(SDL_Surface *ecran){ //cette fonction constitue le menu des opti
   TTF_CloseFont(police3); // Doit être avant TTF_Quit()
   TTF_CloseFont(police4); // Doit être avant TTF_Quit()
 }
-/*
-void menuVictoire(SDL_Surface *ecran, int mode, int winner){ //menu de victoire
+*//*
+void menuPause(SDL_Surface *ecran, int winner){ //menu pause
 
   TTF_Font *police = NULL, *police2 =NULL, *police3 = NULL; //pointeurs des polices
   police = TTF_OpenFont("fonts/clean_sports/Clean Sports.ttf", 17); //chargement des polices
@@ -528,7 +560,7 @@ void menuVictoire(SDL_Surface *ecran, int mode, int winner){ //menu de victoire
     TexteResultat[0] = TTF_RenderText_Blended(police, "Match nul !", couleurBlanche); // on charge "Match Nul"
     positionTexteResultat[0].x = 200; //on centre la surface
   }
-  switch(mode){ //en fonction du mode de jeu
+  /*switch(mode){ //en fonction du mode de jeu
     case 1: //Si c'est le mode 1 Joueur
       if((score[0].score/10) == 0){ //si son score est inférieur à 10
         resultat_solo[28]=' '; //on affiche un espace dans la colonne des dizaines de la chaine qui affichera le resultat
@@ -563,7 +595,7 @@ void menuVictoire(SDL_Surface *ecran, int mode, int winner){ //menu de victoire
       resultat_multi[34]= score[1].score+48; //on écrit dans la chaine le score du Joueur2
       TexteResultat[1] = TTF_RenderText_Blended(police3, resultat_multi, couleurBlanche); //on charge la chaine dans la surface
     break;
-  }
+  }*//*
 
   while (continuer){ // on crée une boucle dépendant de la variable continuer pour attendre que le joueur appuie sur une touche
       SDL_PollEvent(&event);
@@ -600,5 +632,4 @@ void menuVictoire(SDL_Surface *ecran, int mode, int winner){ //menu de victoire
   SDL_FreeSurface(Score[0]);
   SDL_FreeSurface(Score[1]);
   SDL_FreeSurface(TexteContinuer);
-}
-*/
+}*/
