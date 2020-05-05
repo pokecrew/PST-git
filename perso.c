@@ -107,6 +107,7 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
           {
             case SDLK_ESCAPE: // arrêter le jeu
               refresh = 0; //pas besoin de rafraichir
+              Mix_PauseMusic();
               continuer = 0;
               break;
 
@@ -254,8 +255,30 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
               }
               printf(GREEN"[Jeu]:"RESET"typeSprite : %d\n", typeSprite);
               refresh = 1;
-              break;
+            break;
 
+            case 'e': // Pause/lecture musique
+              if(Mix_PausedMusic() == 1)//Si la musique est en pause
+                {
+                    Mix_ResumeMusic(); //Reprendre la musique
+                }
+                else
+                {
+                    Mix_PauseMusic(); //Mettre en pause la musique
+                }
+            break;
+            case 'r': // Augmenter Volume Musique
+              if (volumeSon <= 112){
+                volumeSon+=16;
+                Mix_VolumeMusic(volumeSon);
+              }
+            break;
+            case 't': // Diminuer Volume Musique
+              if (volumeSon >= 16){
+                volumeSon-=16;
+                Mix_VolumeMusic(volumeSon);
+              }
+            break;
             case SDLK_UP: // Flèche haut
               current=3;
               break;
