@@ -45,6 +45,8 @@ int main(int argc, char** argv)
   poke2.niv = 20;
   calcul_stat(&poke2);
   calcul_stat(&poke1);
+  int attaques[4]={5,12,3,6};
+  charger_att((poke1.attaque), attaques);
 
   //la boucle suivante constitue le menu
   int continuer = 1;
