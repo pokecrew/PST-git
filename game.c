@@ -267,6 +267,7 @@ int lancerEvenement(Case **Map,int i, int j, Direction direction, Perso perso, S
 int charger_att(Att att[4], int id_att[4]){
   FILE *fic = NULL;
   fic = fopen("Ressources/Attaques","r");
+  printf(" je suis ouvert bonjour :)\n");
   char TAB[120];
   char type_temp[10]= {' '};
   fgets(TAB, 119, fic);
