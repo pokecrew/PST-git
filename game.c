@@ -265,27 +265,30 @@ int lancerEvenement(Case **Map,int i, int j, Direction direction, Perso perso, S
 }
 
 int charger_att(Att att[4], int id_att[4]){
-  FILE *fic = NULL;
-  fic = fopen("Ressources/Attaques","r");
+  FILE *fic_att = NULL;
+  fic_att = fopen("Ressources/Attaques","r");
   printf(" je suis ouvert bonjour :)\n");
   char TAB[120];
   char type_temp[10]= {' '};
-  fgets(TAB, 119, fic);
+  fgets(TAB, 119, fic_att);
   int attaques_chargees = 0;
   int attaques_a_charger = 4;
+  int continuer =1;
   //Calcul du nombre d'attaques à charger
   for(int i=0; i<4; i++){
-    //printf("%d \n",id_att[i]);
+    printf(BLUE"[charger_att]:"RESET"%d \n",id_att[i]);
     if(id_att[i] == 0){
       attaques_a_charger--;
     }
   }
 //  printf(GREEN"[charger_att]:"RESET" attaques_a_charger = %d \n",attaques_a_charger);
   int id_f = 0;
-  while(attaques_chargees != attaques_a_charger){
+  while(attaques_chargees != attaques_a_charger && continuer == 1){
     //recupère l'id en cours
-    fgets(TAB, 119, fic);
+    fgets(TAB, 119, fic_att);
+    //printf("Attaque chargées : %d\n",attaques_chargees );
     id_f =	(TAB[0]-'0')*100 + (TAB[1]-'0')*10 + TAB[2]-'0';
+    //printf("%d\n", id_f);
     for(int i = 0; i<4; i++){
       if(id_att[i] == id_f){
           //chargement id Attaque
@@ -369,5 +372,9 @@ int charger_att(Att att[4], int id_att[4]){
           attaques_chargees++;//on augmente le compteur d'attaques chargées
       }
     }
+    if(id_f == 71){
+      continuer =0;
+    }
   }
+  fclose(fic_att);
 }

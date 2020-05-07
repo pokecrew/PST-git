@@ -93,6 +93,7 @@ void combat(SDL_Surface *ecran)
 	int longueur = 125, hauteur = 20, longueur2 = 70, longueur3 = 105, longueur4 = 85;
 	int i;
   int joueur = 0;
+	int derouler_combat = 0;
 
 	//pokemon
 
@@ -117,8 +118,9 @@ void combat(SDL_Surface *ecran)
 	sprintf(niveau_poke2,"niv : %d ",poke2.niv);
 	printf("coucou ca marche pd 3 \n");
 	int attaques2[4];
-	for(int i;i<4;i++){
-		attaques2[i]=rand()%72;
+	for(int j=0;j<4;j++){
+		attaques2[j]=rand()%72;
+		printf(RED"[combat]:"RESET"attaques2[%d] = %d \n", i, attaques2[j]);
 	}
 	printf(" cest moi qui bug \n");
 	charger_att((poke2.attaque), attaques2);
@@ -149,7 +151,7 @@ void combat(SDL_Surface *ecran)
   pos_rect_pv.x = 715;
   pos_rect_pv.y = 427;
 
-  pos_pv_2.x = 350;
+  pos_pv_2.x = 340;
   pos_pv_2.y = 185;
 
   pos_rect_pv_2.x = 321;
@@ -286,26 +288,31 @@ void combat(SDL_Surface *ecran)
               printf(" lancement attaque1 \n");
               joueur = deroulement(ecran, joueur,poke1.attaque[0].puissance);
               printf("%d\n",poke1.PV);
+							derouler_combat = 1;
 						}
-						if ((pos_texte_attaque2.x <= event.button.x) && ((pos_texte_attaque2.x + longueur4) >= event.button.x) && (pos_texte_attaque2.y <= event.button.y) && (pos_texte_attaque2.y + hauteur >= event.button.y))
+						else if ((pos_texte_attaque2.x <= event.button.x) && ((pos_texte_attaque2.x + longueur4) >= event.button.x) && (pos_texte_attaque2.y <= event.button.y) && (pos_texte_attaque2.y + hauteur >= event.button.y))
 						{
 							printf(" lancement attaque2 \n");
 							joueur = deroulement(ecran, joueur,poke1.attaque[1].puissance);
 							printf("%d\n",poke1.PV);
+							derouler_combat = 1;
 						}
-						if ((pos_texte_attaque3.x <= event.button.x) && ((pos_texte_attaque3.x + longueur4) >= event.button.x) && (pos_texte_attaque3.y <= event.button.y) && (pos_texte_attaque3.y + hauteur >= event.button.y))
+						 else if ((pos_texte_attaque3.x <= event.button.x) && ((pos_texte_attaque3.x + longueur4) >= event.button.x) && (pos_texte_attaque3.y <= event.button.y) && (pos_texte_attaque3.y + hauteur >= event.button.y))
 						{
 							printf(" lancement attaque3 \n");
 							joueur = deroulement(ecran, joueur,poke1.attaque[2].puissance);
 							printf("%d\n",poke1.PV);
+							derouler_combat = 1;
 						}
-						if ((pos_texte_attaque4.x <= event.button.x) && ((pos_texte_attaque4.x + longueur4) >= event.button.x) && (pos_texte_attaque4.y <= event.button.y) && (pos_texte_attaque4.y + hauteur >= event.button.y))
+						else if ((pos_texte_attaque4.x <= event.button.x) && ((pos_texte_attaque4.x + longueur4) >= event.button.x) && (pos_texte_attaque4.y <= event.button.y) && (pos_texte_attaque4.y + hauteur >= event.button.y))
 						{
 							printf(" lancement attaque4 \n");
 							joueur = deroulement(ecran, joueur,poke1.attaque[3].puissance);
 							printf("%d\n",poke1.PV);
+							derouler_combat = 1;
 						}
 
+						if(derouler_combat  == 1){
 							if(poke2.PV <= 0)
 							{
 								printf(" poke2 est mort \n");
@@ -342,9 +349,10 @@ void combat(SDL_Surface *ecran)
 									continuer = 0;
 								}
 							}
-              attaque = 0;
-              bouton=1;
-
+							derouler_combat = 0;
+						}
+            attaque = 0;
+            bouton=1;
           }
 			  }
 				break;
