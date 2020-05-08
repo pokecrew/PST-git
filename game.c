@@ -182,7 +182,7 @@ int lancerEvenement(Case **Map,int i, int j, Direction direction, Perso perso, S
                   break;
 
                 case SDLK_SPACE: //
-                  printf(GREEN"[lancerEvenement]:"RESET"Debut phrase heall (boite de dialogue)\n");
+                  //printf(GREEN"[lancerEvenement]:"RESET"Debut phrase heal (boite de dialogue)\n");
                   position.x = Map[0][0].position.x+4*TAILLE_SPRITE;
                   position.y = Map[0][0].position.y+2*TAILLE_SPRITE;
                   Mix_PauseMusic(); //on arrête la musique
@@ -233,7 +233,8 @@ int lancerEvenement(Case **Map,int i, int j, Direction direction, Perso perso, S
                   SDL_Flip(ecran);
                   SDL_Delay(500);
                   Mix_ResumeMusic();//on remet de la musique
-                  printf(GREEN"[lancerEvenement]:"RESET"Fin hill\n");
+                  calcul_stat(&poke1);
+                  //printf(GREEN"[lancerEvenement]:"RESET"Fin heal\n");
                   continuer = 0;
                   break;
 
@@ -265,31 +266,34 @@ int lancerEvenement(Case **Map,int i, int j, Direction direction, Perso perso, S
 }
 
 int charger_att(Att att[4], int id_att[4]){
-  FILE *fic = NULL;
-  fic = fopen("Ressources/Attaques","r");
+  FILE *fic_att = NULL;
+  fic_att = fopen("Ressources/Attaques","r");
   char TAB[120];
   char type_temp[10]= {' '};
-  fgets(TAB, 119, fic);
+  fgets(TAB, 119, fic_att);
   int attaques_chargees = 0;
   int attaques_a_charger = 4;
+  int continuer =1;
   //Calcul du nombre d'attaques à charger
   for(int i=0; i<4; i++){
-    //printf("%d \n",id_att[i]);
+  //  printf(BLUE"[charger_att]:"RESET"%d \n",id_att[i]);
     if(id_att[i] == 0){
       attaques_a_charger--;
     }
   }
 //  printf(GREEN"[charger_att]:"RESET" attaques_a_charger = %d \n",attaques_a_charger);
   int id_f = 0;
-  while(attaques_chargees != attaques_a_charger){
+  while(attaques_chargees != attaques_a_charger && continuer == 1){
     //recupère l'id en cours
-    fgets(TAB, 119, fic);
+    fgets(TAB, 119, fic_att);
+    //printf("Attaque chargées : %d\n",attaques_chargees );
     id_f =	(TAB[0]-'0')*100 + (TAB[1]-'0')*10 + TAB[2]-'0';
+    //printf("%d\n", id_f);
     for(int i = 0; i<4; i++){
       if(id_att[i] == id_f){
           //chargement id Attaque
           att[i].id = id_f;
-          //printf(GREEN"[charger_att]:"RESET"att[%d].id : %d\n",i, id_f);
+        //  printf(GREEN"[charger_att]:"RESET"att[%d].id : %d\n",i, id_f);
 
           //chargement nom Attaque
           for(int j=0; j<17; j++){ //pour chaque caractère
@@ -304,7 +308,7 @@ int charger_att(Att att[4], int id_att[4]){
               att[i].nom[j] = TAB[4+j]; //sinon on charge le caractère correspondant
             }
           }
-          //printf(GREEN"[charger_att]:"RESET"att[%d].nom : %s\n",i, att[i].nom);
+        //  printf(GREEN"[charger_att]:"RESET"att[%d].nom : %s\n",i, att[i].nom);
 
           //chargement type Attaque
           for(int k=0; k<8; k++){
@@ -359,14 +363,20 @@ int charger_att(Att att[4], int id_att[4]){
 
           //chargement puissance attaque
           att[i].puissance =	(TAB[42]-'0')*100 + (TAB[43]-'0')*10 + TAB[44]-'0';
-
+          //printf(GREEN"[charger_att]:"RESET"att[%d].puissance : %d\n",i, att[i].puissance);
           //chargement précision attaque
           att[i].precision =	(TAB[48]-'0')*100 + (TAB[49]-'0')*10 + TAB[50]-'0';
+        //  printf(GREEN"[charger_att]:"RESET"att[%d].précision : %d\n",i, att[i].puissance);
 
           //chargement pp_max attaque
           att[i].pp_max =	(TAB[54]-'0')*10 + TAB[55]-'0';
+        //  printf(GREEN"[charger_att]:"RESET"att[%d].pp : %d\n",i, att[i].pp);
           attaques_chargees++;//on augmente le compteur d'attaques chargées
       }
     }
+    if(id_f == 71){
+      continuer =0;
+    }
   }
+  fclose(fic_att);
 }

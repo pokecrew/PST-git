@@ -40,11 +40,10 @@ int main(int argc, char** argv)
   poke1.id = 3;
   poke1.niv = 30;
   poke1.exp = (poke1.niv)*(poke1.niv)*(poke1.niv);
-  printf("%d\n",poke1.exp);
-  poke2.id = 2;
-  poke2.niv = 20;
-  calcul_stat(&poke2);
   calcul_stat(&poke1);
+  printf("%d\n",poke1.exp);
+  int attaques[4]={5,12,3,6};
+  charger_att((poke1.attaque), attaques);
 
   //la boucle suivante constitue le menu
   int continuer = 1;

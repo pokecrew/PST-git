@@ -109,8 +109,9 @@ SDL_Surface *Map_Sprites[10000];//Tableau des sprites de la Map
 SDL_Rect perso_position_old; //dernière position du joueur sur une map unique (= autre que maison, centre pkmn, etc...) (relatif au coordonnées de Map[0][0])
 int musicMapPrec = -1; //musique jouée lors sur la carte précédente (par défaut -1)
 int musicMap=1; //musique jouée sur la map actuelle
+int volumeSon = 0; //0 = min, 128 = max;
 int numMapPrec =5; //numéro de la map précédente (à charger depuis un fichier sauvegarde)
-int numMap = 5; //numéro de la map actuelle (à charger depuis un fichier sauvegarde)
+int numMap = 4; //numéro de la map actuelle (à charger depuis un fichier sauvegarde)
 char nomMap[40]="";
 char mapPath[]="map/05.lvl"; //chemin vers le fichier source de la carte actuelle
 int typeSprite = 0; //sprites de petites tailles (0) ou de grande taille (12)
