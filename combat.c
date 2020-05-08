@@ -93,41 +93,38 @@ void combat(SDL_Surface *ecran)
 	int longueur = 125, hauteur = 20, longueur2 = 70, longueur3 = 105, longueur4 = 85;
 	int i;
   int joueur = 0;
+	int derouler_combat = 0;
 
 	//pokemon
 
 	srand(time(NULL));
 	poke2.id = rand()%144;
-	printf(" L'ID DU POKE EST %d\n",poke2.id);
+	printf(BLUE"[charger_att]:"RESET"poke2.id : %d\n", poke2.id);
 	// le tirage du niveau en face
 	int signe = rand()%2;
 	if (signe%2==0){
 		poke2.niv= poke1.niv - rand()%4;
 	}
 	else poke2.niv = poke1.niv + rand()%4;
-	printf(" LE NIVEAU DU POKE EST  %d\n",poke2.niv);
 	calcul_stat(&poke2);
-	printf("coucou ca marche pd \n");
-  calcul_stat(&poke1);
-	printf("coucou ca marche pd 2 \n");
+
 	char niveau_poke1[10];
 	char niveau_poke2[10];
 	//on remplit les tableaux
 	sprintf(niveau_poke1,"niv : %d ",poke1.niv);
 	sprintf(niveau_poke2,"niv : %d ",poke2.niv);
-	printf("coucou ca marche pd 3 \n");
 	int attaques2[4];
-	for(int i;i<4;i++){
-		attaques2[i]=rand()%72;
+	for(int j=0;j<4;j++){
+		attaques2[j]=rand()%72;
+		//printf(RED"[combat]:"RESET"attaques2[%d] = %d \n", i, attaques2[j]);
 	}
-	printf(" cest moi qui bug \n");
 	charger_att((poke2.attaque), attaques2);
 	printf("il a chargé : %s, %s, %s, %s \n", poke2.attaque[0].nom, poke2.attaque[1].nom, poke2.attaque[2].nom, poke2.attaque[3].nom);
 
 	char TAB[100];
   char TAB1[100];
-	printf("pv du pokemon 1 : %d\n",poke1.PV);
-	printf("pv du pokemon 2 : %d\n",poke2.PV);
+	//printf("pv du pokemon 1 : %d\n",poke1.PV);
+	//printf("pv du pokemon 2 : %d\n",poke2.PV);
   sprintf(TAB,"pv : %d ",poke1.PV);
   sprintf(TAB1,"pv : %d",poke2.PV);
 
@@ -149,7 +146,7 @@ void combat(SDL_Surface *ecran)
   pos_rect_pv.x = 715;
   pos_rect_pv.y = 427;
 
-  pos_pv_2.x = 350;
+  pos_pv_2.x = 340;
   pos_pv_2.y = 185;
 
   pos_rect_pv_2.x = 321;
@@ -193,7 +190,6 @@ void combat(SDL_Surface *ecran)
 	SDL_BlitSurface(texte_niveau_poke1, NULL, ecran, &pos_texte_niveau_poke1);
   SDL_BlitSurface(texte_niveau_poke2, NULL, ecran , &pos_texte_niveau_poke2);
 	SDL_Flip(ecran);
- printf("coucou ca marche pd 4 \n");
 	while(continuer) //Boucle infini qui s'arrête lorsque continuer = 0
 	{
 		SDL_WaitEvent(&event);
@@ -286,26 +282,31 @@ void combat(SDL_Surface *ecran)
               printf(" lancement attaque1 \n");
               joueur = deroulement(ecran, joueur,poke1.attaque[0].puissance);
               printf("%d\n",poke1.PV);
+							derouler_combat = 1;
 						}
-						if ((pos_texte_attaque2.x <= event.button.x) && ((pos_texte_attaque2.x + longueur4) >= event.button.x) && (pos_texte_attaque2.y <= event.button.y) && (pos_texte_attaque2.y + hauteur >= event.button.y))
+						else if ((pos_texte_attaque2.x <= event.button.x) && ((pos_texte_attaque2.x + longueur4) >= event.button.x) && (pos_texte_attaque2.y <= event.button.y) && (pos_texte_attaque2.y + hauteur >= event.button.y))
 						{
 							printf(" lancement attaque2 \n");
 							joueur = deroulement(ecran, joueur,poke1.attaque[1].puissance);
 							printf("%d\n",poke1.PV);
+							derouler_combat = 1;
 						}
-						if ((pos_texte_attaque3.x <= event.button.x) && ((pos_texte_attaque3.x + longueur4) >= event.button.x) && (pos_texte_attaque3.y <= event.button.y) && (pos_texte_attaque3.y + hauteur >= event.button.y))
+						 else if ((pos_texte_attaque3.x <= event.button.x) && ((pos_texte_attaque3.x + longueur4) >= event.button.x) && (pos_texte_attaque3.y <= event.button.y) && (pos_texte_attaque3.y + hauteur >= event.button.y))
 						{
 							printf(" lancement attaque3 \n");
 							joueur = deroulement(ecran, joueur,poke1.attaque[2].puissance);
 							printf("%d\n",poke1.PV);
+							derouler_combat = 1;
 						}
-						if ((pos_texte_attaque4.x <= event.button.x) && ((pos_texte_attaque4.x + longueur4) >= event.button.x) && (pos_texte_attaque4.y <= event.button.y) && (pos_texte_attaque4.y + hauteur >= event.button.y))
+						else if ((pos_texte_attaque4.x <= event.button.x) && ((pos_texte_attaque4.x + longueur4) >= event.button.x) && (pos_texte_attaque4.y <= event.button.y) && (pos_texte_attaque4.y + hauteur >= event.button.y))
 						{
 							printf(" lancement attaque4 \n");
 							joueur = deroulement(ecran, joueur,poke1.attaque[3].puissance);
 							printf("%d\n",poke1.PV);
+							derouler_combat = 1;
 						}
 
+						if(derouler_combat  == 1){
 							if(poke2.PV <= 0)
 							{
 								printf(" poke2 est mort \n");
@@ -342,9 +343,10 @@ void combat(SDL_Surface *ecran)
 									continuer = 0;
 								}
 							}
-              attaque = 0;
-              bouton=1;
-
+							derouler_combat = 0;
+						}
+            attaque = 0;
+            bouton=1;
           }
 			  }
 				break;
@@ -628,13 +630,13 @@ int deroulement(SDL_Surface *ecran, int joueur,int puissance)
 {
 	if (joueur == 0)
 	{
-		printf(" pv perdu : %d\n",calcul_pv_perdu(poke1,poke2,puissance));
+	//	printf(" pv perdu : %d\n",calcul_pv_perdu(poke1,poke2,puissance));
 		poke2.PV-=calcul_pv_perdu(poke1, poke2,puissance);
 	}
 	else
 	{
 		int nb_aleatoire = rand()%4;
-		printf("il va perdre %d hp \n",calcul_pv_perdu(poke2,poke1,poke2.attaque[nb_aleatoire].puissance));
+	//	printf("il va perdre %d hp \n",calcul_pv_perdu(poke2,poke1,poke2.attaque[nb_aleatoire].puissance));
 		poke1.PV-=calcul_pv_perdu(poke2, poke1,poke2.attaque[nb_aleatoire].puissance);
 	}
 	return (joueur +1)%2;
