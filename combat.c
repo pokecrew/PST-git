@@ -99,37 +99,32 @@ void combat(SDL_Surface *ecran)
 
 	srand(time(NULL));
 	poke2.id = rand()%144;
-	printf(" L'ID DU POKE EST %d\n",poke2.id);
+	printf(BLUE"[charger_att]:"RESET"poke2.id : %d\n", poke2.id);
 	// le tirage du niveau en face
 	int signe = rand()%2;
 	if (signe%2==0){
 		poke2.niv= poke1.niv - rand()%4;
 	}
 	else poke2.niv = poke1.niv + rand()%4;
-	printf(" LE NIVEAU DU POKE EST  %d\n",poke2.niv);
 	calcul_stat(&poke2);
-	printf("coucou ca marche pd \n");
-  calcul_stat(&poke1);
-	printf("coucou ca marche pd 2 \n");
+
 	char niveau_poke1[10];
 	char niveau_poke2[10];
 	//on remplit les tableaux
 	sprintf(niveau_poke1,"niv : %d ",poke1.niv);
 	sprintf(niveau_poke2,"niv : %d ",poke2.niv);
-	printf("coucou ca marche pd 3 \n");
 	int attaques2[4];
 	for(int j=0;j<4;j++){
 		attaques2[j]=rand()%72;
-		printf(RED"[combat]:"RESET"attaques2[%d] = %d \n", i, attaques2[j]);
+		//printf(RED"[combat]:"RESET"attaques2[%d] = %d \n", i, attaques2[j]);
 	}
-	printf(" cest moi qui bug \n");
 	charger_att((poke2.attaque), attaques2);
 	printf("il a chargé : %s, %s, %s, %s \n", poke2.attaque[0].nom, poke2.attaque[1].nom, poke2.attaque[2].nom, poke2.attaque[3].nom);
 
 	char TAB[100];
   char TAB1[100];
-	printf("pv du pokemon 1 : %d\n",poke1.PV);
-	printf("pv du pokemon 2 : %d\n",poke2.PV);
+	//printf("pv du pokemon 1 : %d\n",poke1.PV);
+	//printf("pv du pokemon 2 : %d\n",poke2.PV);
   sprintf(TAB,"pv : %d ",poke1.PV);
   sprintf(TAB1,"pv : %d",poke2.PV);
 
@@ -195,7 +190,6 @@ void combat(SDL_Surface *ecran)
 	SDL_BlitSurface(texte_niveau_poke1, NULL, ecran, &pos_texte_niveau_poke1);
   SDL_BlitSurface(texte_niveau_poke2, NULL, ecran , &pos_texte_niveau_poke2);
 	SDL_Flip(ecran);
- printf("coucou ca marche pd 4 \n");
 	while(continuer) //Boucle infini qui s'arrête lorsque continuer = 0
 	{
 		SDL_WaitEvent(&event);
@@ -636,13 +630,13 @@ int deroulement(SDL_Surface *ecran, int joueur,int puissance)
 {
 	if (joueur == 0)
 	{
-		printf(" pv perdu : %d\n",calcul_pv_perdu(poke1,poke2,puissance));
+	//	printf(" pv perdu : %d\n",calcul_pv_perdu(poke1,poke2,puissance));
 		poke2.PV-=calcul_pv_perdu(poke1, poke2,puissance);
 	}
 	else
 	{
 		int nb_aleatoire = rand()%4;
-		printf("il va perdre %d hp \n",calcul_pv_perdu(poke2,poke1,poke2.attaque[nb_aleatoire].puissance));
+	//	printf("il va perdre %d hp \n",calcul_pv_perdu(poke2,poke1,poke2.attaque[nb_aleatoire].puissance));
 		poke1.PV-=calcul_pv_perdu(poke2, poke1,poke2.attaque[nb_aleatoire].puissance);
 	}
 	return (joueur +1)%2;

@@ -105,10 +105,14 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
           refresh = 1; //on dit à l'ordinateur de rafraichir l'affichage
           switch(event.key.keysym.sym)
           {
-            case SDLK_ESCAPE: // arrêter le jeu
-              refresh = 0; //pas besoin de rafraichir
-              Mix_PauseMusic();
-              continuer = 0;
+            case SDLK_ESCAPE: //menu pause
+              switch(menuPause(ecran)){
+                case 0 :
+                  refresh = 0; //pas besoin de rafraichir
+                  Mix_PauseMusic();
+                  continuer = 0;
+                break;
+              }
               break;
 
             case SDLK_UP: // Flèche haut
@@ -257,7 +261,7 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
               refresh = 1;
             break;
 
-            case 'e': // Pause/lecture musique
+            /*case 'e': // Pause/lecture musique
               if(Mix_PausedMusic() == 1)//Si la musique est en pause
                 {
                     Mix_ResumeMusic(); //Reprendre la musique
@@ -278,7 +282,7 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                 volumeSon-=16;
                 Mix_VolumeMusic(volumeSon);
               }
-            break;
+            break;*/
             case SDLK_UP: // Flèche haut
               current=3;
               break;
