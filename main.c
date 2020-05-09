@@ -37,8 +37,8 @@ int main(int argc, char** argv)
   perso.position.x=FENETRE_W/2;
   perso.position.y=FENETRE_H/2;
   // initialisation pokemon et stats
-  poke1.id = 3;
-  poke1.niv = 30;
+  poke1.id = 1;
+  poke1.niv = 15;
   poke1.exp = (poke1.niv)*(poke1.niv)*(poke1.niv);
   calcul_stat(&poke1);
   printf("%d\n",poke1.exp);

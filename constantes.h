@@ -94,6 +94,7 @@ struct Poke{
   int vit;
   int id;
   Att  attaque[4];
+  int nivEvo;
 };
 
 

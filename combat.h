@@ -13,5 +13,5 @@ int calcul_stat(Poke *poke);
 int calcul_exp_gagne(Poke poke);
 void ajout_exp(int exp_gagne);
 int calcul_pv_perdu(Poke attaquant, Poke defenseur,int puissance);
-
+void evolution();
 #endif // DEF_COMBAT
