@@ -5,6 +5,7 @@ SDL_Surface *nom1 = NULL;
 
 int calcul_stat(Poke *poke)
 {
+	printf(GREEN"[calcul_stat]:"RESET"Id :%d\n",poke->id);
 	FILE *fic = NULL;
 	fic = fopen("Ressources/Stat_poke","r");
 	char TAB[120];
@@ -19,19 +20,21 @@ int calcul_stat(Poke *poke)
 	poke->PV =	(TAB[32]-'0')*100 + (TAB[33]-'0')*10 + TAB[34]-'0';
 //	printf("%d\n",poke->PV);
 	poke ->PV = ((2*poke->PV+31)*poke->niv)/100+poke->niv+10;
-//	printf("%d\n",poke ->PV);
+	  printf(GREEN"[calcul_stat]:"RESET"Pv :%d\n",poke->PV);
 	poke->att =	(TAB[40]-'0')*100 + (TAB[41]-'0')*10 + TAB[42]-'0';
 //	printf("%d\n",poke->att);
 	poke ->att = ((2*poke->att+31)*poke->niv)/100+5;
-	//	printf("%d\n",poke ->att);
+		printf(GREEN"[calcul_stat]:"RESET"att :%d\n",poke->att);
 	poke->def =	(TAB[48]-'0')*100 + (TAB[49]-'0')*10 + TAB[50]-'0';
 	//printf("%d\n",poke -> def);
 	poke->def = ((2*poke->def+31)*poke->niv)/100+5;
-	//	printf("%d\n",poke -> def);
+		printf(GREEN"[calcul_stat]:"RESET"def :%d\n",poke->def);
 	poke->vit =	(TAB[72]-'0')*100 + (TAB[73]-'0')*10 + TAB[74]-'0';
 	//	printf("%d\n",poke ->vit);
 	poke ->vit = ((2*poke->vit+31)*poke->niv)/100+5;
-	//	printf("%d\n",poke ->vit);
+		printf(GREEN"[calcul_stat]:"RESET"vit :%d\n",poke->vit);
+	poke->nivEvo = (TAB[87]-'0')*100 + (TAB[88]-'0')*10 + TAB[89]-'0';
+		printf("Niveau évolution du poke %d : %d\n",poke->id ,poke->nivEvo);
 }
 
 void affichage_combat(SDL_Surface *ecran)
@@ -673,14 +676,17 @@ int calcul_exp_gagne(Poke poke)
 void ajout_exp(int exp_gagne)
 {
 	poke1.exp += exp_gagne;
-	printf("%d\n",poke1.exp);
+	//printf("%d\n",poke1.exp);
 	printf("%d\n",poke1.niv);
 	while(poke1.exp >= ((poke1.niv+1)*(poke1.niv+1)*(poke1.niv+1)))
 	{
 		poke1.niv++;
-		printf("%d\n",poke1.niv);
+		if(poke1.niv == poke1.nivEvo){//si le pokemon a le niveau suffisant pour évoluer
+				evolution();
+		}
+		printf("Nouveau niveau :%d\n",poke1.niv);
 	}
-	printf("experience total : %d\n",poke1.exp);
+	printf("Experience total : %d\n",poke1.exp);
 }
 
 int attaque(SDL_Surface *ecran)
@@ -691,4 +697,10 @@ int attaque(SDL_Surface *ecran)
   pos_rect.y = 487;
   rect = IMG_Load("combat/rect_attaque.png");
   SDL_BlitSurface(rect, NULL, ecran, &pos_rect);
+}
+void evolution(){
+	printf("EVOLUTIOOOOOOOOONN !!!!\n");
+	poke1.id++;
+	calcul_stat(&poke1);
+
 }
