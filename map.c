@@ -1129,6 +1129,7 @@ void displayMap(Case ** Map, SDL_Surface *ecran, Perso perso)
       }
     }
 	}
+
 }
 
 //met un fond noir sur la map
@@ -1154,9 +1155,10 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran, Perso perso, int curre
     exit(EXIT_FAILURE);
   }
   Decors *actuel = file->premier;
-  SDL_Rect position;
+  SDL_Rect position, part; //part correspond à la partie de la surface à afficher dans le cas où l'objet n'est pas entièrement dans l'écran
   int repeat_x = 0;
   int repeat_y = 0;
+  part.x = part.y = part.w = part.h = 0;
   int affichage_Perso = 0; //stocke si le perso est déja affiché ou non
   while(actuel != NULL)
   {
@@ -1190,9 +1192,36 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran, Perso perso, int curre
             SDL_BlitSurface(perso.Perso_Sprites[currentSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
             affichage_Perso = 1;
           }
-          if(position.x >= 0 && position.x <= FENETRE_W && position.y >= 0 && position.y <= FENETRE_H)
+          /*if(position.x >= 0 && position.x <= FENETRE_W && position.y >= 0 && position.y <= FENETRE_H)
           {
             SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &position);
+          }*/
+          if((position.x+(TAILLE_SPRITE*actuel->dim_x)) >= 0 && position.x <= FENETRE_W && (position.y + (TAILLE_SPRITE*actuel->dim_y)) >= 0 && position.y <= FENETRE_H)
+          {
+            if(position.x >= 0 && position.y >= 0 ){
+            // printf(GREEN"[afficherDecors]:"RESET"S: décors %d : (%d;%d) \n", actuel->numIMG, position.x,position.y);
+            SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &position);
+            }
+            else{
+              if(position.x >= 0){
+                 part.x = 0;
+              }
+              else{
+                part.x = 0 - position.x;
+                position.x = 0;
+              }
+              if(position.y >= 0){
+                 part.y = 0;
+              }
+              else{
+                part.y = 0 - position.y;
+                position.y = 0;
+              }
+              part.w = Map_Sprites[(actuel->numIMG)]->w - part.x;
+              part.h = Map_Sprites[(actuel->numIMG)]->h - part.y;
+              //printf("Part.x =%d , Part.y = %d, Part.w =%d, part.h = %d  \n", part.x, part.y, part.w,part.h);
+              SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], &part, ecran, &position);
+            }
           }
         }
       }
@@ -1205,10 +1234,32 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran, Perso perso, int curre
         //  printf(GREEN"[afficherDecors]:"RESET"S :perso : (%d;%d) \n", perso.position.x, perso.position.y);
         affichage_Perso = 1;
       }
-      if(position.x >= 0 && position.x <= FENETRE_W && position.y >= 0 && position.y <= FENETRE_H)
+      if((position.x+(TAILLE_SPRITE*actuel->dim_x)) >= 0 && position.x <= FENETRE_W && (position.y + (TAILLE_SPRITE*actuel->dim_y)) >= 0 && position.y <= FENETRE_H)
       {
+        if(position.x >= 0 && position.y >= 0 ){
         // printf(GREEN"[afficherDecors]:"RESET"S: décors %d : (%d;%d) \n", actuel->numIMG, position.x,position.y);
         SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], NULL, ecran, &actuel->position);
+        }
+        else{
+          if(position.x >= 0){
+             part.x = 0;
+          }
+          else{
+            part.x = 0 - position.x;
+            position.x = 0;
+          }
+          if(position.y >= 0){
+             part.y = 0;
+          }
+          else{
+            part.y = 0 - position.y;
+            position.y = 0;
+          }
+          part.w = Map_Sprites[(actuel->numIMG)]->w - part.x;
+          part.h = Map_Sprites[(actuel->numIMG)]->h - part.y;
+          //printf("Part.x =%d , Part.y = %d, Part.w =%d, part.h = %d  \n", part.x, part.y, part.w,part.h);
+          SDL_BlitSurface(Map_Sprites[(actuel->numIMG)], &part, ecran, &position);
+        }
       }
     }
     actuel = actuel->suivant;
@@ -1216,6 +1267,18 @@ void afficherDecors(FileDecors *file, SDL_Surface *ecran, Perso perso, int curre
   if(affichage_Perso == 0)
   {
     SDL_BlitSurface(perso.Perso_Sprites[currentSprite], NULL, ecran, &perso.position); // Collage de la surface sur l'écran
+  }
+  //partie qui évite le scintillement du fond
+  SDL_Rect pos_bordure;
+  pos_bordure.x = pos_bordure.y = 0;
+  while(pos_bordure.x < FENETRE_W){
+    SDL_BlitSurface(Map_Sprites[999], NULL, ecran, &pos_bordure);
+    pos_bordure.x += TAILLE_SPRITE;
+  }
+  pos_bordure.x = 0;
+  while(pos_bordure.y < FENETRE_H){
+    SDL_BlitSurface(Map_Sprites[998], NULL, ecran, &pos_bordure);
+    pos_bordure.y += TAILLE_SPRITE;
   }
 }
 
