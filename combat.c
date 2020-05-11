@@ -314,7 +314,7 @@ void combat(SDL_Surface *ecran)
 							{
 								printf(" poke2 est mort \n");
 								printf("%d\n",calcul_exp_gagne(poke2));
-								ajout_exp(calcul_exp_gagne(poke2));
+								ajout_exp(calcul_exp_gagne(poke2), ecran);
 								continuer = 0;
 							}
               sprintf(TAB,"pv : %d ",poke1.PV);
@@ -673,7 +673,7 @@ int calcul_exp_gagne(Poke poke)
 	return (a*b*poke.niv)/7;
 }
 
-void ajout_exp(int exp_gagne)
+void ajout_exp(int exp_gagne, SDL_Surface *ecran)
 {
 	poke1.exp += exp_gagne;
 	//printf("%d\n",poke1.exp);
@@ -682,7 +682,7 @@ void ajout_exp(int exp_gagne)
 	{
 		poke1.niv++;
 		if(poke1.niv == poke1.nivEvo){//si le pokemon a le niveau suffisant pour évoluer
-				evolution();
+				evolution(ecran);
 		}
 		printf("Nouveau niveau :%d\n",poke1.niv);
 	}
@@ -698,9 +698,10 @@ int attaque(SDL_Surface *ecran)
   rect = IMG_Load("combat/rect_attaque.png");
   SDL_BlitSurface(rect, NULL, ecran, &pos_rect);
 }
-void evolution(){
+void evolution(SDL_Surface *ecran){
 	printf("EVOLUTIOOOOOOOOONN !!!!\n");
-	poke1.id++;
-	calcul_stat(&poke1);
-
+	if (animation_evo(poke1.id,ecran) == 1){
+		poke1.id++;
+		calcul_stat(&poke1);
+	}
 }
