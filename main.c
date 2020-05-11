@@ -77,7 +77,7 @@ int main(int argc, char** argv)
         //chargement
         changeMap(numMap, Map, fileDecors, filePorte, &perso.position, Mat_Dialogue);
         //afficherFileDecorsTerm(fileDecors);
-        jeu(perso,ecran , Map, fileDecors, filePorte, Mat_Dialogue);
+        jeu(perso, ecran , Map, fileDecors, filePorte, Mat_Dialogue, nomMap);
 
         //Libération de la mémoire
         viderFileDecors(fileDecors);

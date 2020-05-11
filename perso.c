@@ -43,13 +43,10 @@ void chargerSpritesPerso(int numSpritePerso, SDL_Surface **Perso_Sprites)
   }
 }
 
-void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, char Mat_Dialogue[3][100])
+void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, char Mat_Dialogue[3][100], char nomMap[40])
 {
-  SDL_Surface *dialogue = NULL, *dialogue2 = NULL, *dialogue3 = NULL;
-  SDL_Rect position_bulle, position_dialogue;
-  TTF_Font *police_dialogue = NULL;
+
   SDL_Event event;
-  SDL_Color noir = {0, 0, 0};
   int continuer = 1;
   int bloquage = 1;
   int dialogue_possible = 0;
@@ -68,18 +65,6 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
   //  printf(GREEN"[Jeu]:"RESET"%d\t%d\n", perso.x, perso.y);
 
   int enchainement = 0;
-
-  position_bulle.x = TAILLE_SPRITE;
-  position_bulle.y = 19*TAILLE_SPRITE;
-
-  position_dialogue.x = position_bulle.x + 5*TAILLE_SPRITE;
-  position_dialogue.y = position_bulle.y + 3*TAILLE_SPRITE;
-
-  police_dialogue = TTF_OpenFont("bulle_dialogue_police.ttf", 25);
-  dialogue = TTF_RenderText_Blended(police_dialogue, Mat_Dialogue[0], noir);
-  dialogue2 = TTF_RenderText_Blended(police_dialogue,  Mat_Dialogue[1], noir);
-  dialogue3 = TTF_RenderText_Blended(police_dialogue,  Mat_Dialogue[2], noir);
-
   while (continuer)
   {
     //  Séquence d'affichage
@@ -173,29 +158,27 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
             case SDLK_RETURN:
               if(dialogue_possible == 1)
               {
-
                 int x = perso.position.x- Map[0][0].position.x;
                 x = (x - (x%TAILLE_SPRITE))/TAILLE_SPRITE;
                 int y = perso.position.y-Map[0][0].position.y;
                 y = (y - (y%TAILLE_SPRITE))/TAILLE_SPRITE;
-                //printf("x = %d\n", x);
-                //printf("y = %d\n", y);
-                SDL_BlitSurface(Map_Sprites[9001], NULL, ecran, &position_bulle);
-                if(((y <= 24) && (y >= 22)) || ((x <= 26) && (x >= 23)))
+                //SDL_BlitSurface(Map_Sprites[9001], NULL, ecran, &position_bulle);
+                if(nomMap[0] == 'J')
                 {
-                  //printf("erere\n");
-                  enchainement = 1;
-                  SDL_BlitSurface(dialogue2, NULL, ecran, &position_dialogue);
+                  if(((y <= 24) && (y >= 22)) || ((x <= 26) && (x >= 23)))
+                  {
+                    enchainement = 1;
+                    dialogue_affichage(ecran, Map, Mat_Dialogue[1]);
+                  }
+                  else if(enchainement == 0)
+                  {
+                    dialogue_affichage(ecran, Map, Mat_Dialogue[0]);
+                  }
+                  else if(enchainement == 1)
+                  {
+                    dialogue_affichage(ecran, Map, Mat_Dialogue[2]);
+                  }
                 }
-                else if(enchainement == 0)
-                {
-                  SDL_BlitSurface(dialogue, NULL, ecran, &position_dialogue);
-                }
-                else if(enchainement == 1)
-                {
-                  SDL_BlitSurface(dialogue3, NULL, ecran, &position_dialogue);
-                }
-                SDL_Flip(ecran);
                 while(bloquage)
                 {
                 SDL_WaitEvent(&event);
@@ -540,4 +523,25 @@ void deplacement(Case ** Map, Perso *perso, FileDecors *fileDecors, FilePorte *f
       }
       break;
   }
+}
+
+void dialogue_affichage(SDL_Surface *ecran, Case ** Map, char* texte)
+{
+  SDL_Surface *dialogue = NULL;
+  SDL_Rect position_bulle, position_dialogue;
+  TTF_Font *police_dialogue = NULL;
+  SDL_Color noir = {0, 0, 0};
+
+  position_bulle.x = TAILLE_SPRITE;
+  position_bulle.y = 19*TAILLE_SPRITE;
+
+  position_dialogue.x = position_bulle.x + 5*TAILLE_SPRITE;
+  position_dialogue.y = position_bulle.y + 3*TAILLE_SPRITE;
+
+  police_dialogue = TTF_OpenFont("bulle_dialogue_police.ttf", 25);
+  dialogue = TTF_RenderText_Blended(police_dialogue, texte, noir);
+  SDL_BlitSurface(Map_Sprites[9001], NULL, ecran, &position_bulle);
+  SDL_BlitSurface(dialogue, NULL, ecran, &position_dialogue);
+  SDL_Flip(ecran);
+  SDL_Delay(1000);
 }
