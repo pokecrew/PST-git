@@ -200,7 +200,7 @@ int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *fil
   //printf(GREEN"[changeMap]:"RESET"centrage OK\n");
   //printf(GREEN"[changeMap]:"RESET"Load ok \n");
   //Partie Musique
-  changerSonCarte();
+  //changerSonCarte();
 }
 
 //Fonction qui vide la file
