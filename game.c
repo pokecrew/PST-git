@@ -380,3 +380,171 @@ int charger_att(Att att[4], int id_att[4]){
   }
   fclose(fic_att);
 }
+
+int animation_evo(int id, SDL_Surface *ecran){
+  TTF_Font *police = NULL, *police2 = NULL;
+  police = TTF_OpenFont("bulle_dialogue_police.ttf", 30);
+  police2 = TTF_OpenFont("bulle_dialogue_police.ttf", 25);
+  SDL_Surface  *fond = NULL, *Poke = NULL, *Evo = NULL, *boite_dialogue = NULL, *texte[4]={NULL}; //création des surfaces
+  SDL_Rect positionFond, positionPoke, positionDialogue, positionTexte;
+  SDL_Event event, event2; //on crée un évènement
+  texte[0] = TTF_RenderText_Blended(police, "Quoi ? Mega-Rayquaza evolue ! ", couleurTitre);
+  texte[1] = TTF_RenderText_Blended(police2, "Felicitations ! Mega-Rayquaza a evolue en Mega-Groudon ! ", couleurTitre);
+  texte[2] = TTF_RenderText_Blended(police, "(Mieux vaut ne pas le perturber) ", couleurTitre);
+  texte[3] = TTF_RenderText_Blended(police, "Le pokemon n'a pas evolue ", couleurTitre);
+  char path[80], path2[80];
+  if(id < 10){
+    sprintf(path,"sprites/poke/0%d.png",id);
+  }
+  else{
+    sprintf(path,"sprites/poke/%d.png",id);
+  }
+  if(id < 9){
+    sprintf(path2,"sprites/poke/0%d.png",id+1);
+  }
+  else{
+    sprintf(path2,"sprites/poke/%d.png",(id+1));
+  }
+  printf("Chemin vers images : \n %s \n %s \n",path, path2);
+//  printf("Nom pokemon : %s \n", poke1.nom);
+  //images
+  fond = IMG_Load("Ressources/animations/evolution/fond.png"); //Chargement de l'image de fond
+  Poke = IMG_Load(path); //Image pokemon actuel
+  Evo = IMG_Load(path2); //Image évolution
+  boite_dialogue = IMG_Load("Ressources/animations/evolution/dialogue.png");
+  positionFond.x = 0; //coordonnées de l'arrière plan
+  positionFond.y = 0;
+  positionPoke.x = 450; //coordonnées de l'arrière plan
+  positionPoke.y = 130;
+  positionDialogue.x = 140;
+  positionDialogue.y = 450;
+  positionTexte.x = 190;
+  positionTexte.y = 480;
+
+  int continuer = 1;
+  int i=0;
+  int interval = 600;
+  int tempsDebut = 0;
+  int tempsPrecedent = 0, tempsActuel = 0;
+  int success = 1;
+  //// a supprimer dans le jeu
+  //Mix_VolumeMusic(MIX_MAX_VOLUME / 2); //Mettre le volume à la moitié
+  ///
+  Mix_HaltMusic();
+  Mix_Music *musique; //Création d'un pointeur de type Mix_Music
+  musique = Mix_LoadMUS("Ressources/Musiques/evo.mp3"); //Chargement de la musique
+  Mix_PlayMusic(musique, 1); //Jouer infiniment la musique
+
+  SDL_BlitSurface(fond, NULL, ecran, &positionFond);
+  SDL_BlitSurface(Poke, NULL, ecran, &positionPoke);
+  SDL_BlitSurface(boite_dialogue, NULL, ecran, &positionDialogue);
+  SDL_BlitSurface(texte[0], NULL, ecran, &positionTexte);
+  SDL_Flip(ecran); //on mets à jour l'écran
+  SDL_Delay(2000);
+  tempsDebut = SDL_GetTicks();
+  while ((tempsActuel - tempsDebut) <= 16000 && (continuer == 1)){ // on crée une boucle dépendant de la variable continuer pour attendre que le joueur appuie sur une touche
+      while(SDL_PollEvent(&event)){
+        switch(event.type){
+            case SDL_QUIT:
+                continuer = 0;
+            break;
+            case SDL_KEYDOWN:
+                continuer = 0;
+                success = 0;
+            break;
+        }
+      }
+        tempsActuel = SDL_GetTicks();
+        if (tempsActuel - tempsPrecedent > interval) { // Si interval ms se sont écoulées
+          tempsPrecedent = tempsActuel; // Le temps "actuel" devient le temps "precedent" pour nos futurs calculs
+          if(interval > 50){
+            interval -= interval/100 * 6;
+          }
+          SDL_BlitSurface(fond, NULL, ecran, &positionFond);
+          i++;
+          if(i%2 == 1){
+            SDL_BlitSurface(Poke, NULL, ecran, &positionPoke);
+          }
+          else{
+            SDL_BlitSurface(Evo, NULL, ecran, &positionPoke);
+          }
+          SDL_BlitSurface(boite_dialogue, NULL, ecran, &positionDialogue);
+          SDL_BlitSurface(texte[2], NULL, ecran, &positionTexte);
+          SDL_Flip(ecran);
+        //  SDL_Delay(60); //temps d'attente entre chaque boucle pour réduire la charge processeur
+        }
+    }
+    if(success == 1){//si l'évolution a marché
+      SDL_BlitSurface(fond, NULL, ecran, &positionFond);
+      SDL_BlitSurface(Evo, NULL, ecran, &positionPoke);
+      SDL_BlitSurface(boite_dialogue, NULL, ecran, &positionDialogue);
+      SDL_BlitSurface(texte[1], NULL, ecran, &positionTexte);
+      SDL_Flip(ecran);
+      while(continuer){
+      SDL_WaitEvent(&event);
+        switch(event.type)
+        {
+          case SDL_QUIT:
+            SDL_Quit();
+            break;
+
+          case SDL_KEYDOWN:
+            switch(event.key.keysym.sym)
+            {
+              case SDLK_ESCAPE: // arrêter le jeu
+                continuer =0;
+              break;
+              case SDLK_RETURN: // arrêter le jeu
+                continuer =0;
+              break;
+            }
+          }
+        }
+    //  SDL_Delay(7000);//remplacer par un  SDL_WaitEvent
+    }
+    else{//si le joueur a empéché une évolution
+      Mix_PauseMusic(); //Arrête la musique
+      SDL_BlitSurface(fond, NULL, ecran, &positionFond);
+      SDL_BlitSurface(Poke, NULL, ecran, &positionPoke);
+      SDL_BlitSurface(boite_dialogue, NULL, ecran, &positionDialogue);
+      SDL_BlitSurface(texte[3], NULL, ecran, &positionTexte);
+      SDL_Flip(ecran);
+      SDL_Delay(2000);//remplacer par un  SDL_WaitEvent
+      while(continuer){
+      SDL_WaitEvent(&event2);
+        switch(event2.type)
+        {
+          case SDL_QUIT:
+            SDL_Quit();
+            break;
+
+          case SDL_KEYDOWN:
+            switch(event2.key.keysym.sym)
+            {
+              case SDLK_ESCAPE: // arrêter le jeu
+                continuer =0;
+              break;
+              case SDLK_RETURN: // arrêter le jeu
+                continuer =0;
+              break;
+            }
+          }
+        }
+    }
+    Mix_HaltMusic(); //Arrête la musique
+    Mix_FreeMusic(musique); //Libération de la musique
+  // on libère les surfaces et les polices avantde quitter
+  SDL_FreeSurface(fond);
+  SDL_FreeSurface(Poke);
+  SDL_FreeSurface(Evo);
+  SDL_FreeSurface(boite_dialogue);
+  SDL_FreeSurface(texte[0]);
+  SDL_FreeSurface(texte[1]);
+  SDL_FreeSurface(texte[2]);
+  SDL_FreeSurface(texte[3]);
+  TTF_CloseFont(police);
+  TTF_CloseFont(police2);
+  //on rétablit la musique de base
+  Mix_PlayMusic(music, -1);
+return success;
+}
