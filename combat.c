@@ -16,6 +16,10 @@ int calcul_stat(Poke *poke)
 		fgets(TAB, 119, fic);
 		id_f =	(TAB[0]-'0')*100 + (TAB[1]-'0')*10 + TAB[2]-'0';
 	}
+	for(int i=0; i<15;i++){
+		poke->nom[i]=TAB[i+16];
+	}
+	printf(GREEN"[calcul_stat]:"RESET"Nom :%s\n",poke->nom);
 	// charger les stats de base
 	poke->PV =	(TAB[32]-'0')*100 + (TAB[33]-'0')*10 + TAB[34]-'0';
 //	printf("%d\n",poke->PV);
@@ -61,7 +65,22 @@ void affichage_combat(SDL_Surface *ecran)
 	pos_nom.x = 725;
   pos_nom.y = 400;
 
-	poke_nom(pokemon);
+	//Tirage au sort pokemon adversaire
+
+	srand(time(NULL));
+	poke2.id = rand()%144;
+	printf(BLUE"[charger_att]:"RESET"poke2.id : %d\n", poke2.id);
+	// le tirage du niveau en face
+	int signe = rand()%2;
+	if (signe%2==0){
+		poke2.niv= poke1.niv - rand()%4;
+	}
+	else poke2.niv = poke1.niv + rand()%4;
+	calcul_stat(&poke2);
+
+
+
+	//poke_nom(pokemon);
 	my_pokemons();
 
 	fond_combat = IMG_Load("combat/plateau_combat.png");
@@ -70,10 +89,9 @@ void affichage_combat(SDL_Surface *ecran)
 	SDL_BlitSurface(fond_noir,NULL,ecran,&pos_fond_noir);
 	SDL_BlitSurface(fond_combat, NULL, ecran, &pos_fond);
 	SDL_BlitSurface(my_poke[0], NULL, ecran, &pos_mypoke);
-	nom2 = TTF_RenderText_Blended(police, pokemon[0].nom, couleurNoire);
+	nom2 = TTF_RenderText_Blended(police, poke1.nom, couleurNoire);
   SDL_BlitSurface(nom2, NULL, ecran, &pos_nom);
 	SDL_Flip(ecran);
-
 
 	poke_alea(ecran, poke, pokemon);
 	combat(ecran);
@@ -98,18 +116,7 @@ void combat(SDL_Surface *ecran)
   int joueur = 0;
 	int derouler_combat = 0;
 
-	//pokemon
 
-	srand(time(NULL));
-	poke2.id = rand()%144;
-	printf(BLUE"[charger_att]:"RESET"poke2.id : %d\n", poke2.id);
-	// le tirage du niveau en face
-	int signe = rand()%2;
-	if (signe%2==0){
-		poke2.niv= poke1.niv - rand()%4;
-	}
-	else poke2.niv = poke1.niv + rand()%4;
-	calcul_stat(&poke2);
 
 	char niveau_poke1[10];
 	char niveau_poke2[10];
@@ -420,7 +427,7 @@ void poke_alea(SDL_Surface *ecran, SDL_Surface *poke[50], Poke pokemon[20])
 	alea = rand()%16;
 
 	sauvage(poke);
-	nom1 = TTF_RenderText_Blended(police, pokemon[alea].nom, couleurNoire);
+	nom1 = TTF_RenderText_Blended(police, poke2.nom, couleurNoire);
 	SDL_BlitSurface(nom1, NULL, ecran, &pos_nom);
 	SDL_BlitSurface(poke[alea], NULL, ecran, &pos_poke);
 
@@ -635,12 +642,18 @@ int deroulement(SDL_Surface *ecran, int joueur,int puissance)
 	{
 	//	printf(" pv perdu : %d\n",calcul_pv_perdu(poke1,poke2,puissance));
 		poke2.PV-=calcul_pv_perdu(poke1, poke2,puissance);
+		if(poke2.PV < 0){
+			poke2.PV = 0;
+		}
 	}
 	else
 	{
 		int nb_aleatoire = rand()%4;
 	//	printf("il va perdre %d hp \n",calcul_pv_perdu(poke2,poke1,poke2.attaque[nb_aleatoire].puissance));
 		poke1.PV-=calcul_pv_perdu(poke2, poke1,poke2.attaque[nb_aleatoire].puissance);
+		if(poke1.PV < 0){
+			poke1.PV = 0;
+		}
 	}
 	return (joueur +1)%2;
 }
