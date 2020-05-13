@@ -65,7 +65,7 @@ int main(int argc, char** argv)
         break;
 
       case 1: //Alexis/Sarah
-        animation_evo(11,ecran);  
+        animation_evo(11,ecran);
       break;
 
       case 2: //Camille/Théo(Combats)
