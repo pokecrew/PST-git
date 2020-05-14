@@ -5,7 +5,7 @@ void affichage_combat(SDL_Surface *ecran);
 void combat(SDL_Surface *ecran);
 void poke_nom(Poke pokemon[20]);
 void sauvage(SDL_Surface *poke[16]);
-void poke_alea(SDL_Surface *ecran, SDL_Surface *poke[16], Poke pokemon[20]);
+void poke_alea(SDL_Surface *ecran, SDL_Surface *poke, Poke pokemon[20]);
 void my_pokemons();
 void changer_poke(SDL_Surface *ecran);
 int deroulement( SDL_Surface *ecran, int joueur,int puissance);

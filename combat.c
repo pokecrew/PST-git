@@ -44,7 +44,7 @@ int calcul_stat(Poke *poke)
 void affichage_combat(SDL_Surface *ecran)
 {
 	SDL_Surface *fond_combat = NULL, *fond_noir = NULL;
-	SDL_Surface *poke[16];
+	SDL_Surface *poke = NULL;
 	SDL_Surface *nom2 = NULL;
 	SDL_Rect pos_fond, pos_fond_noir, pos_mypoke, pos_nom;
 	Poke pokemon[20] = {"", 0};
@@ -68,15 +68,18 @@ void affichage_combat(SDL_Surface *ecran)
 	//Tirage au sort pokemon adversaire
 
 	srand(time(NULL));
-	poke2.id = rand()%144;
-	printf(BLUE"[charger_att]:"RESET"poke2.id : %d\n", poke2.id);
+	do{
+		poke2.id = rand()%144;
+		calcul_stat(&poke2);
+	}while(poke2.nivEvo == 111);
+	//printf(BLUE"[charger_att]:"RESET"poke2.id : %d\n", poke2.id);
 	// le tirage du niveau en face
 	int signe = rand()%2;
 	if (signe%2==0){
 		poke2.niv= poke1.niv - rand()%4;
 	}
 	else poke2.niv = poke1.niv + rand()%4;
-	calcul_stat(&poke2);
+
 
 
 
@@ -88,7 +91,7 @@ void affichage_combat(SDL_Surface *ecran)
 	SDL_FillRect(fond_noir,NULL,SDL_MapRGB(ecran->format, 0, 0, 0));
 	SDL_BlitSurface(fond_noir,NULL,ecran,&pos_fond_noir);
 	SDL_BlitSurface(fond_combat, NULL, ecran, &pos_fond);
-	SDL_BlitSurface(my_poke[0], NULL, ecran, &pos_mypoke);
+	SDL_BlitSurface(my_poke[0], NULL, ecran, &pos_mypoke);//affiche notre pokemon
 	nom2 = TTF_RenderText_Blended(police, poke1.nom, couleurNoire);
   SDL_BlitSurface(nom2, NULL, ecran, &pos_nom);
 	SDL_Flip(ecran);
@@ -382,12 +385,18 @@ void combat(SDL_Surface *ecran)
 
 void my_pokemons()
 {
+	//Ancienne fonction CamCam (dsl m'en veux pas)
+	/*
 	my_poke[0] = IMG_Load("sprites/poke/dos/01.png");
 	my_poke[1] = IMG_Load("sprites/poke/dos/04.png");
 	my_poke[2] = IMG_Load("sprites/poke/dos/07.png");
 	my_poke[3] = IMG_Load("sprites/poke/dos/10.png");
 	my_poke[4] = IMG_Load("sprites/poke/dos/13.png");
 	my_poke[5] = IMG_Load("sprites/poke/dos/16.png");
+	*/
+	char path[30];
+	sprintf(path, "sprites/poke/dos/%d.png", poke1.id);
+	my_poke[0] = IMG_Load(path);
 }
 
 void poke_nom(Poke pokemon[20])
@@ -410,7 +419,7 @@ void poke_nom(Poke pokemon[20])
   strcat(pokemon[15].nom,"RONDOUDOU");
 }
 
-void poke_alea(SDL_Surface *ecran, SDL_Surface *poke[50], Poke pokemon[20])
+void poke_alea(SDL_Surface *ecran, SDL_Surface *poke, Poke pokemon[20])
 {
 	SDL_Rect pos_poke, pos_nom;
 	SDL_Color couleurNoire = {0, 0, 0};
@@ -426,10 +435,14 @@ void poke_alea(SDL_Surface *ecran, SDL_Surface *poke[50], Poke pokemon[20])
 	int alea = 0;
 	alea = rand()%16;
 
-	sauvage(poke);
+	//sauvage(poke);
+	char path[30];
+	sprintf(path,"sprites/poke/%d.png",poke2.id);
+	poke = IMG_Load(path);
 	nom1 = TTF_RenderText_Blended(police, poke2.nom, couleurNoire);
+
 	SDL_BlitSurface(nom1, NULL, ecran, &pos_nom);
-	SDL_BlitSurface(poke[alea], NULL, ecran, &pos_poke);
+	SDL_BlitSurface(poke, NULL, ecran, &pos_poke);
 
 	SDL_FreeSurface(nom1);
 	TTF_CloseFont(police);
