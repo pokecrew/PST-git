@@ -604,3 +604,43 @@ void selection_att_adv(Poke *poke){
   charger_att((poke->attaque), att[0]);
 	fclose(fic);
 }
+
+void maj_att_niv(Poke *poke){
+  //printf(GREEN"[apprendre_att]:"RESET"Id :%d\n",poke->id);
+	FILE *fic = NULL;
+	fic = fopen("Ressources/Stat_poke","r");
+	char TAB[170];
+	fgets(TAB, 169, fic);
+	int id_f = 0;
+  int i = 94;
+  int niv_depasse = 0;
+  int att[2][4]; //att[0][] = id, att[1] = niv
+  for(int l = 0; l < 2; l++){
+    for(int m = 0; m < 4 ; m++){
+      att[l][m]=0;
+    }
+  }
+	while(id_f != poke->id)
+	{
+		fgets(TAB, 169, fic);
+		id_f =	(TAB[0]-'0')*100 + (TAB[1]-'0')*10 + TAB[2]-'0';
+	}
+	while(TAB[i] == '[' && niv_depasse == 0){
+  //  printf(" k =%d\n", k);
+    att[0][0]= (TAB[i+1] -'0')*10 + (TAB[i+2]-'0')%10;
+    att[1][0]= (TAB[i+4] -'0')*10 + (TAB[i+5]-'0')%10;
+    printf(BLUE"[apprendre_att]:"RESET"Attaque n°%d détectée disponible au niveau %d\n", att[0][0], att[1][0]);
+    i+=7;
+    if((att[1][0] > poke->niv)){
+      niv_depasse = 1;
+    }
+    else if(att[1][0] == poke->niv){
+      niv_depasse = 1;
+      att[0][1] = poke->attaque[0].id;
+      att[0][2] = poke->attaque[1].id;
+      att[0][3] = poke->attaque[2].id;
+      charger_att((poke->attaque), att[0]);
+    }
+  }
+	fclose(fic);
+}

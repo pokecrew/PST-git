@@ -714,6 +714,7 @@ void ajout_exp(int exp_gagne, SDL_Surface *ecran)
 	while(poke1.exp >= ((poke1.niv+1)*(poke1.niv+1)*(poke1.niv+1)))
 	{
 		poke1.niv++;
+		maj_att_niv(&poke1);
 		if(poke1.niv >= poke1.nivEvo){//si le pokemon a le niveau suffisant pour évoluer
 				evolution(ecran);
 		}
