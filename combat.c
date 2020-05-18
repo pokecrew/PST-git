@@ -130,6 +130,9 @@ void combat(SDL_Surface *ecran)
 	char capture_texte[150];
 	sprintf(capture_texte,"La violence animale est interdite sauf sur ptitard");
 
+	char texte_remplacer[150];
+
+
 
 	char niveau_poke1[10];
 	char niveau_poke2[10];
@@ -331,37 +334,62 @@ void combat(SDL_Surface *ecran)
             if ((pos_texte_attaque1.x <= event.button.x) && ((pos_texte_attaque1.x + longueur4) >= event.button.x) && (pos_texte_attaque1.y <= event.button.y) && (pos_texte_attaque1.y + hauteur >= event.button.y))
             {
               printf(" lancement attaque1 \n");
+							sprintf(texte_remplacer,"%s utilise %s",poke1.nom,poke1.attaque[0].nom);
+							dialogue_affichage(ecran,texte_remplacer,texte_remplacer);
               joueur = deroulement(ecran, joueur,poke1.attaque[0].puissance);
-              printf("%d\n",poke1.PV);
+							sprintf(TAB1,"pv : %d ",poke2.PV);
+							pv_2 = TTF_RenderText_Blended(police,TAB1, couleurNoire);
+							SDL_BlitSurface(rect_pv, NULL, ecran,&pos_rect_pv_2);
+							SDL_BlitSurface(pv_2, NULL, ecran , &pos_pv_2);
+							SDL_Delay(1000);
 							derouler_combat = 1;
 						}
 						else if ((pos_texte_attaque2.x <= event.button.x) && ((pos_texte_attaque2.x + longueur4) >= event.button.x) && (pos_texte_attaque2.y <= event.button.y) && (pos_texte_attaque2.y + hauteur >= event.button.y))
 						{
 							printf(" lancement attaque2 \n");
+							sprintf(texte_remplacer,"%s utilise %s",poke1.nom,poke1.attaque[1].nom);
+							dialogue_affichage(ecran,texte_remplacer,texte_remplacer);
 							joueur = deroulement(ecran, joueur,poke1.attaque[1].puissance);
-							printf("%d\n",poke1.PV);
+							sprintf(TAB1,"pv : %d ",poke2.PV);
+							pv_2 = TTF_RenderText_Blended(police,TAB1, couleurNoire);
+							SDL_BlitSurface(rect_pv, NULL, ecran,&pos_rect_pv_2);
+							SDL_BlitSurface(pv_2, NULL, ecran , &pos_pv_2);
+							SDL_Delay(1000);
 							derouler_combat = 1;
 						}
 						 else if ((pos_texte_attaque3.x <= event.button.x) && ((pos_texte_attaque3.x + longueur4) >= event.button.x) && (pos_texte_attaque3.y <= event.button.y) && (pos_texte_attaque3.y + hauteur >= event.button.y))
 						{
 							printf(" lancement attaque3 \n");
+							sprintf(texte_remplacer,"%s utilise %s",poke1.nom,poke1.attaque[2].nom);
+							dialogue_affichage(ecran,texte_remplacer,texte_remplacer);
 							joueur = deroulement(ecran, joueur,poke1.attaque[2].puissance);
-							printf("%d\n",poke1.PV);
+							sprintf(TAB1,"pv : %d ",poke2.PV);
+							pv_2 = TTF_RenderText_Blended(police,TAB1, couleurNoire);
+							SDL_BlitSurface(rect_pv, NULL, ecran,&pos_rect_pv_2);
+							SDL_BlitSurface(pv_2, NULL, ecran , &pos_pv_2);
+							SDL_Delay(1000);
 							derouler_combat = 1;
 						}
 						else if ((pos_texte_attaque4.x <= event.button.x) && ((pos_texte_attaque4.x + longueur4) >= event.button.x) && (pos_texte_attaque4.y <= event.button.y) && (pos_texte_attaque4.y + hauteur >= event.button.y))
 						{
 							printf(" lancement attaque4 \n");
+							sprintf(texte_remplacer,"%s utilise %s",poke1.nom,poke1.attaque[3].nom);
+							dialogue_affichage(ecran,texte_remplacer,texte_remplacer);
 							joueur = deroulement(ecran, joueur,poke1.attaque[3].puissance);
-							printf("%d\n",poke1.PV);
+							sprintf(TAB1,"pv : %d ",poke2.PV);
+							pv_2 = TTF_RenderText_Blended(police,TAB1, couleurNoire);
+							SDL_BlitSurface(rect_pv, NULL, ecran,&pos_rect_pv_2);
+							SDL_BlitSurface(pv_2, NULL, ecran , &pos_pv_2);
+							SDL_Delay(1000);
 							derouler_combat = 1;
 						}
 
 						if(derouler_combat  == 1){
 							if(poke2.PV <= 0)
 							{
-								printf(" poke2 est mort \n");
-								printf("%d\n",calcul_exp_gagne(poke2));
+								sprintf(texte_remplacer,"%s est K.O, %s a gagne %d exp",poke2.nom,poke1.nom,calcul_exp_gagne(poke2));
+								dialogue_affichage(ecran,texte_remplacer,texte_remplacer);
+								SDL_Delay(1000);
 								ajout_exp(calcul_exp_gagne(poke2), ecran);
 								continuer = 0;
 							}
@@ -370,10 +398,10 @@ void combat(SDL_Surface *ecran)
 								SDL_Delay(1000);
 								// tour atomatique pour le pokemon sauvage
 								joueur = deroulement(ecran, joueur,poke1.attaque[1].puissance);
-
+								affichage_combat(ecran);
 								sprintf(TAB,"pv : %d ",poke1.PV);
               	sprintf(TAB1,"pv : %d ",poke2.PV);
-              	pv = TTF_RenderText_Blended(police,TAB, couleurNoire);
+								pv = TTF_RenderText_Blended(police,TAB, couleurNoire);
               	pv_2 = TTF_RenderText_Blended(police,TAB1, couleurNoire);
               	SDL_BlitSurface(rect_pv, NULL, ecran, &pos_rect_pv);
               	SDL_BlitSurface(rect_pv, NULL, ecran,&pos_rect_pv_2);
@@ -381,7 +409,9 @@ void combat(SDL_Surface *ecran)
               	SDL_BlitSurface(pv_2, NULL, ecran , &pos_pv_2);
 								if(poke1.PV <= 0)
 								{
-									printf(" poke1 est mort\n");
+									sprintf(texte_remplacer,"%s est K.O par votre faute allez le soigner",poke1.nom);
+									dialogue_affichage(ecran,texte_remplacer,texte_remplacer);
+									SDL_Delay(1000);
 									continuer = 0;
 								}
 							}
@@ -679,6 +709,7 @@ void changer_poke(SDL_Surface *ecran)
 
 int deroulement(SDL_Surface *ecran, int joueur,int puissance)
 {
+	char texte_remplacer[150];
 	if (joueur == 0)
 	{
 	//	printf(" pv perdu : %d\n",calcul_pv_perdu(poke1,poke2,puissance));
@@ -695,7 +726,11 @@ int deroulement(SDL_Surface *ecran, int joueur,int puissance)
 			nb_aleatoire = rand()%4;
 		}while(poke2.attaque[nb_aleatoire].id == 0);
 		//printf("poke1 va perdre %d hp \n",calcul_pv_perdu(poke2,poke1,poke2.attaque[nb_aleatoire].puissance));
+		sprintf(texte_remplacer,"%s utilise %s",poke2.nom,poke2.attaque[nb_aleatoire].nom);
+		dialogue_affichage(ecran,texte_remplacer,texte_remplacer);
+		SDL_Delay(1000);
 		poke1.PV-=calcul_pv_perdu(poke2, poke1,poke2.attaque[nb_aleatoire].puissance);
+
 		if(poke1.PV < 0){
 			poke1.PV = 0;
 		}
