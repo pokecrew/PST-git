@@ -3,8 +3,8 @@
 
 //Entrer ici les prototypes
 void chargerSpritesPerso(int numSpritePerso, SDL_Surface **Perso_Sprites);
-void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *file, FilePorte *filePorte, char Mat_Dialogue[3][100], char nomMap[40]);
+void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *file, FilePorte *filePorte, char Mat_Dialogue[100][150], char nomMap[40]);
 void deplacement(Case ** Map, Perso *perso, FileDecors *fileDecors, FilePorte *filePorte, Direction direction);
 int autoriserDeplacement(Case ** Map,Direction direction, Perso perso, SDL_Surface *ecran);
-void dialogue_affichage(SDL_Surface *ecran, Case ** Map, char* texte);
+void dialogue_affichage(SDL_Surface *ecran, Case ** Map, char* texte, char* texte2);
 #endif // DEF_PERSO

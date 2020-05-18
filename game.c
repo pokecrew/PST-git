@@ -264,7 +264,8 @@ int lancerEvenement(Case **Map,int i, int j, Direction direction, Perso perso, S
   }
 }
 
-int charger_att(Att att[4], int id_att[4]){
+int charger_att(Att att[4], int id_att[4])
+{
   FILE *fic = NULL;
   fic = fopen("Ressources/Attaques","r");
   char TAB[120];

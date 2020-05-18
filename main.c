@@ -34,7 +34,7 @@ int main(int argc, char** argv)
   Perso perso;
   perso.numSprite = 0;
   chargerSpritesPerso(perso.numSprite,perso.Perso_Sprites);
-  perso.position.x=FENETRE_W/2;
+  perso.position.x=FENETRE_W/2 - 400;
   perso.position.y=FENETRE_H/2;
   // initialisation pokemon et stats
   poke1.id = 3;
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
   //la boucle suivante constitue le menu
   int continuer = 1;
   int Menu=0;
-  char Mat_Dialogue[3][100];
+  char Mat_Dialogue[100][150];
   SDL_Event event; //on crée un evenement
 
   while (continuer)
