@@ -74,24 +74,10 @@ void affichage_combat(SDL_Surface *ecran)
 	pos_nom.x = 725;
   pos_nom.y = 400;
 
-	//Tirage niveau pokemon adversaire
-	int signe = rand()%2;
-	if (signe%2==0){
-		poke2.niv= poke1.niv - rand()%4;
-	}
-	else poke2.niv = poke1.niv + rand()%4;
 
-	//Tirage au sort pokemon adversaire
-	tirage_poke_sauvage(poke1.niv);
-	//printf(BLUE"[charger_att]:"RESET"poke2.id : %d\n", poke2.id);
-	// le tirage du niveau en face
-
-
-
-
-
-	//poke_nom(pokemon);
-	my_pokemons();
+	char path[30];
+	sprintf(path, "sprites/poke/dos/%d.png", poke1.id);
+	my_poke[0] = IMG_Load(path);
 
 	fond_combat = IMG_Load("combat/plateau_combat.png");
 	fond_noir = SDL_CreateRGBSurface(SDL_HWSURFACE, 1280, 720, 32, 0, 0, 0, 0);
@@ -104,7 +90,7 @@ void affichage_combat(SDL_Surface *ecran)
 	SDL_Flip(ecran);
 
 	poke_alea(ecran, poke, pokemon);
-	combat(ecran);
+	//combat(ecran);
 
 	SDL_FreeSurface(fond_combat);
 	SDL_FreeSurface(fond_noir);
@@ -125,6 +111,21 @@ void combat(SDL_Surface *ecran)
 	int i;
   int joueur = 0;
 	int derouler_combat = 0;
+
+	//initialisation COMBAT
+	//Tirage niveau pokemon adversaire
+	int signe = rand()%2;
+	if (signe%2==0){
+		poke2.niv= poke1.niv - rand()%4;
+	}
+	else poke2.niv = poke1.niv + rand()%4;
+
+	//Tirage au sort pokemon adversaire
+	tirage_poke_sauvage(poke1.niv);
+
+	//affichage_Fond
+	affichage_combat(ecran);
+
 
 	char capture_texte[150];
 	sprintf(capture_texte,"La violence animale est interdite sauf sur ptitard");
@@ -206,6 +207,7 @@ void combat(SDL_Surface *ecran)
 	SDL_BlitSurface(texte_attaques, NULL, ecran, &pos_texte_attaques);
 	SDL_BlitSurface(texte_fuite, NULL, ecran, &pos_texte_fuite);
 	SDL_BlitSurface(texte_changer, NULL, ecran, &pos_texte_changer);
+	SDL_BlitSurface(texte_capture, NULL, ecran, &pos_texte_capture);
   SDL_BlitSurface(pv, NULL, ecran, &pos_pv);
   SDL_BlitSurface(pv_2, NULL, ecran , &pos_pv_2);
 	SDL_BlitSurface(texte_niveau_poke1, NULL, ecran, &pos_texte_niveau_poke1);
@@ -304,9 +306,23 @@ void combat(SDL_Surface *ecran)
 					  }
 						if ((pos_texte_capture.x <= event.button.x) && ((pos_texte_capture.x + longueur3) >= event.button.x) && (pos_texte_capture.y <= event.button.y) && (pos_texte_capture.y + hauteur >= event.button.y))
 					  {
-						  bouton = 0;
+						  bouton = 1;
 							dialogue_affichage(ecran,capture_texte,capture_texte);
-							printf("ca marche bien\n");
+							affichage_combat(ecran);
+							sprintf(TAB,"pv : %d ",poke1.PV);
+							sprintf(TAB1,"pv : %d ",poke2.PV);
+							SDL_BlitSurface(rect_pv, NULL, ecran, &pos_rect_pv);
+						  SDL_BlitSurface(rect_pv, NULL, ecran, &pos_rect_pv_2);
+							SDL_BlitSurface(rect, NULL, ecran, &pos_rect);
+							SDL_BlitSurface(texte_attaques, NULL, ecran, &pos_texte_attaques);
+							SDL_BlitSurface(texte_fuite, NULL, ecran, &pos_texte_fuite);
+							SDL_BlitSurface(texte_changer, NULL, ecran, &pos_texte_changer);
+							SDL_BlitSurface(texte_capture, NULL, ecran, &pos_texte_capture);
+						  SDL_BlitSurface(pv, NULL, ecran, &pos_pv);
+						  SDL_BlitSurface(pv_2, NULL, ecran , &pos_pv_2);
+							SDL_BlitSurface(texte_niveau_poke1, NULL, ecran, &pos_texte_niveau_poke1);
+						  SDL_BlitSurface(texte_niveau_poke2, NULL, ecran , &pos_texte_niveau_poke2);
+
 					  }
           }
           else if(attaque)
@@ -348,16 +364,7 @@ void combat(SDL_Surface *ecran)
 								printf("%d\n",calcul_exp_gagne(poke2));
 								ajout_exp(calcul_exp_gagne(poke2), ecran);
 								continuer = 0;
-							}/*
-              sprintf(TAB,"pv : %d ",poke1.PV);
-              sprintf(TAB1,"pv : %d ",poke2.PV);
-              pv = TTF_RenderText_Blended(police,TAB, couleurNoire);
-              pv_2 = TTF_RenderText_Blended(police,TAB1, couleurNoire);
-              SDL_BlitSurface(rect_pv, NULL, ecran, &pos_rect_pv);
-              SDL_BlitSurface(rect_pv, NULL, ecran,&pos_rect_pv_2);
-              SDL_BlitSurface(pv, NULL, ecran,&pos_pv);
-              SDL_BlitSurface(pv_2, NULL, ecran , &pos_pv_2);*/
-							//met a jour l'écran pour le pokemon sauvage si il est vivant
+							}
 							else{ //poke2.Pv > 0
 								SDL_Flip(ecran);
 								SDL_Delay(1000);
@@ -417,9 +424,7 @@ void my_pokemons()
 	my_poke[4] = IMG_Load("sprites/poke/dos/13.png");
 	my_poke[5] = IMG_Load("sprites/poke/dos/16.png");
 	*/
-	char path[30];
-	sprintf(path, "sprites/poke/dos/%d.png", poke1.id);
-	my_poke[0] = IMG_Load(path);
+
 }
 
 void poke_nom(Poke pokemon[20])
