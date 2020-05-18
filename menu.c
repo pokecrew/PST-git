@@ -518,8 +518,8 @@ void menuOption(SDL_Surface *ecran){ //cette fonction constitue le menu des opti
   TTF_CloseFont(police3); // Doit être avant TTF_Quit()
   TTF_CloseFont(police4); // Doit être avant TTF_Quit()
 }
-/*
-void menuVictoire(SDL_Surface *ecran, int mode, int winner){ //menu de victoire
+*//*
+void menuPause(SDL_Surface *ecran, int winner){ //menu pause
 
   TTF_Font *police = NULL, *police2 =NULL, *police3 = NULL; //pointeurs des polices
   police = TTF_OpenFont("fonts/clean_sports/Clean Sports.ttf", 17); //chargement des polices
@@ -560,7 +560,7 @@ void menuVictoire(SDL_Surface *ecran, int mode, int winner){ //menu de victoire
     TexteResultat[0] = TTF_RenderText_Blended(police, "Match nul !", couleurBlanche); // on charge "Match Nul"
     positionTexteResultat[0].x = 200; //on centre la surface
   }
-  switch(mode){ //en fonction du mode de jeu
+  /*switch(mode){ //en fonction du mode de jeu
     case 1: //Si c'est le mode 1 Joueur
       if((score[0].score/10) == 0){ //si son score est inférieur à 10
         resultat_solo[28]=' '; //on affiche un espace dans la colonne des dizaines de la chaine qui affichera le resultat
@@ -595,7 +595,7 @@ void menuVictoire(SDL_Surface *ecran, int mode, int winner){ //menu de victoire
       resultat_multi[34]= score[1].score+48; //on écrit dans la chaine le score du Joueur2
       TexteResultat[1] = TTF_RenderText_Blended(police3, resultat_multi, couleurBlanche); //on charge la chaine dans la surface
     break;
-  }
+  }*//*
 
   while (continuer){ // on crée une boucle dépendant de la variable continuer pour attendre que le joueur appuie sur une touche
       SDL_PollEvent(&event);
@@ -632,5 +632,4 @@ void menuVictoire(SDL_Surface *ecran, int mode, int winner){ //menu de victoire
   SDL_FreeSurface(Score[0]);
   SDL_FreeSurface(Score[1]);
   SDL_FreeSurface(TexteContinuer);
-}
-*/
+}*/

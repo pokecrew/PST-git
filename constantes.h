@@ -111,6 +111,7 @@ int musicMapPrec = -1; //musique jouée lors sur la carte précédente (par déf
 int musicMap = 3; //musique jouée sur la map actuelle
 int numMapPrec = 2; //numéro de la map précédente (à charger depuis un fichier sauvegarde)
 int numMap = 1; //numéro de la map actuelle (à charger depuis un fichier sauvegarde)
+int volumeSon = 64; //0 = min, 128 = max;
 char nomMap[40]="";
 char mapPath[]="map/01.lvl"; //chemin vers le fichier source de la carte actuelle
 int typeSprite = 0; //sprites de petites tailles (0) ou de grande taille (12)
