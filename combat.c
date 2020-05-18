@@ -8,8 +8,8 @@ int calcul_stat(Poke *poke)
 	printf(GREEN"[calcul_stat]:"RESET"Id :%d\n",poke->id);
 	FILE *fic = NULL;
 	fic = fopen("Ressources/Stat_poke","r");
-	char TAB[120];
-	fgets(TAB, 119, fic);
+	char TAB[170];
+	fgets(TAB, 169, fic);
 	int id_f = 0;
 	while(id_f != poke->id)
 	{
@@ -17,7 +17,14 @@ int calcul_stat(Poke *poke)
 		id_f =	(TAB[0]-'0')*100 + (TAB[1]-'0')*10 + TAB[2]-'0';
 	}
 	for(int i=0; i<15;i++){
-		poke->nom[i]=TAB[i+16];
+		if(TAB[i+16] == ' '){
+			printf("Espace \n");
+			poke->nom[i]='\0';
+			i = 15 ;
+		}
+		else{
+			poke->nom[i]=TAB[i+16];
+		}
 	}
 	printf(GREEN"[calcul_stat]:"RESET"Nom :%s\n",poke->nom);
 	// charger les stats de base
@@ -39,12 +46,14 @@ int calcul_stat(Poke *poke)
 		printf(GREEN"[calcul_stat]:"RESET"vit :%d\n",poke->vit);
 	poke->nivEvo = (TAB[87]-'0')*100 + (TAB[88]-'0')*10 + TAB[89]-'0';
 		printf("Niveau évolution du poke %d : %d\n",poke->id ,poke->nivEvo);
+
+	fclose(fic);
 }
 
 void affichage_combat(SDL_Surface *ecran)
 {
 	SDL_Surface *fond_combat = NULL, *fond_noir = NULL;
-	SDL_Surface *poke[16];
+	SDL_Surface *poke = NULL;
 	SDL_Surface *nom2 = NULL;
 	SDL_Rect pos_fond, pos_fond_noir, pos_mypoke, pos_nom;
 	Poke pokemon[20] = {"", 0};
@@ -65,18 +74,19 @@ void affichage_combat(SDL_Surface *ecran)
 	pos_nom.x = 725;
   pos_nom.y = 400;
 
-	//Tirage au sort pokemon adversaire
-
-	srand(time(NULL));
-	poke2.id = rand()%144;
-	printf(BLUE"[charger_att]:"RESET"poke2.id : %d\n", poke2.id);
-	// le tirage du niveau en face
+	//Tirage niveau pokemon adversaire
 	int signe = rand()%2;
 	if (signe%2==0){
 		poke2.niv= poke1.niv - rand()%4;
 	}
 	else poke2.niv = poke1.niv + rand()%4;
-	calcul_stat(&poke2);
+
+	//Tirage au sort pokemon adversaire
+	tirage_poke_sauvage(poke1.niv);
+	//printf(BLUE"[charger_att]:"RESET"poke2.id : %d\n", poke2.id);
+	// le tirage du niveau en face
+
+
 
 
 
@@ -88,7 +98,7 @@ void affichage_combat(SDL_Surface *ecran)
 	SDL_FillRect(fond_noir,NULL,SDL_MapRGB(ecran->format, 0, 0, 0));
 	SDL_BlitSurface(fond_noir,NULL,ecran,&pos_fond_noir);
 	SDL_BlitSurface(fond_combat, NULL, ecran, &pos_fond);
-	SDL_BlitSurface(my_poke[0], NULL, ecran, &pos_mypoke);
+	SDL_BlitSurface(my_poke[0], NULL, ecran, &pos_mypoke);//affiche notre pokemon
 	nom2 = TTF_RenderText_Blended(police, poke1.nom, couleurNoire);
   SDL_BlitSurface(nom2, NULL, ecran, &pos_nom);
 	SDL_Flip(ecran);
@@ -124,13 +134,9 @@ void combat(SDL_Surface *ecran)
 	sprintf(niveau_poke1,"niv : %d ",poke1.niv);
 	sprintf(niveau_poke2,"niv : %d ",poke2.niv);
 	int attaques2[4];
-	for(int j=0;j<4;j++){
-		attaques2[j]=rand()%72;
-		//printf(RED"[combat]:"RESET"attaques2[%d] = %d \n", i, attaques2[j]);
-	}
-	charger_att((poke2.attaque), attaques2);
+	selection_att_adv(&poke2);
 	printf("il a chargé : %s, %s, %s, %s \n", poke2.attaque[0].nom, poke2.attaque[1].nom, poke2.attaque[2].nom, poke2.attaque[3].nom);
-
+printf("il a chargé : %d, %d, %d, %d \n", poke2.attaque[0].id, poke2.attaque[1].id, poke2.attaque[2].id, poke2.attaque[3].id);
 	char TAB[100];
   char TAB1[100];
 	//printf("pv du pokemon 1 : %d\n",poke1.PV);
@@ -323,7 +329,7 @@ void combat(SDL_Surface *ecran)
 								printf("%d\n",calcul_exp_gagne(poke2));
 								ajout_exp(calcul_exp_gagne(poke2), ecran);
 								continuer = 0;
-							}
+							}/*
               sprintf(TAB,"pv : %d ",poke1.PV);
               sprintf(TAB1,"pv : %d ",poke2.PV);
               pv = TTF_RenderText_Blended(police,TAB, couleurNoire);
@@ -331,9 +337,9 @@ void combat(SDL_Surface *ecran)
               SDL_BlitSurface(rect_pv, NULL, ecran, &pos_rect_pv);
               SDL_BlitSurface(rect_pv, NULL, ecran,&pos_rect_pv_2);
               SDL_BlitSurface(pv, NULL, ecran,&pos_pv);
-              SDL_BlitSurface(pv_2, NULL, ecran , &pos_pv_2);
+              SDL_BlitSurface(pv_2, NULL, ecran , &pos_pv_2);*/
 							//met a jour l'écran pour le pokemon sauvage si il est vivant
-							if (poke2.PV > 0){
+							else{ //poke2.Pv > 0
 								SDL_Flip(ecran);
 								SDL_Delay(1000);
 								// tour atomatique pour le pokemon sauvage
@@ -382,12 +388,18 @@ void combat(SDL_Surface *ecran)
 
 void my_pokemons()
 {
+	//Ancienne fonction CamCam (dsl m'en veux pas)
+	/*
 	my_poke[0] = IMG_Load("sprites/poke/dos/01.png");
 	my_poke[1] = IMG_Load("sprites/poke/dos/04.png");
 	my_poke[2] = IMG_Load("sprites/poke/dos/07.png");
 	my_poke[3] = IMG_Load("sprites/poke/dos/10.png");
 	my_poke[4] = IMG_Load("sprites/poke/dos/13.png");
 	my_poke[5] = IMG_Load("sprites/poke/dos/16.png");
+	*/
+	char path[30];
+	sprintf(path, "sprites/poke/dos/%d.png", poke1.id);
+	my_poke[0] = IMG_Load(path);
 }
 
 void poke_nom(Poke pokemon[20])
@@ -410,7 +422,7 @@ void poke_nom(Poke pokemon[20])
   strcat(pokemon[15].nom,"RONDOUDOU");
 }
 
-void poke_alea(SDL_Surface *ecran, SDL_Surface *poke[50], Poke pokemon[20])
+void poke_alea(SDL_Surface *ecran, SDL_Surface *poke, Poke pokemon[20])
 {
 	SDL_Rect pos_poke, pos_nom;
 	SDL_Color couleurNoire = {0, 0, 0};
@@ -426,10 +438,14 @@ void poke_alea(SDL_Surface *ecran, SDL_Surface *poke[50], Poke pokemon[20])
 	int alea = 0;
 	alea = rand()%16;
 
-	sauvage(poke);
+	//sauvage(poke);
+	char path[30];
+	sprintf(path,"sprites/poke/%d.png",poke2.id);
+	poke = IMG_Load(path);
 	nom1 = TTF_RenderText_Blended(police, poke2.nom, couleurNoire);
+
 	SDL_BlitSurface(nom1, NULL, ecran, &pos_nom);
-	SDL_BlitSurface(poke[alea], NULL, ecran, &pos_poke);
+	SDL_BlitSurface(poke, NULL, ecran, &pos_poke);
 
 	SDL_FreeSurface(nom1);
 	TTF_CloseFont(police);
@@ -648,8 +664,12 @@ int deroulement(SDL_Surface *ecran, int joueur,int puissance)
 	}
 	else
 	{
-		int nb_aleatoire = rand()%4;
-	//	printf("il va perdre %d hp \n",calcul_pv_perdu(poke2,poke1,poke2.attaque[nb_aleatoire].puissance));
+		int nb_aleatoire;
+		//La boucle suivante relance le tirage jusqu'à ce que le tirage donc une attaque non nulle
+		do{
+			nb_aleatoire = rand()%4;
+		}while(poke2.attaque[nb_aleatoire].id == 0);
+		//printf("poke1 va perdre %d hp \n",calcul_pv_perdu(poke2,poke1,poke2.attaque[nb_aleatoire].puissance));
 		poke1.PV-=calcul_pv_perdu(poke2, poke1,poke2.attaque[nb_aleatoire].puissance);
 		if(poke1.PV < 0){
 			poke1.PV = 0;
@@ -694,7 +714,8 @@ void ajout_exp(int exp_gagne, SDL_Surface *ecran)
 	while(poke1.exp >= ((poke1.niv+1)*(poke1.niv+1)*(poke1.niv+1)))
 	{
 		poke1.niv++;
-		if(poke1.niv == poke1.nivEvo){//si le pokemon a le niveau suffisant pour évoluer
+		maj_att_niv(&poke1);
+		if(poke1.niv >= poke1.nivEvo){//si le pokemon a le niveau suffisant pour évoluer
 				evolution(ecran);
 		}
 		printf("Nouveau niveau :%d\n",poke1.niv);

@@ -281,7 +281,7 @@ int charger_att(Att att[4], int id_att[4]){
       attaques_a_charger--;
     }
   }
-//  printf(GREEN"[charger_att]:"RESET" attaques_a_charger = %d \n",attaques_a_charger);
+  printf(GREEN"[charger_att]:"RESET" attaques_a_charger = %d \n",attaques_a_charger);
   int id_f = 0;
   while(attaques_chargees != attaques_a_charger && continuer == 1){
     //recupère l'id en cours
@@ -308,7 +308,7 @@ int charger_att(Att att[4], int id_att[4]){
               att[i].nom[j] = TAB[4+j]; //sinon on charge le caractère correspondant
             }
           }
-        //  printf(GREEN"[charger_att]:"RESET"att[%d].nom : %s\n",i, att[i].nom);
+          printf(GREEN"[charger_att]:"RESET"att[%d].nom : %s\n",i, att[i].nom);
 
           //chargement type Attaque
           for(int k=0; k<8; k++){
@@ -388,23 +388,20 @@ int animation_evo(int id, SDL_Surface *ecran){
   SDL_Surface  *fond = NULL, *Poke = NULL, *Evo = NULL, *boite_dialogue = NULL, *texte[4]={NULL}; //création des surfaces
   SDL_Rect positionFond, positionPoke, positionDialogue, positionTexte;
   SDL_Event event, event2; //on crée un évènement
-  texte[0] = TTF_RenderText_Blended(police, "Quoi ? Mega-Rayquaza evolue ! ", couleurTitre);
-  texte[1] = TTF_RenderText_Blended(police2, "Felicitations ! Mega-Rayquaza a evolue en Mega-Groudon ! ", couleurTitre);
+    poke2.id = poke1.id +1;
+  calcul_stat(&poke2);
+  char text[2][100];
+  sprintf(text[0],"Quoi ? %s evolue !", poke1.nom);
+  sprintf(text[1],"Felicitations ! %s a evolue en %s !", poke1.nom, poke2.nom);
+  texte[0] = TTF_RenderText_Blended(police, text[0], couleurTitre);
+  texte[1] = TTF_RenderText_Blended(police2, text[1], couleurTitre);
   texte[2] = TTF_RenderText_Blended(police, "(Mieux vaut ne pas le perturber) ", couleurTitre);
   texte[3] = TTF_RenderText_Blended(police, "Le pokemon n'a pas evolue ", couleurTitre);
   char path[80], path2[80];
-  if(id < 10){
-    sprintf(path,"sprites/poke/0%d.png",id);
-  }
-  else{
+
     sprintf(path,"sprites/poke/%d.png",id);
-  }
-  if(id < 9){
-    sprintf(path2,"sprites/poke/0%d.png",id+1);
-  }
-  else{
     sprintf(path2,"sprites/poke/%d.png",(id+1));
-  }
+
   printf("Chemin vers images : \n %s \n %s \n",path, path2);
 //  printf("Nom pokemon : %s \n", poke1.nom);
   //images
@@ -430,10 +427,12 @@ int animation_evo(int id, SDL_Surface *ecran){
   //// a supprimer dans le jeu
   //Mix_VolumeMusic(MIX_MAX_VOLUME / 2); //Mettre le volume à la moitié
   ///
-  Mix_HaltMusic();
-  Mix_Music *musique; //Création d'un pointeur de type Mix_Music
-  musique = Mix_LoadMUS("Ressources/Musiques/evo.mp3"); //Chargement de la musique
-  Mix_PlayMusic(musique, 1); //Jouer infiniment la musique
+  Mix_PauseMusic(); //on arrete la musique de fond
+  Mix_Chunk *son;
+  son = Mix_LoadWAV("Ressources/Musiques/evo.ogg");
+  Mix_VolumeChunk(son,volumeSon);
+  Mix_PlayChannel(-1, son, 0);
+
 
   SDL_BlitSurface(fond, NULL, ecran, &positionFond);
   SDL_BlitSurface(Poke, NULL, ecran, &positionPoke);
@@ -496,14 +495,14 @@ int animation_evo(int id, SDL_Surface *ecran){
               break;
               case SDLK_RETURN: // arrêter le jeu
                 continuer =0;
+
               break;
             }
           }
         }
-    //  SDL_Delay(7000);//remplacer par un  SDL_WaitEvent
     }
     else{//si le joueur a empéché une évolution
-      Mix_PauseMusic(); //Arrête la musique
+      Mix_Pause(-1); //Arrête l'effet sonore
       SDL_BlitSurface(fond, NULL, ecran, &positionFond);
       SDL_BlitSurface(Poke, NULL, ecran, &positionPoke);
       SDL_BlitSurface(boite_dialogue, NULL, ecran, &positionDialogue);
@@ -531,8 +530,7 @@ int animation_evo(int id, SDL_Surface *ecran){
           }
         }
     }
-    Mix_HaltMusic(); //Arrête la musique
-    Mix_FreeMusic(musique); //Libération de la musique
+    Mix_FreeChunk(son);
   // on libère les surfaces et les polices avantde quitter
   SDL_FreeSurface(fond);
   SDL_FreeSurface(Poke);
@@ -545,6 +543,104 @@ int animation_evo(int id, SDL_Surface *ecran){
   TTF_CloseFont(police);
   TTF_CloseFont(police2);
   //on rétablit la musique de base
-  Mix_PlayMusic(music, -1);
+  Mix_ResumeMusic();
+
 return success;
+}
+
+void tirage_poke_sauvage(int poke1_niv){
+  srand(time(NULL));
+  Poke preEvo;
+  int continuer = 1;
+  do{
+    continuer = 0;
+		poke2.id = rand()%151;
+    preEvo.id = (poke2.id)-1;
+    calcul_stat(&preEvo);
+		calcul_stat(&poke2);
+    if(poke2.nivEvo == 111 || poke2.id == 0 || (preEvo.id != 0 && preEvo.nivEvo != 111 && preEvo.nivEvo >= poke1_niv)){
+      continuer = 1;
+    }
+	}while(continuer);
+}
+
+void selection_att_adv(Poke *poke){
+  //printf(GREEN"[apprendre_att]:"RESET"Id :%d\n",poke->id);
+	FILE *fic = NULL;
+	fic = fopen("Ressources/Stat_poke","r");
+	char TAB[170];
+	fgets(TAB, 169, fic);
+	int id_f = 0;
+  int i = 94, k = 0;
+  int niv_depasse = 0;
+  int att[2][4]; //att[0][] = id, att[1] = niv
+  for(int l = 0; l < 2; l++){
+    for(int m = 0; m < 4 ; m++){
+      att[l][m]=0;
+    }
+  }
+	while(id_f != poke->id)
+	{
+		fgets(TAB, 169, fic);
+		id_f =	(TAB[0]-'0')*100 + (TAB[1]-'0')*10 + TAB[2]-'0';
+	}
+	while(TAB[i] == '[' && niv_depasse == 0){
+  //  printf(" k =%d\n", k);
+    att[0][k]= (TAB[i+1] -'0')*10 + (TAB[i+2]-'0')%10;
+    att[1][k]= (TAB[i+4] -'0')*10 + (TAB[i+5]-'0')%10;
+    //printf(BLUE"[apprendre_att]:"RESET"Attaque n°%d détectée disponible au niveau %d\n", att[0][k], att[1][k]);
+    i+=7;
+    if((att[1][k] > poke->niv)){
+      niv_depasse = 1;
+      att[0][k]=0;
+      att[1][k]=0;
+    }
+    k = (k+1)%4;
+  }
+  for(int j=0; j<4; j++){
+    //printf(RED"[apprendre_att]:"RESET"Attaque n°%d retenue disponible au niveau %d\n", att[0][j], att[1][j]);
+  }
+  //chargement des attaques
+  charger_att((poke->attaque), att[0]);
+	fclose(fic);
+}
+
+void maj_att_niv(Poke *poke){
+  //printf(GREEN"[apprendre_att]:"RESET"Id :%d\n",poke->id);
+	FILE *fic = NULL;
+	fic = fopen("Ressources/Stat_poke","r");
+	char TAB[170];
+	fgets(TAB, 169, fic);
+	int id_f = 0;
+  int i = 94;
+  int niv_depasse = 0;
+  int att[2][4]; //att[0][] = id, att[1] = niv
+  for(int l = 0; l < 2; l++){
+    for(int m = 0; m < 4 ; m++){
+      att[l][m]=0;
+    }
+  }
+	while(id_f != poke->id)
+	{
+		fgets(TAB, 169, fic);
+		id_f =	(TAB[0]-'0')*100 + (TAB[1]-'0')*10 + TAB[2]-'0';
+	}
+	while(TAB[i] == '[' && niv_depasse == 0){
+  //  printf(" k =%d\n", k);
+    att[0][0]= (TAB[i+1] -'0')*10 + (TAB[i+2]-'0')%10;
+    att[1][0]= (TAB[i+4] -'0')*10 + (TAB[i+5]-'0')%10;
+    printf(BLUE"[apprendre_att]:"RESET"Attaque n°%d détectée disponible au niveau %d\n", att[0][0], att[1][0]);
+    i+=7;
+    if((att[1][0] > poke->niv)){
+      niv_depasse = 1;
+    }
+    else if(att[1][0] == poke->niv){
+      niv_depasse = 1;
+      att[0][1] = poke->attaque[0].id;
+      att[0][2] = poke->attaque[1].id;
+      att[0][3] = poke->attaque[2].id;
+      charger_att((poke->attaque), att[0]);
+    }
+  }
+	fclose(fic);
 }

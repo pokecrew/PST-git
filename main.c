@@ -18,7 +18,8 @@ int main(int argc, char** argv)
   //initialisation des variables
   TTF_Init(); //on initialise les polices
   SDL_Init(SDL_INIT_VIDEO); //initialisation de la sdl
-  loadsoundEffect();//on charge les effets sonores
+  loadsoundEffect();//on charge les Musiques
+  Mix_AllocateChannels(3); //alloue des canaux pour les effets sonores (!= des musiques)
   SDL_WM_SetIcon(IMG_Load("icon.png"), NULL); // Chargement de l'icône AVANT SDL_SetVideoMode
   SDL_Surface *ecran = NULL; //Surface sur laquelle on affichera les différents éléments
   ecran = SDL_SetVideoMode((1280), (720), 32, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_RESIZABLE); //on affiche un écran de la taille souhaitée
@@ -38,9 +39,10 @@ int main(int argc, char** argv)
   perso.position.y=FENETRE_H/2;
   // initialisation pokemon et stats
   poke1.id = 1;
-  poke1.niv = 15;
-  poke1.exp = (poke1.niv)*(poke1.niv)*(poke1.niv);
+  poke1.niv = 12;
+  //poke1.exp = (poke1.niv)*(poke1.niv)*(poke1.niv);
   calcul_stat(&poke1);
+  poke1.exp = 4000;
   printf("%d\n",poke1.exp);
   int attaques[4]={5,12,3,6};
   charger_att((poke1.attaque), attaques);
@@ -65,7 +67,8 @@ int main(int argc, char** argv)
         break;
 
       case 1: //Alexis/Sarah
-        animation_evo(11,ecran);
+        //animation_evo(poke1.id,ecran);
+        selection_att_adv(&poke1);
       break;
 
       case 2: //Camille/Théo(Combats)
