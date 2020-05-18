@@ -67,7 +67,7 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
   int sortir = 0;
   if(nomMap[0] == 'A' && nomMap[6] == 'R')
   {
-    dialogue_affichage(ecran, Map, Mat_Dialogue[0], Mat_Dialogue[0]);
+    dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0]);
     SDL_Delay(1500);
   }
   int enchainement = 0;
@@ -177,16 +177,16 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                 printf("y = %d\n\n", y);
                 if((y == 9) && (x == 13))
                 {
-                  dialogue_affichage(ecran, Map, Mat_Dialogue[0], Mat_Dialogue[0]);
+                  dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0]);
                   SDL_Delay(1500);
                 }
                 if((y == 9) && (x >= 15) && (x <= 18))
                 {
-                  dialogue_affichage(ecran, Map, Mat_Dialogue[1], Mat_Dialogue[1]);
+                  dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[1]);
                   SDL_Delay(1500);
-                  dialogue_affichage(ecran, Map, Mat_Dialogue[2], Mat_Dialogue[3]);
+                  dialogue_affichage(ecran, Mat_Dialogue[2], Mat_Dialogue[3]);
                   SDL_Delay(1500);
-                  dialogue_affichage(ecran, Map, Mat_Dialogue[3], Mat_Dialogue[4]);
+                  dialogue_affichage(ecran, Mat_Dialogue[3], Mat_Dialogue[4]);
                   SDL_Delay(1500);
                 }
               }
@@ -203,24 +203,24 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                   if(((y <= 24) && (y >= 22)) && ((x <= 26) && (x >= 23)))
                   {
                     enchainement = 1;
-                    dialogue_affichage(ecran, Map, Mat_Dialogue[1], Mat_Dialogue[1]);
+                    dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[1]);
                   }
                   else if(enchainement == 0)
                   {
-                    dialogue_affichage(ecran, Map, Mat_Dialogue[0], Mat_Dialogue[0]);
+                    dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0]);
                   }
                   else if(enchainement == 1)
                   {
-                    dialogue_affichage(ecran, Map, Mat_Dialogue[2], Mat_Dialogue[2]);
+                    dialogue_affichage(ecran, Mat_Dialogue[2], Mat_Dialogue[2]);
                   }
                 }
                 if(nomMap[0] == 'A' && nomMap[6] == 'R')
                 {
                   if((y == 13) && (x == 17))
                   {
-                    dialogue_affichage(ecran, Map, Mat_Dialogue[1], Mat_Dialogue[1]);
+                    dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[1]);
                     SDL_Delay(1500);
-                    dialogue_affichage(ecran, Map, Mat_Dialogue[2], Mat_Dialogue[3]);
+                    dialogue_affichage(ecran, Mat_Dialogue[2], Mat_Dialogue[3]);
                     SDL_Delay(1500);
                     sortir = 1;
                   }
@@ -593,7 +593,7 @@ void deplacement(Case ** Map, Perso *perso, FileDecors *fileDecors, FilePorte *f
   }
 }
 
-void dialogue_affichage(SDL_Surface *ecran, Case ** Map, char* texte, char* texte2)
+void dialogue_affichage(SDL_Surface *ecran, char* texte, char* texte2)
 {
   SDL_Surface *dialogue = NULL;
   SDL_Rect position_bulle, position_dialogue;
