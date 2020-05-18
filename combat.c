@@ -112,11 +112,11 @@ void affichage_combat(SDL_Surface *ecran)
 
 void combat(SDL_Surface *ecran)
 {
-	SDL_Surface *rect = NULL, *texte_attaques = NULL, *texte_fuite = NULL, *texte_changer = NULL, *texte_attaque1 = NULL, *pv = NULL, *rect_pv = NULL, *pv_2= NULL, *texte_attaque2 = NULL, *texte_attaque3 = NULL, *texte_attaque4 = NULL, *texte_niveau_poke1 = NULL, *texte_niveau_poke2 = NULL;
+	SDL_Surface *rect = NULL, *texte_attaques = NULL, *texte_fuite = NULL, *texte_changer = NULL, *texte_attaque1 = NULL, *pv = NULL, *rect_pv = NULL, *pv_2= NULL, *texte_attaque2 = NULL, *texte_attaque3 = NULL, *texte_attaque4 = NULL, *texte_niveau_poke1 = NULL, *texte_niveau_poke2 = NULL, *texte_capture = NULL;
   SDL_Surface *poke[16];
   Poke pokemon[20] = {"", 0};
 	SDL_Event event;
-	SDL_Rect pos_rect, pos_texte_attaques, pos_texte_fuite, pos_texte_changer, pos_pokemon, pos_nom, pos_pv,pos_rect_pv, pos_pv_2,pos_rect_pv_2,pos_texte_attaque1,pos_texte_attaque2,pos_texte_attaque3,pos_texte_attaque4,pos_texte_niveau_poke1,pos_texte_niveau_poke2;
+	SDL_Rect pos_rect, pos_texte_attaques, pos_texte_fuite, pos_texte_changer, pos_pokemon, pos_nom, pos_pv,pos_rect_pv, pos_pv_2,pos_rect_pv_2,pos_texte_attaque1,pos_texte_attaque2,pos_texte_attaque3,pos_texte_attaque4,pos_texte_niveau_poke1,pos_texte_niveau_poke2, pos_texte_capture;
 	TTF_Font *police = NULL;
 	TTF_Font *police2 = NULL;
 	SDL_Color couleurNoire = {0, 0, 0}, couleurRouge = {255, 27, 27};
@@ -126,6 +126,8 @@ void combat(SDL_Surface *ecran)
   int joueur = 0;
 	int derouler_combat = 0;
 
+	char capture_texte[150];
+	sprintf(capture_texte,"La violence animale est interdite sauf sur ptitard");
 
 
 	char niveau_poke1[10];
@@ -136,7 +138,7 @@ void combat(SDL_Surface *ecran)
 	int attaques2[4];
 	selection_att_adv(&poke2);
 	printf("il a chargé : %s, %s, %s, %s \n", poke2.attaque[0].nom, poke2.attaque[1].nom, poke2.attaque[2].nom, poke2.attaque[3].nom);
-printf("il a chargé : %d, %d, %d, %d \n", poke2.attaque[0].id, poke2.attaque[1].id, poke2.attaque[2].id, poke2.attaque[3].id);
+	printf("il a chargé : %d, %d, %d, %d \n", poke2.attaque[0].id, poke2.attaque[1].id, poke2.attaque[2].id, poke2.attaque[3].id);
 	char TAB[100];
   char TAB1[100];
 	//printf("pv du pokemon 1 : %d\n",poke1.PV);
@@ -149,10 +151,12 @@ printf("il a chargé : %d, %d, %d, %d \n", poke2.attaque[0].id, poke2.attaque[1]
 	pos_rect.y = 487;
 	pos_texte_attaques.x = 734;
 	pos_texte_attaques.y = 505;
-	pos_texte_fuite.x = 734;
-	pos_texte_fuite.y = 535;
+	pos_texte_fuite.x = 864;
+	pos_texte_fuite.y = 505;
 	pos_texte_changer.x = 734;
 	pos_texte_changer.y = 565;
+	pos_texte_capture.x = 864;
+	pos_texte_capture.y = 565;
 	pos_pokemon.x = 4;
 	pos_pokemon.y = 5;
 
@@ -186,6 +190,7 @@ printf("il a chargé : %d, %d, %d, %d \n", poke2.attaque[0].id, poke2.attaque[1]
 	texte_attaques = TTF_RenderText_Blended(police, "Attaques", couleurNoire);
 	texte_fuite = TTF_RenderText_Blended(police, "Fuite", couleurNoire);
 	texte_changer = TTF_RenderText_Blended(police, "Changer", couleurNoire);
+	texte_capture = TTF_RenderText_Blended(police, "Capture", couleurNoire);
   texte_attaque1= TTF_RenderText_Blended(police2, poke1.attaque[0].nom, couleurNoire);
 	texte_attaque2= TTF_RenderText_Blended(police2, poke1.attaque[1].nom, couleurNoire);
 	texte_attaque3= TTF_RenderText_Blended(police2, poke1.attaque[2].nom, couleurNoire);
@@ -253,11 +258,19 @@ printf("il a chargé : %d, %d, %d, %d \n", poke2.attaque[0].id, poke2.attaque[1]
 					{
 						texte_changer = TTF_RenderText_Blended(police, "Changer", couleurNoire);
 					}
-
+					if ((pos_texte_capture.x <= event.button.x) && ((pos_texte_capture.x + longueur3) >= event.button.x) && (pos_texte_capture.y <= event.button.y) && (pos_texte_capture.y + hauteur >= event.button.y))
+					{
+						texte_capture = TTF_RenderText_Blended(police, "Capture", couleurRouge);
+					}
+					else
+					{
+						texte_capture = TTF_RenderText_Blended(police, "Capture", couleurNoire);
+					}
 					SDL_BlitSurface(rect, NULL, ecran, &pos_rect);
 					SDL_BlitSurface(texte_attaques, NULL, ecran, &pos_texte_attaques);
 					SDL_BlitSurface(texte_fuite, NULL, ecran, &pos_texte_fuite);
 					SDL_BlitSurface(texte_changer, NULL, ecran, &pos_texte_changer);
+					SDL_BlitSurface(texte_capture, NULL, ecran, &pos_texte_capture);
 				}
 				break;
 
@@ -288,6 +301,12 @@ printf("il a chargé : %d, %d, %d, %d \n", poke2.attaque[0].id, poke2.attaque[1]
 					  {
 						  bouton = 0;
               changer_poke(ecran);
+					  }
+						if ((pos_texte_capture.x <= event.button.x) && ((pos_texte_capture.x + longueur3) >= event.button.x) && (pos_texte_capture.y <= event.button.y) && (pos_texte_capture.y + hauteur >= event.button.y))
+					  {
+						  bouton = 0;
+							dialogue_affichage(ecran,capture_texte,capture_texte);
+							printf("ca marche bien\n");
 					  }
           }
           else if(attaque)
@@ -375,6 +394,7 @@ printf("il a chargé : %d, %d, %d, %d \n", poke2.attaque[0].id, poke2.attaque[1]
   SDL_FreeSurface(texte_attaques);
   SDL_FreeSurface(texte_fuite);
 	SDL_FreeSurface(texte_changer);
+	SDL_FreeSurface(texte_capture);
   SDL_FreeSurface(texte_attaque1);
 	SDL_FreeSurface(texte_attaque2);
 	SDL_FreeSurface(texte_attaque3);
