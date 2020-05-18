@@ -72,7 +72,7 @@ int main(int argc, char** argv)
       break;
 
       case 2: //Camille/Théo(Combats)
-        affichage_combat(ecran);
+          combat(ecran);
         break;
 
       case 3: //Thomas(Jeu)
