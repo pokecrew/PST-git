@@ -167,7 +167,7 @@ void chargerSpritesMap()
 }
 
 //fonction qui permet de changer de carte
-int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position, char Mat_Dialogue[3][100])
+int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position, char Mat_Dialogue[100][150])
 {
   int mapPrec = numMap; //stocke la map précédente
   musicMapPrec = musicMap;
@@ -200,7 +200,7 @@ int changeMap(int numeroMap, Case ** Map, FileDecors *fileDecors, FilePorte *fil
   //printf(GREEN"[changeMap]:"RESET"centrage OK\n");
   //printf(GREEN"[changeMap]:"RESET"Load ok \n");
   //Partie Musique
-  changerSonCarte();
+  //changerSonCarte();
 }
 
 //Fonction qui vide la file
@@ -263,7 +263,7 @@ void changerDimensionsMap(char mapPath[],Case **Map)
 }
 
 //fonction qui charge les éléments un à un dans la file
-int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte, char Mat_Dialogue[3][100])
+int chargerObjets(char mapPath[], FileDecors *fileDecors, FilePorte *filePorte, char Mat_Dialogue[100][150])
 {
   FILE* mapFile = NULL; //pointeur vers le fichier
   int objet_type = 1;
@@ -508,13 +508,18 @@ void chargerMusicCarte(char *chaine)
   musicMap = (chaine[0] - '0')*100 + (chaine[1] - '0')*10 + (chaine[2] - '0');
 }
 
-void Init_Mat_Dialogue(char *chaine, int i, char Mat_Dialogue[3][100])
+void Init_Mat_Dialogue(char *chaine, int i, char Mat_Dialogue[100][150])
 {
   int j = 0;
+  int k;
   while(chaine[j] != '\n')
   {
     Mat_Dialogue[i][j] = chaine[j];
     j++;
+  }
+  for(k = j; k < 100; k++)
+  {
+    Mat_Dialogue[i][k] = ' ';
   }
 }
 
@@ -810,7 +815,7 @@ int chargerTypeEvenement(Decors element)
   {//Objets texte
     return 17;
   }
-  else if(element.numIMG == 8998 || element.numIMG == 8997)
+  else if(element.numIMG >= 8900 && element.numIMG != 8999)
   {//PNJ
     return 18;
   }
@@ -1084,7 +1089,7 @@ void centrerMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_R
   }
 }
 
-int verifChangementMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position, char Mat_Dialogue[3][100])
+int verifChangementMap(Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, SDL_Rect *perso_position, char Mat_Dialogue[100][150])
 {
   if(fileDecors == NULL)
   {
