@@ -1351,7 +1351,7 @@ void lancementCombat(SDL_Surface *ecran)
   //printf(GREEN"[lancementCombat]:"RESET"lancerCombat = %d, alea= %d \n", lancerCombat, alea);
   if(lancerCombat > 8 && (alea == 0 || lancerCombat > 60))
   {
-    combat(ecran);
+    affichage_combat(ecran);
     lancerCombat = 0;
   }
 }

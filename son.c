@@ -19,7 +19,14 @@ void loadsoundEffect()
 
 void changerSonCarte()
 {
+  Mix_VolumeMusic(volumeSon);
+  int musicPaused = 0;
   //printf(GREEN"[changerSonCarte]:"RESET"old = %d, new = %d\n",musicMapPrec,musicMap);
+  if(Mix_PausedMusic() == 1)//Si la musique est en pause
+    {
+        Mix_ResumeMusic(); //Reprendre la musique
+        musicPaused = 1;
+    }
   if(musicMapPrec != musicMap)
   {
     music = realloc_son();
@@ -31,6 +38,10 @@ void changerSonCarte()
     music = Mix_LoadMUS(path);
     //playSound(musicMap, BOUCLE);
     Mix_PlayMusic(music, BOUCLE); //Jouer la musique en boucle
+    if(musicPaused == 1)
+    {
+      Mix_PauseMusic();
+    }
   }
 }
 
