@@ -29,7 +29,7 @@ ID  Nom              Type     Classe     Puis  Prec.  PP
 028 Constriction     normal   Physique    010   100   35
 029 Charge           normal   Physique    035   095   35
 030 Tornade          normal   Physique    035   100   40
-031 Ecras'Face       normal   Physique    040   100   35
+031 Ecras_Face       normal   Physique    040   100   35
 032 Griffe           normal   Physique    040   100   35
 033 Jackpot          normal   Physique    040   100   20
 034 Vive-Attaque     normal   Physique    040   100   30
@@ -50,8 +50,8 @@ ID  Nom              Type     Classe     Puis  Prec.  PP
 049 Ultimapoing      normal   Physique    080   085   20
 050 Plaquage         normal   Physique    085   100   15
 051 Belier           normal   Physique    090   085   20
-052 Bomb'Œuf         normal   Physique    100   075   16
-053 Damoclès         normal   Physique    100   100   15
+052 Bomb_Oeuf        normal   Physique    100   075   16
+053 Damocles         normal   Physique    100   100   15
 054 Ultimawashi      normal   Physique    120   075   05
 055 Fouet_Lianes     plante   Speciale    035   100   10
 056 Tranch'Herbe     plante   Speciale    055   095   25
