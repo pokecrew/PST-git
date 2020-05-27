@@ -2,7 +2,33 @@
 
 SDL_Surface *my_poke[6];
 SDL_Surface *nom1 = NULL;
-
+int lire_sauvegarde(Poke *poke){
+	FILE *fic1 = NULL;
+	fic1 = fopen("Ressources/Sauvegarde","r");
+	char TAB[170];
+	fgets(TAB, 169, fic1);
+	fgets(TAB, 169, fic1);
+	printf(" ca marche ? \n");
+	poke ->id = (TAB[0]-'0')*100 + (TAB[1]-'0')*10 + TAB[2]-'0';
+	printf("%d\n",poke->id);
+	poke->PV =	(TAB[8]-'0')*100 + (TAB[9]-'0')*10 + TAB[10]-'0';
+	poke->niv = (TAB[16]-'0')*100 + (TAB[17]-'0')*10 + TAB[18]-'0';
+	printf("%d\n",poke->niv);
+	poke->exp = (TAB[24]-'0')*1000000 + (TAB[25]-'0')*100000 + (TAB[26]-'0')*10000 + (TAB[27]-'0')*1000 + (TAB[28]-'0')*100 + (TAB[29]-'0')*10 + (TAB[30]-'0');
+	printf("%d\n",poke->exp);
+	fclose(fic1);
+}
+int ecrire_sauvegarde(Poke *poke){
+	FILE *fic1 = NULL;
+	fic1 = fopen("Ressources/Sauvegarde","w+");
+	fprintf(fic1, "Numéro  PV      NIV     EXP\n");
+	fprintf(fic1,"%d%d%d", poke->id/100, (poke->id%100)/10, poke->id%10);
+	fprintf(fic1,"     %d%d%d", poke->PV/100, (poke->PV%100)/10, poke->PV%10);
+	fprintf(fic1,"     %d%d%d", poke->niv/100, (poke->niv%100)/10, poke->niv%10);
+	fprintf(fic1,"     %d%d%d%d%d%d%d", poke->exp/1000000, (poke->exp%1000000)/100000, (poke->exp%100000)/10000, (poke->exp%10000)/1000, (poke->exp%1000)/100, (poke->exp%100)/10, (poke->exp%10));
+	fclose(fic1);
+	printf("Sauvegarde Terminée\n");
+}
 int calcul_stat(Poke *poke)
 {
 	printf(GREEN"[calcul_stat]:"RESET"Id :%d\n",poke->id);

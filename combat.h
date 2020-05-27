@@ -14,4 +14,6 @@ int calcul_exp_gagne(Poke poke);
 void ajout_exp(int exp_gagne, SDL_Surface *ecran);
 int calcul_pv_perdu(Poke attaquant, Poke defenseur,int puissance);
 void evolution(SDL_Surface *ecran);
+int lire_sauvegarde(Poke *poke);
+int ecrire_sauvegarde(Poke *poke);
 #endif // DEF_COMBAT
