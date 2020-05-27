@@ -48,6 +48,7 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
   SDL_Event event;
   int continuer = 1;
   int descendre = 1;
+  int rencontre = 1;
   int sortir = 0;
   int enchainement = 0;
   int dialogue_possible = 0;
@@ -83,6 +84,11 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
     {
       dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0], Mat_Dialogue[0]);
       descendre = 0;
+    }
+    if(nomMap[0] == 'R' && nomMap[6] == '1' && rencontre == 1)
+    {
+      dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0], Mat_Dialogue[0]);
+      rencontre = 0;
     }
     SDL_WaitEvent(&event);
       switch(event.type)
@@ -215,26 +221,33 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                 }
                 if(nomMap[0] == 'A' && nomMap[6] == 'R')
                 {
-                  if(dialogue_possible == 1)
-                  {
-                    dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[1], Mat_Dialogue[1]);
-                    dialogue_affichage(ecran, Mat_Dialogue[2], Mat_Dialogue[3], Mat_Dialogue[3]);
-                    sortir = 1;
-                  }
+                  dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[1], Mat_Dialogue[1]);
+                  dialogue_affichage(ecran, Mat_Dialogue[2], Mat_Dialogue[3], Mat_Dialogue[3]);
+                  sortir = 1;
                 }
                 if(nomMap[0] == 'B')
                 {
-                  if(dialogue_possible == 1)
+                  if(x == 59)
                   {
-                    if(x == 59)
-                    {
-                      dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0], Mat_Dialogue[0]);
-                      dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[2], Mat_Dialogue[2]);
-                    }
-                    if(x == 21)
-                    {
-                      dialogue_affichage(ecran, Mat_Dialogue[3], Mat_Dialogue[4], Mat_Dialogue[4]);
-                    }
+                    dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0], Mat_Dialogue[0]);
+                    dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[2], Mat_Dialogue[2]);
+                  }
+                  if(x == 21)
+                  {
+                    dialogue_affichage(ecran, Mat_Dialogue[3], Mat_Dialogue[4], Mat_Dialogue[4]);
+                  }
+                }
+                if(nomMap[0] == 'R' && nomMap[6] == '1')
+                {
+                  if(x <= 20 && x >= 18)
+                  {
+                    dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[2], Mat_Dialogue[2]);
+                  }
+                  if(x <= 22 && x >= 21)
+                  {
+                    dialogue_affichage(ecran, Mat_Dialogue[3], Mat_Dialogue[4], Mat_Dialogue[4]);
+                    dialogue_affichage(ecran, Mat_Dialogue[5], Mat_Dialogue[6], Mat_Dialogue[6]);
+                    dialogue_affichage(ecran, Mat_Dialogue[7], Mat_Dialogue[7], Mat_Dialogue[7]);
                   }
                 }
               }
