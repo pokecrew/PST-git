@@ -2,7 +2,22 @@
 
 SDL_Surface *my_poke[6];
 SDL_Surface *nom1 = NULL;
-
+int lire_sauvegarde(Poke *poke){
+	FILE *fic1 = NULL;
+	fic1 = fopen("Ressources/Sauvegarde","r");
+	char TAB[170];
+	fgets(TAB, 169, fic1);
+	fgets(TAB, 169, fic1);
+	printf(" ca marche ? \n");
+	poke ->id = (TAB[0]-'0')*100 + (TAB[1]-'0')*10 + TAB[2]-'0';
+	printf("%d\n",poke->id);
+	poke->PV =	(TAB[8]-'0')*100 + (TAB[9]-'0')*10 + TAB[10]-'0';
+	poke->niv = (TAB[16]-'0')*100 + (TAB[17]-'0')*10 + TAB[18]-'0';
+	printf("%d\n",poke->niv);
+	poke->exp = (TAB[24]-'0')*1000000 + (TAB[25]-'0')*100000 + (TAB[26]-'0')*10000 + (TAB[27]-'0')*1000 + (TAB[28]-'0')*100 + (TAB[29]-'0')*10 + (TAB[30]-'0');
+	printf("%d\n",poke->exp);
+	fclose(fic1);
+}
 int calcul_stat(Poke *poke)
 {
 	printf(GREEN"[calcul_stat]:"RESET"Id :%d\n",poke->id);

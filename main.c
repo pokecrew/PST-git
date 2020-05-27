@@ -38,11 +38,11 @@ int main(int argc, char** argv)
   perso.position.x=FENETRE_W/2 - 400;
   perso.position.y=FENETRE_H/2;
   // initialisation pokemon et stats
-  poke1.id = 1;
-  poke1.niv = 12;
+  lire_sauvegarde(&poke1);
   //poke1.exp = (poke1.niv)*(poke1.niv)*(poke1.niv);
   calcul_stat(&poke1);
-  poke1.exp = 4000;
+
+  lire_sauvegarde(&poke1);
   printf("%d\n",poke1.exp);
   int attaques[4]={5,12,3,6};
   charger_att((poke1.attaque), attaques);
