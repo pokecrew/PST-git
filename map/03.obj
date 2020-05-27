@@ -26,6 +26,8 @@ arb000 (70;29;5)(03;04)[04;03]
 arb000 (00;31;5)(03;04)[01;02]
 arb000 (64;31;5)(03;04)[03;02]
 arb000 (00;35;5)(03;04)[39;04]
+eve995 (60;17;4)(02;03)[00;00]
+eve994 (21;15;4)(02;03)[00;00]
 ##########
 map002 (33;26)(01;01)[12;22]
 map002 (24;26)(01;01)[12;22]
@@ -34,3 +36,9 @@ map004 (00;16)(02;03)[28;34]
 Bourg Raclette
 ##########
 001
+##########
+Tu cherches le professeur CHEN ??
+Il est parti il y a quelques minutes en direction de
+la ville voisine, tu peux encore le rattraper.
+Je viens de telecharger un jeu, ca s'appelle
+BrawlStar, c'est trop bien !! 
