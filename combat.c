@@ -18,6 +18,17 @@ int lire_sauvegarde(Poke *poke){
 	printf("%d\n",poke->exp);
 	fclose(fic1);
 }
+int ecrire_sauvegarde(Poke *poke){
+	FILE *fic1 = NULL;
+	fic1 = fopen("Ressources/Sauvegarde","w+");
+	fprintf(fic1, "Numéro  PV      NIV     EXP\n");
+	fprintf(fic1,"%d%d%d", poke->id/100, (poke->id%100)/10, poke->id%10);
+	fprintf(fic1,"     %d%d%d", poke->PV/100, (poke->PV%100)/10, poke->PV%10);
+	fprintf(fic1,"     %d%d%d", poke->niv/100, (poke->niv%100)/10, poke->niv%10);
+	fprintf(fic1,"     %d%d%d%d%d%d%d", poke->exp/1000000, (poke->exp%1000000)/100000, (poke->exp%100000)/10000, (poke->exp%10000)/1000, (poke->exp%1000)/100, (poke->exp%100)/10, (poke->exp%10));
+	fclose(fic1);
+	printf("Sauvegarde Terminée\n");
+}
 int calcul_stat(Poke *poke)
 {
 	printf(GREEN"[calcul_stat]:"RESET"Id :%d\n",poke->id);
