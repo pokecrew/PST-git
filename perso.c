@@ -45,10 +45,12 @@ void chargerSpritesPerso(int numSpritePerso, SDL_Surface **Perso_Sprites)
 
 void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, char Mat_Dialogue[100][150], char nomMap[40])
 {
-
   SDL_Event event;
   int continuer = 1;
-  int bloquage = 1;
+  int descendre = 1;
+  int rencontre = 1;
+  int sortir = 0;
+  int enchainement = 0;
   int dialogue_possible = 0;
   int iSpriteH = 1;
   int iSpriteD = 1;
@@ -64,13 +66,6 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
   perso.y=(perso.position.y-(perso.position.y%TAILLE_SPRITE))/TAILLE_SPRITE;
   //  printf(GREEN"[Jeu]:"RESET"%d\t%d\n", perso.x, perso.y);
 
-  int sortir = 0;
-  if(nomMap[0] == 'A' && nomMap[6] == 'R')
-  {
-    dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0]);
-    SDL_Delay(1500);
-  }
-  int enchainement = 0;
   while (continuer)
   {
     //  Séquence d'affichage
@@ -84,6 +79,16 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
       //afficherFilePorteSDL(filePorte,ecran); //fonction de developpement qui applique un filtre bleu aux zones considérées comme des portes
       SDL_Flip(ecran); // Mise à jour de l'écran
       refresh = 0;
+    }
+    if(nomMap[0] == 'A' && nomMap[6] == 'R' && descendre == 1)
+    {
+      dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0], Mat_Dialogue[0]);
+      descendre = 0;
+    }
+    if(nomMap[0] == 'R' && nomMap[6] == '1' && rencontre == 1)
+    {
+      dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0], Mat_Dialogue[0]);
+      rencontre = 0;
     }
     SDL_WaitEvent(&event);
       switch(event.type)
@@ -167,7 +172,7 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
               break;
 
             case SDLK_RETURN:
-              if(nomMap[0] == 'A' && nomMap[6] == 'E')
+              if(continuer)
               {
                 int x = perso.position.x- Map[0][0].position.x;
                 x = (x - (x%TAILLE_SPRITE))/TAILLE_SPRITE;
@@ -175,19 +180,21 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                 y = (y - (y%TAILLE_SPRITE))/TAILLE_SPRITE;
                 printf("x = %d\n", x);
                 printf("y = %d\n\n", y);
+              }
+              if(nomMap[0] == 'A' && nomMap[6] == 'E')
+              {
+                int x = perso.position.x- Map[0][0].position.x;
+                x = (x - (x%TAILLE_SPRITE))/TAILLE_SPRITE;
+                int y = perso.position.y-Map[0][0].position.y;
+                y = (y - (y%TAILLE_SPRITE))/TAILLE_SPRITE;
                 if((y == 9) && (x == 13))
                 {
-                  dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0]);
-                  SDL_Delay(1500);
+                  dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0], Mat_Dialogue[0]);
                 }
                 if((y == 9) && (x >= 15) && (x <= 18))
                 {
-                  dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[1]);
-                  SDL_Delay(1500);
-                  dialogue_affichage(ecran, Mat_Dialogue[2], Mat_Dialogue[3]);
-                  SDL_Delay(1500);
-                  dialogue_affichage(ecran, Mat_Dialogue[3], Mat_Dialogue[4]);
-                  SDL_Delay(1500);
+                  dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[1], Mat_Dialogue[1]);
+                  dialogue_affichage(ecran, Mat_Dialogue[2], Mat_Dialogue[3], Mat_Dialogue[4]);
                 }
               }
               if(dialogue_possible == 1)
@@ -196,52 +203,53 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                 x = (x - (x%TAILLE_SPRITE))/TAILLE_SPRITE;
                 int y = perso.position.y-Map[0][0].position.y;
                 y = (y - (y%TAILLE_SPRITE))/TAILLE_SPRITE;
-                //printf("x = %d\n", x);
-                //printf("y = %d\n\n", y);
                 if(nomMap[0] == 'J')
                 {
                   if(((y <= 24) && (y >= 22)) && ((x <= 26) && (x >= 23)))
                   {
                     enchainement = 1;
-                    dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[1]);
+                    dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[1], Mat_Dialogue[1]);
                   }
                   else if(enchainement == 0)
                   {
-                    dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0]);
+                    dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0], Mat_Dialogue[0]);
                   }
                   else if(enchainement == 1)
                   {
-                    dialogue_affichage(ecran, Mat_Dialogue[2], Mat_Dialogue[2]);
+                    dialogue_affichage(ecran, Mat_Dialogue[2], Mat_Dialogue[2], Mat_Dialogue[2]);
                   }
                 }
                 if(nomMap[0] == 'A' && nomMap[6] == 'R')
                 {
-                  if((y == 13) && (x == 17))
-                  {
-                    dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[1]);
-                    SDL_Delay(1500);
-                    dialogue_affichage(ecran, Mat_Dialogue[2], Mat_Dialogue[3]);
-                    SDL_Delay(1500);
-                    sortir = 1;
-                  }
+                  dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[1], Mat_Dialogue[1]);
+                  dialogue_affichage(ecran, Mat_Dialogue[2], Mat_Dialogue[3], Mat_Dialogue[3]);
+                  sortir = 1;
                 }
-                while(bloquage)
+                if(nomMap[0] == 'B')
                 {
-                SDL_WaitEvent(&event);
-                  switch(event.type)
+                  if(x == 59)
                   {
-                  case SDL_KEYDOWN:
-                    refresh = 1; //on dit à l'ordinateur de rafraichir l'affichage
-                    switch(event.key.keysym.sym)
-                    {
-                      case SDLK_RETURN:
-                        bloquage = 0;
-                        break;
-                    }
-                    break;
+                    dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0], Mat_Dialogue[0]);
+                    dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[2], Mat_Dialogue[2]);
+                  }
+                  if(x == 21)
+                  {
+                    dialogue_affichage(ecran, Mat_Dialogue[3], Mat_Dialogue[4], Mat_Dialogue[4]);
                   }
                 }
-                bloquage = 1;
+                if(nomMap[0] == 'R' && nomMap[6] == '1')
+                {
+                  if(x <= 20 && x >= 18)
+                  {
+                    dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[2], Mat_Dialogue[2]);
+                  }
+                  if(x <= 22 && x >= 21)
+                  {
+                    dialogue_affichage(ecran, Mat_Dialogue[3], Mat_Dialogue[4], Mat_Dialogue[4]);
+                    dialogue_affichage(ecran, Mat_Dialogue[5], Mat_Dialogue[6], Mat_Dialogue[6]);
+                    dialogue_affichage(ecran, Mat_Dialogue[7], Mat_Dialogue[7], Mat_Dialogue[7]);
+                  }
+                }
               }
               else
               {
@@ -593,18 +601,15 @@ void deplacement(Case ** Map, Perso *perso, FileDecors *fileDecors, FilePorte *f
   }
 }
 
-void dialogue_affichage(SDL_Surface *ecran, char* texte, char* texte2)
+void dialogue_affichage(SDL_Surface *ecran, char* texte, char* texte2, char* texte3)
 {
   SDL_Surface *dialogue = NULL;
+  SDL_Event event;
   SDL_Rect position_bulle, position_dialogue;
   TTF_Font *police_dialogue = NULL;
   SDL_Color noir = {0, 0, 0};
-  char Tab_vide[100];
-  int i;
-  for(i = 0; i < 100; i++)
-  {
-    Tab_vide[i] = ' ';
-  }
+  int stop = 1;
+
   position_bulle.x = TAILLE_SPRITE;
   position_bulle.y = 19*TAILLE_SPRITE;
 
@@ -620,7 +625,31 @@ void dialogue_affichage(SDL_Surface *ecran, char* texte, char* texte2)
     dialogue = TTF_RenderText_Blended(police_dialogue, texte2, noir);
     position_dialogue.y = position_bulle.y + 3*TAILLE_SPRITE + 50;
     SDL_BlitSurface(dialogue, NULL, ecran, &position_dialogue);
+    if(texte2 != texte3)
+    {
+      dialogue = TTF_RenderText_Blended(police_dialogue, texte3, noir);
+      position_dialogue.y = position_bulle.y + 3*TAILLE_SPRITE + 100;
+      SDL_BlitSurface(dialogue, NULL, ecran, &position_dialogue);
+    }
   }
   SDL_Flip(ecran);
-  SDL_Delay(1000);
+  while(stop)
+  {
+    SDL_WaitEvent(&event);
+    switch(event.type)
+    {
+      case SDL_QUIT:
+        stop = 0;
+        break;
+
+      case SDL_KEYDOWN:
+        switch(event.key.keysym.sym)
+        {
+          case SDLK_RETURN:
+            SDL_Delay(500);
+            stop = 0;
+            break;
+        }
+    }
+  }
 }

@@ -111,12 +111,12 @@ SDL_Rect perso_position_old; //dernière position du joueur sur une map unique (
 int musicMapPrec = -1; //musique jouée lors sur la carte précédente (par défaut -1)
 
 int musicMap = 3; //musique jouée sur la map actuelle
-int numMapPrec = 2; //numéro de la map précédente (à charger depuis un fichier sauvegarde)
-int numMap = 1; //numéro de la map actuelle (à charger depuis un fichier sauvegarde)
+int numMapPrec = 3; //numéro de la map précédente (à charger depuis un fichier sauvegarde)
+int numMap = 3; //numéro de la map actuelle (à charger depuis un fichier sauvegarde)
 int volumeSon = 0; //0 = min, 128 = max;
 
 char nomMap[40]="";
-char mapPath[]="map/01.lvl"; //chemin vers le fichier source de la carte actuelle
+char mapPath[]="map/03.lvl"; //chemin vers le fichier source de la carte actuelle
 int typeSprite = 0; //sprites de petites tailles (0) ou de grande taille (12)
 int lancerCombat = 0; // variable qui stocke le nombre de pas dans les hautes herbes sans avoir lancé de combat
 bool surf = FALSE; //stocke si le perso peut surfer ou non
