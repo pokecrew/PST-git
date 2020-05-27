@@ -46,7 +46,7 @@ int main(int argc, char** argv)
   printf("%d\n",poke1.exp);
   int attaques[4]={5,12,3,6};
   charger_att((poke1.attaque), attaques);
-
+  ecrire_sauvegarde(&poke1);
   //la boucle suivante constitue le menu
   int continuer = 1;
   int Menu=0;
