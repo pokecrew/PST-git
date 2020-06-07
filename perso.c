@@ -221,16 +221,27 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                 }
                 if(nomMap[0] == 'A' && nomMap[6] == 'R')
                 {
-                  dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[1], Mat_Dialogue[1]);
-                  dialogue_affichage(ecran, Mat_Dialogue[2], Mat_Dialogue[3], Mat_Dialogue[3]);
-                  sortir = 1;
+                  if(x == 59)
+                  {
+                    dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[1], Mat_Dialogue[1]);
+                    dialogue_affichage(ecran, Mat_Dialogue[2], Mat_Dialogue[3], Mat_Dialogue[3]);
+                    sortir = 1;
+                  }
+                  else
+                  {
+                    dialogue_affichage(ecran, Mat_Dialogue[5], Mat_Dialogue[5], Mat_Dialogue[5]);
+                  }
                 }
                 if(nomMap[0] == 'B')
                 {
-                  if(x == 59)
+                  if(x >= 58 && x <= 60)
                   {
                     dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0], Mat_Dialogue[0]);
                     dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[2], Mat_Dialogue[2]);
+                  }
+                  if(x == 63)
+                  {
+                    dialogue_affichage(ecran, Mat_Dialogue[5], Mat_Dialogue[6], Mat_Dialogue[7]);
                   }
                   if(x == 21)
                   {
