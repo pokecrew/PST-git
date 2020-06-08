@@ -46,6 +46,7 @@ void chargerSpritesPerso(int numSpritePerso, SDL_Surface **Perso_Sprites)
 void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, FilePorte *filePorte, char Mat_Dialogue[100][150], char nomMap[40])
 {
   SDL_Event event;
+  int pokeball = 0;
   int continuer = 1;
   int descendre = 1;
   int rencontre = 1;
@@ -221,16 +222,40 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                 }
                 if(nomMap[0] == 'A' && nomMap[6] == 'R')
                 {
-                  dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[1], Mat_Dialogue[1]);
-                  dialogue_affichage(ecran, Mat_Dialogue[2], Mat_Dialogue[3], Mat_Dialogue[3]);
-                  sortir = 1;
+                  if(x == 59)
+                  {
+                    dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[1], Mat_Dialogue[1]);
+                    dialogue_affichage(ecran, Mat_Dialogue[2], Mat_Dialogue[3], Mat_Dialogue[3]);
+                    sortir = 1;
+                  }
+                  else
+                  {
+                    dialogue_affichage(ecran, Mat_Dialogue[5], Mat_Dialogue[5], Mat_Dialogue[5]);
+                  }
                 }
                 if(nomMap[0] == 'B')
                 {
-                  if(x == 59)
+                  if(x >= 58 && x <= 60)
                   {
                     dialogue_affichage(ecran, Mat_Dialogue[0], Mat_Dialogue[0], Mat_Dialogue[0]);
                     dialogue_affichage(ecran, Mat_Dialogue[1], Mat_Dialogue[2], Mat_Dialogue[2]);
+                  }
+                  if(x == 63)
+                  {
+                    pokeball = 1;
+                    dialogue_affichage(ecran, Mat_Dialogue[5], Mat_Dialogue[6], Mat_Dialogue[7]);
+                  }
+                  if(x == 61)
+                  {
+                    if(pokeball == 0)
+                    {
+                      dialogue_affichage(ecran, Mat_Dialogue[8], Mat_Dialogue[9], Mat_Dialogue[10]);
+                    }
+                    else
+                    {
+                      dialogue_affichage(ecran, Mat_Dialogue[11], Mat_Dialogue[11], Mat_Dialogue[11]);
+                      dialogue_affichage(ecran, Mat_Dialogue[12], Mat_Dialogue[12], Mat_Dialogue[12]);
+                    }
                   }
                   if(x == 21)
                   {
@@ -246,8 +271,10 @@ void jeu(Perso perso, SDL_Surface *ecran, Case ** Map, FileDecors *fileDecors, F
                   if(x <= 22 && x >= 21)
                   {
                     dialogue_affichage(ecran, Mat_Dialogue[3], Mat_Dialogue[4], Mat_Dialogue[4]);
-                    dialogue_affichage(ecran, Mat_Dialogue[5], Mat_Dialogue[6], Mat_Dialogue[6]);
-                    dialogue_affichage(ecran, Mat_Dialogue[7], Mat_Dialogue[7], Mat_Dialogue[7]);
+                    dialogue_affichage(ecran, Mat_Dialogue[5], Mat_Dialogue[5], Mat_Dialogue[5]);
+                    dialogue_affichage(ecran, Mat_Dialogue[6], Mat_Dialogue[6], Mat_Dialogue[6]);
+                    dialogue_affichage(ecran, Mat_Dialogue[7], Mat_Dialogue[8], Mat_Dialogue[8]);
+                    dialogue_affichage(ecran, Mat_Dialogue[9], Mat_Dialogue[10], Mat_Dialogue[10]);
                   }
                 }
               }
